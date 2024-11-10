@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import DrawerNavegacion from './src/navigation/DrawerNavegacion';
 import { NavigationContainer } from '@react-navigation/native';
+import Eventos from './src/screens/Eventos';
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
     <NavigationContainer>
       <DrawerNavegacion/>
     </NavigationContainer>
+    
   );
 }
 
