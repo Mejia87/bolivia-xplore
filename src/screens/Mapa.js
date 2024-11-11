@@ -8,5 +8,6 @@ export default function Mapa() {
     </View>
   )
 }
+//estoy modificando mapa fhfdj
 
 const styles = StyleSheet.create({})

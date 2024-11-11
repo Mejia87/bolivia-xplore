@@ -1,5 +1,4 @@
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Icon } from '@rneui/base';
 
@@ -42,8 +41,8 @@ function Navegacion() {
     <Tab.Navigator 
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => screenOptions(route, color),
-          tabBarActiveTintColor: '#a17dc3',
-          tabBarInactiveTintColor: '#442484',
+          tabBarActiveTintColor: '#C5705D',
+          tabBarInactiveTintColor: '#551E18',
           headerShown: false, 
         })}
         >

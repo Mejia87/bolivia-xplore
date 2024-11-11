@@ -1,25 +1,29 @@
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-gesture-handler';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet,SafeAreaView,Platform} from 'react-native';
 
 
 import DrawerNavegacion from './src/navigation/DrawerNavegacion';
 import { NavigationContainer } from '@react-navigation/native';
 
+
 export default function App() {
   return (
+    <SafeAreaView style= {styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" translucent={false} />
+        <NavigationContainer>
+          <DrawerNavegacion/>
+        </NavigationContainer>
+    </SafeAreaView>
     
-    <NavigationContainer>
-      <DrawerNavegacion/>
-    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  safeArea: {
+    flex:1,
+    backgroundColor: '#ffffff',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    overflow: 'hidden'
   },
 });
