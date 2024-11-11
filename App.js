@@ -5,6 +5,7 @@ import { StyleSheet,SafeAreaView,Platform} from 'react-native';
 
 import DrawerNavegacion from './src/navigation/DrawerNavegacion';
 import { NavigationContainer } from '@react-navigation/native';
+import Eventos from './src/screens/Eventos';
 
 
 export default function App() {
@@ -16,6 +17,13 @@ export default function App() {
         </NavigationContainer>
     </SafeAreaView>
     
+<<<<<<< HEAD
+=======
+    <NavigationContainer>
+      <DrawerNavegacion/>
+    </NavigationContainer>
+    
+>>>>>>> hedi
   );
 }
 
