@@ -17,13 +17,6 @@ export default function App() {
         </NavigationContainer>
     </SafeAreaView>
     
-<<<<<<< HEAD
-=======
-    <NavigationContainer>
-      <DrawerNavegacion/>
-    </NavigationContainer>
-    
->>>>>>> hedi
   );
 }
 

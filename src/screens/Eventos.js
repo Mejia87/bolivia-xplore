@@ -2,7 +2,7 @@ import React from 'react';
 import { View,Text, TextInput, Image, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons
 
-const Eventos = () => {
+const Eventos = ({navigation}) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.container1}>
@@ -15,7 +15,7 @@ const Eventos = () => {
           />
         </View>
         <View style={styles.item}>
-          <Pressable onPress={() => Alert.alert('abrir evento ')}>
+          <Pressable onPress={() => navigation.navigate('evento')}>
             <Image source={require('../../assets/celebracionFolklorica.jpg')} style={styles.image} />
             <View style={styles.textContainer}>
             <Text style={styles.text}>Celebraciones Folklóricas</Text>
