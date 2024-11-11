@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   carouselContainer: {
-    height: (height - marginTop) / 1.9,
+    height: (height - marginTop) / 2,
     marginHorizontal: 10,
-    marginTop,
+    marginTop: 45,
   },
 });

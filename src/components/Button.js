@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import {
     Text,
     TouchableOpacity,
@@ -38,4 +38,4 @@ import {
       right: 200,
     },
   });
-  
+  */

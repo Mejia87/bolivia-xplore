@@ -13,7 +13,7 @@ export default function Content() {
       <View style={styles.locationWrapper}>
         <Entypo size={22} name="location-pin" style={styles.locationIcon} />
         <Text style={styles.location}>
-          234 Banana Street, AnyTown, Country.
+          Cochabamba
         </Text>
       </View>
 
