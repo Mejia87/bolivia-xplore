@@ -95,7 +95,7 @@ const DrawerNavegacion = () => {
                     title: 'Perfil',
                     headerTitleAlign: 'center',
                     headerTitle: () => <Text style={styles.headerTitle}>Perfil</Text>,
-                    drawerIcon:() => <Icon name='user' type='font-awesome-5' size={20} color='red' />
+                    drawerIcon:() => <Icon name='user' type='font-awesome-5' size={20} color='black' />
                 }}
             />
             <Drawer.Screen
@@ -105,7 +105,7 @@ const DrawerNavegacion = () => {
                     title: 'Notificaciones',
                     headerTitleAlign: 'center',
                     headerTitle: () => <Text style= {styles.headerTitle}> Notificaciones</Text>,
-                    drawerIcon:() => <Icon name='bell' type='font-awesome-5' size={20} color='red' />
+                    drawerIcon:() => <Icon name='bell' type='font-awesome-5' size={20} color='black' />
                 }}
             />
             <Drawer.Screen
@@ -115,7 +115,7 @@ const DrawerNavegacion = () => {
                     title: 'Ajustes',
                     headerTitleAlign: 'center',
                     headerTitle: () => <Text style={styles.headerTitle}> Ajustes</Text>,
-                    drawerIcon:() => <Icon name='cogs' type='font-awesome-5' size={20} color='red' />
+                    drawerIcon:() => <Icon name='cogs' type='font-awesome-5' size={20} color='black' />
                 }}
             />
             <Drawer.Screen
@@ -125,7 +125,7 @@ const DrawerNavegacion = () => {
                     title: 'Gestor de eventos',
                     headerTitleAlign: 'center',
                     headerTitle: () => <Text style={styles.headerTitle}>Gestor de eventos</Text>,
-                    drawerIcon:() => <Icon name='calendar' type='font-awesome-5' size={20} color='red' />
+                    drawerIcon:() => <Icon name='calendar' type='font-awesome-5' size={20} color='black' />
                 }}
             />
             
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   drawerLabel: {
     fontSize: 18,
-    color:'red',
+    color:'black',
     
     
   },
