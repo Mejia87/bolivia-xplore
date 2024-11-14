@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import EventForm from './AgregarEvento'
 
 const GestorEventos = () => {
   return (
     <View>
-      <Text>Pantalla de GestorEventos</Text>
+      <EventForm/>
     </View>
   )
 }
