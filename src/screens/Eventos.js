@@ -5,8 +5,7 @@ import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado 
 const Eventos = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.container1}>
-        <View style={styles.searchContainer}>
+      <View style={styles.searchContainer}>
           <Ionicons  name="search" size={20} color="gray" style={styles.icon} />
           <TextInput
             style={styles.input}
@@ -18,7 +17,7 @@ const Eventos = ({navigation}) => {
           <Pressable onPress={() => navigation.navigate('evento')}>
             <Image source={require('../../assets/celebracionFolklorica.jpg')} style={styles.image} />
             <View style={styles.textContainer}>
-            <Text style={styles.text}>Celebraciones Folklóricas</Text>
+            <Text style={styles.text}>Celebraciones Folklóricas cambio</Text>
             </View>
           </Pressable>
         </View>
@@ -58,7 +57,6 @@ const Eventos = ({navigation}) => {
         </Pressable>
       </View>
 
-      </ScrollView>
     </View>
   );
 };
@@ -68,12 +66,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width:'100%'
+    
   },
   container1: {
     alignItems: 'center',
+    justifyContent:'center'
   },
   searchContainer: {
-    flexDirection: 'row-reverse',
+    flexDirection:'row-reverse',
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 20,
@@ -84,33 +85,40 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
-    marginTop: 60,
+    marginTop: 20,
     width: 300,
     borderColor: '#000', 
     borderWidth: 2, 
+    alignItems:'center',
+    justifyContent:'center',
+
   },
-  icon: {
-    marginRight: 10,
-  },
+  
   input: {
     flex: 1,
     fontSize: 16,
   },
   item: {
-    marginTop: 20,
+    
     alignItems: 'center',
+    justifyContent:'center',
+    marginTop:20,
+    maxWidth:'80%',
+    borderRadius:20,
+    
   },
   image: {
-    width: 385,
+    width: 350,
     height: 88,
     borderRadius: 0,
+    borderRadius:10,
   },
   textContainer: {
-    width: 385,
+    width: 350,
     marginTop: -20,
     
     backgroundColor: 'rgba(108, 106, 108, 0.7)', // 'gold' en RGBA con 30% de opacidad
-    borderRadius: 0,
+    borderRadius: 10,
     alignItems: 'center',
     height: 20,
    },
