@@ -4,9 +4,10 @@ import React from 'react'
 export default function Calendario() {
   return (
     <View>
-      <Text>Calendario de eventos</Text>
+      <Text>calendario</Text>
     </View>
   )
 }
+//estoy modificando mapa fhfdj
 
 const styles = StyleSheet.create({})
