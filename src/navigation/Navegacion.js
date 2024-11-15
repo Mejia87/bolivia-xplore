@@ -5,6 +5,7 @@ import { Icon } from '@rneui/base';
 import MapaStack from './MapaStack';
 import CalendarioStack from './CalendarioStack';
 import EventosStack from './EventosStack';
+import CategoriaEventosStack from './CategoriaEventosStack';
 
 
 
@@ -53,7 +54,7 @@ function Navegacion() {
               />
             <Tab.Screen
                 name = 'eventosPrincipal'
-                component = {EventosStack}
+                component = {CategoriaEventosStack}
                 options={{title:'Eventos'}}
               />
             <Tab.Screen
