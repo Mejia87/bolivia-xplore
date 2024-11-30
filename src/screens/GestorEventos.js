@@ -72,16 +72,9 @@ const GestorEventos = ({navigation}) => {
       data={Pcategorias}
       
       renderItem={({ item }) => (
-        <ImageCard 
-          title={item.title} 
-          subtitle={item.subtitle} 
-       
-          imageSource={item.imageSource} 
-          navigation={navigation}
-        />
+        
       )}
-      keyExtractor={item => item.id}
-      numColumns={3} // Número de columnas
+      
 
       contentContainerStyle={styles.container}
     />
@@ -96,7 +89,7 @@ const GestorEventos = ({navigation}) => {
           styles.buttonB,
           pressed && styles.buttonPressedB,
         ]}
-        onPress={() =>  alert('¡crear evento!')}
+        onPress={() =>  navigation.navigate('eventForm')}
         onHoverIn={() => setHovered(true)}
         onHoverOut={() => setHovered(false)}
         onPressIn={() => setHovered(true)}

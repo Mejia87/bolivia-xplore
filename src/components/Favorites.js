@@ -13,9 +13,9 @@ const FavoriteButton = () => {
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={toggleFavorite}>
         <MaterialIcons
-          name={isFavorite ? 'favorite' : 'favorite-border'}
+          name={isFavorite ? 'star' : 'star-border'}
           size={24}
-          color={isFavorite ? 'red' : 'gray'}
+          color={isFavorite ? 'orange' : 'gray'}
         />
         <Text style={styles.text}>
           {isFavorite ? 'Quitar de Favoritos' : 'Agregar a Favoritos'}
@@ -26,21 +26,14 @@ const FavoriteButton = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 0,
-    left: 300,
-    alignItems: 'center',
-    zIndex: 1,
-  },
+  
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+   
     padding: 10,
     borderRadius: 5,
-    elevation: 2,
-  },
+    },
   text: {
     marginLeft: 8,
     fontSize: 16,

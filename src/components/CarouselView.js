@@ -1,26 +1,13 @@
-import { View, StyleSheet, Dimensions, Text, Image } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Image,ImageBackground } from 'react-native';
 import React from 'react';
 import Carousel from 'pinar';
 import Constants from 'expo-constants';
 
-const images = [
-  {
-    name: 'Fiesta',
-    img: require('../images/Fiesta.jpg'),
-  },
-  {
-    name: 'Images',
-    img: require('../images/images.jpg'),
-  },
-  {
-    name: 'Urkupina',
-    img: require('../images/Urkupina.jpg'),
-  },
-];
 
 const height = Dimensions.get('window').height;
 const marginTop = Constants.statusBarHeight;
-export default function CarouselView() {
+
+export default function CarouselView({images}) {
   return (
     <View style={styles.carouselContainer}>
       <Carousel
@@ -30,7 +17,7 @@ export default function CarouselView() {
         activeDotStyle={[styles.dotStyle, { backgroundColor: 'white' }]}
       >
         {images.map((img) => (
-          <Image style={styles.image} source={img.img} key={img.name} />
+          <ImageBackground resizeMode= 'cover' style={styles.image} source={{uri:img.urlImagen}} key={images.index} />
         ))}
       </Carousel>
     </View>
@@ -47,7 +34,6 @@ const styles = StyleSheet.create({
   },
   image: {
     height: '100%',
-    width: '100%',
     borderRadius: 20,
   },
   carousel: {
@@ -55,8 +41,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   carouselContainer: {
-    height: (height - marginTop) / 2,
+    height: 300,
     marginHorizontal: 10,
-    marginTop: 45,
   },
 });

@@ -3,6 +3,7 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
+
 const BackButton = () => {
   const navigation = useNavigation();
 
@@ -13,26 +14,18 @@ const BackButton = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={goBack}>
-        <MaterialIcons name="arrow-back" size={24} color="black" />
+        <MaterialIcons name="arrow-back" size={24} color="#551E18" />
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 0,
-    left: 10,
-    zIndex: 1,
-  },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     padding: 10,
-    borderRadius: 5,
-    elevation: 2,
   },
 });
 

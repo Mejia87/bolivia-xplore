@@ -9,6 +9,7 @@ import Notificaciones from '../screens/Notificaciones';
 import Ajustes from '../screens/Ajustes';
 import GestorEventos from '../screens/GestorEventos';
 import Navegacion from './Navegacion';
+import GestorEventosStack from './GestorEventosStack';
 
 
 
@@ -79,6 +80,7 @@ const DrawerNavegacion = () => {
                     title: 'Inicio ',
                     headerTitleAlign:'center',
                     headerTitle: () => <Text style={styles.headerTitle}>BoliviaXplore</Text>,
+                    drawerIcon:() => <Icon name='home' type='font-awesome-5' size={20} color='black' />,
                     headerRight: () => (
                       <View style = {styles.headerRigth}>
                         <Icon name= 'bell' type='font-awesome-5' size={20} color='#fff'/>
@@ -120,7 +122,7 @@ const DrawerNavegacion = () => {
             />
             <Drawer.Screen
                 name = 'gestorEventos'
-                component={GestorEventos}
+                component={GestorEventosStack}
                 options={{
                     title: 'Gestor de eventos',
                     headerTitleAlign: 'center',

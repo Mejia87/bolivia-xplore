@@ -20,8 +20,6 @@ const LocationButton = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 790,
     alignSelf: 'center',
     marginBottom: 0,
     zIndex: 1,
@@ -41,6 +39,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 16,
     color: '#2196F3',
+    
   },
 });
 
