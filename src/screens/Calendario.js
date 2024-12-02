@@ -5,9 +5,10 @@ import SeleccionarIdioma from './SeleccionarIdioma'
 export default function Calendario() {
   return (
     <View>
-      <SeleccionarIdioma/>
+      <Text>calendario</Text>
     </View>
   )
 }
+//estoy modificando mapa fhfdj
 
 const styles = StyleSheet.create({})
