@@ -5,15 +5,33 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const EventForm = () => {
-  const [category, setCategory] = useState('');
-  const [name, setName] = useState('');
-  const [imageUris, setImageUris] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [location, setLocation] = useState('');
-  const [description, setDescription] = useState('');
-  const [history, setHistory] = useState('');
+const EditEventForm = () => {
+  // mis datos iniciales
+  const initialData = {
+    category: 'Celebraciones Folkloricas',
+    name: 'Virgen de Urkupiña',
+    imageUris: [
+      '.../images/Fiesta.jpg',
+      '.../images/Urkupina.jpg',
+      '.../images/images.jpg',
+    ],
+    startDate: new Date('2024-08-11'),
+    endDate: new Date('2024-08-16'),
+    location: 'Quillacollo, Bolivia',
+    description:
+      'La Virgen de Urkupiña es una advocación de la Virgen María que se venera cada 15 de agosto en la ciudad de Quillacollo.',
+    history:
+      'La celebración de la Virgen de Urkupiña tiene raíces culturales y religiosas que se remontan a siglos atrás.',
+  };
+
+  const [category, setCategory] = useState(initialData.category);
+  const [name, setName] = useState(initialData.name);
+  const [imageUris, setImageUris] = useState(initialData.imageUris);
+  const [startDate, setStartDate] = useState(initialData.startDate);
+  const [endDate, setEndDate] = useState(initialData.endDate);
+  const [location, setLocation] = useState(initialData.location);
+  const [description, setDescription] = useState(initialData.description);
+  const [history, setHistory] = useState(initialData.history);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
@@ -117,7 +135,7 @@ const EventForm = () => {
       </TouchableOpacity>
       {showStartDatePicker && (
         <DateTimePicker
-          value={new Date()}
+          value={startDate || new Date()}
           mode="date"
           display="default"
           minimumDate={new Date()}
@@ -137,7 +155,7 @@ const EventForm = () => {
       </TouchableOpacity>
       {showEndDatePicker && (
         <DateTimePicker
-          value={new Date()}
+          value={endDate || new Date()}
           mode="date"
           display="default"
           minimumDate={new Date()}
@@ -149,10 +167,12 @@ const EventForm = () => {
       )}
 
       <Text style={styles.label}>Ubicación del Evento</Text>
-      <TouchableOpacity style={styles.locationButton}>
-        <MaterialIcons name="location-on" size={24} color="#551E18" />
-        <Text style={styles.locationText}>Seleccione ubicación</Text>
-      </TouchableOpacity>
+      <TextInput
+        style={styles.input}
+        placeholder="Ingrese ubicación..."
+        value={location}
+        onChangeText={setLocation}
+      />
 
       <Text style={styles.label}>Descripción del Evento</Text>
       <TextInput
@@ -185,107 +205,105 @@ const EventForm = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#FFFFFF', 
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 5,
-    color: '#551E18', 
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#EDE0DD',
-    borderRadius: 5,
-    padding: 12,
-    marginBottom: 10,
-    fontSize: 16, // Aumentar el tamaño de letra
-    backgroundColor: '#EDE0DD',
-    //opacity: 0.9, 
-  },
-  imageButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EDE0DD',
-    padding: 12,
-    borderRadius: 5,
-    marginBottom: 10,
-    backgroundColor: '#EDE0DD',
-  },
-  imageText: {
-    marginLeft: 8,
-    fontSize: 16, // Aumentar el tamaño de letra
-    color: '#333333',
-  },
-  imagePreview: {
-    width: 100,
-    height: 100,
-    borderRadius: 5,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  dateButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EDE0DD',
-    padding: 12,
-    borderRadius: 5,
-    marginBottom: 10,
-    backgroundColor: '#EDE0DD', 
-  },
-  dateText: {
-    flex: 1,
-    fontSize: 16, // Aumentar el tamaño de letra
-    color: '#333333',
-  },
-  locationButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EDE0DD',
-    padding: 12,
-    borderRadius: 5,
-    marginBottom: 10,
-    backgroundColor: '#EDE0DD', 
-  },
-  locationText: {
-    marginLeft: 8,
-    fontSize: 16, // Aumentar el tamaño de letra
-    color: '#333333',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  cancelButton: {
-    backgroundColor: '#551E18',
-    padding: 15,
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 10,
-  },
-  cancelText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-  },
-  saveButton: {
-    backgroundColor: '#551E18',
-    padding: 15,
-    borderRadius: 5,
-    flex: 1,
-  },
-  saveText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-  },
-});
-
-export default EventForm;
-
+    container: {
+      padding: 20,
+      backgroundColor: '#FFFFFF', 
+    },
+    label: {
+      fontSize: 18, // Aumentar el tamaño de letra
+      fontWeight: 'bold',
+      marginVertical: 5,
+      color: '#551E18', 
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: '#EDE0DD',
+      borderRadius: 5,
+      padding: 12,
+      marginBottom: 10,
+      fontSize: 16, // Aumentar el tamaño de letra
+      backgroundColor: '#EDE0DD', 
+    },
+    imageButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#EDE0DD',
+      padding: 12,
+      borderRadius: 5,
+      marginBottom: 10,
+      backgroundColor: '#EDE0DD',
+    },
+    imageText: {
+      marginLeft: 8,
+      fontSize: 16, // Aumentar el tamaño de letra
+      color: '#333333',
+    },
+    imagePreview: {
+      width: 100,
+      height: 100,
+      borderRadius: 5,
+      marginTop: 10,
+      marginBottom: 10,
+    },
+    dateButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#EDE0DD',
+      padding: 12,
+      borderRadius: 5,
+      marginBottom: 10,
+      backgroundColor: '#EDE0DD', 
+    },
+    dateText: {
+      flex: 1,
+      fontSize: 16, // Aumentar el tamaño de letra
+      color: '#333333',
+    },
+    locationButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#EDE0DD',
+      padding: 12,
+      borderRadius: 5,
+      marginBottom: 10,
+      backgroundColor: '#f0f0f0', 
+    },
+    locationText: {
+      marginLeft: 8,
+      fontSize: 16, // Aumentar el tamaño de letra
+      color: '#333333',
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 20,
+    },
+    cancelButton: {
+      backgroundColor: '#551E18',
+      padding: 15,
+      borderRadius: 5,
+      flex: 1,
+      marginRight: 10,
+    },
+    cancelText: {
+      color: '#fff',
+      textAlign: 'center',
+      fontSize: 16,
+    },
+    saveButton: {
+      backgroundColor: '#551E18',
+      padding: 15,
+      borderRadius: 5,
+      flex: 1,
+    },
+    saveText: {
+      color: '#fff',
+      textAlign: 'center',
+      fontSize: 16,
+    },
+  });
+  
+  export default EditEventForm;
