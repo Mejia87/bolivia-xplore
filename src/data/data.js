@@ -2,7 +2,7 @@ const data = [
     {
         id: "1",
         type: "celebracion folclorica",
-        name: "Virgen de Urkupiña",
+        name: "Festividad de la Virgen de Urkupiña ",
         direction:
             "Quillacollo, 14 km de CBBA",
         longitud: -17.2529,
@@ -20,7 +20,7 @@ const data = [
     {
         id: "2",
         type: "celebracion folclorica",
-        name: "Carnaval Concordia",
+        name: "Carnaval de la Concordia",
         direction:
             "150 km, Sucre",
         longitud: -17.2529,
