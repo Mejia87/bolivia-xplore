@@ -1,27 +1,27 @@
-import {TextInput, Alert, Pressable, View, Text, Image, StyleSheet, FlatList, Dimensions,TouchableOpacity} from 'react-native';
-import { enableScreens } from 'react-native-screens';
-import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
-import Pcategorias from '../data/Pcategorias';
-import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons
-import Icon from 'react-native-vector-icons/FontAwesome';
-import React, { useState } from 'react';
+import {TextInput, Alert, Pressable, View, Text, Image, StyleSheet, FlatList, Dimensions,TouchableOpacity} from 'react-native'
+import { enableScreens } from 'react-native-screens'
+import { RFPercentage, RFValue } from 'react-native-responsive-fontsize'
+import Pcategorias from '../data/Pcategorias'
+import { Ionicons } from '@expo/vector-icons' 
+import Icon from 'react-native-vector-icons/FontAwesome'
+import React, { useState } from 'react'
 
 
 enableScreens();
-const { width, height  } = Dimensions.get('window');
+const { width, height  } = Dimensions.get('window')
 
 const ImageCard = ({ title, subtitle, imageSource,navigation }) => {
   
   const handlePressTrash = () => {
-    Alert.alert('Has presionado basurero');
-  };
+    Alert.alert('Has presionado basurero')
+  }
 
   const handlePressPencil = () => {
-    Alert.alert('Has presionado lápiz');
-  };
+    Alert.alert('Has presionado lápiz')
+  }
   const handlePressimag = () => {
-    Alert.alert('ver el evento');
-  };
+    Alert.alert('ver el evento')
+  }
 
   return (
     
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   card: {
-    width: width / 3- 20, // Ajusta el ancho según el tamaño de la pantalla
-    height: (width / 3 - 20) * 1.5, // Ajusta la altura manteniendo la proporción
+    width: width / 3- 20,
+    height: (width / 3 - 20) * 1.5,
     margin: 10,
     borderRadius: 10,
     overflow: 'hidden',
@@ -142,16 +142,16 @@ const styles = StyleSheet.create({
   },
   iconTopRight: {
     position: 'absolute',
-    top: 10, // Ajusta este valor según tus necesidades
-    right: 10, // Ajusta este valor según tus necesidades
+    top: 10, 
+    right: 10, 
     width: 24,
     height: 24,
     borderRadius: 10, 
   },
   iconBottomLeft: {
     position: 'absolute',
-    bottom: '25%', // Ajusta este valor según tus necesidades
-    left: 10, // Ajusta este valor según tus necesidades
+    bottom: '25%', 
+    left: 10, 
     width: 24,
     height: 24,
     borderRadius: 10, 
@@ -185,8 +185,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
     marginTop: 10,
-    height:width * 0.09, // Ajusta el ancho al 80% del ancho de la pantalla
-    width: width * 0.6, // Ajusta el ancho al 80% del ancho de la pantalla
+    height:width * 0.09,
+    width: width * 0.6, 
     borderColor: '#000',
     borderWidth: 2,
   },
