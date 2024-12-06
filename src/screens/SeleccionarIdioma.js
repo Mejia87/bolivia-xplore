@@ -1,6 +1,5 @@
 
 //https://reactnative.dev/docs/style estilos de botones
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -16,7 +15,6 @@ const SeleccionarIdioma = () => {
     <View style={styles.container}>
       <Text style={styles.title}>¡Explora más sobre la tradición cultural de Bolivia!</Text>
       <Text style={styles.subtitle}>Selecciona el idioma de tu preferencia</Text>
-
       <View style={styles.pickerContainer}>
         <Picker
           selectedValue={selectedLanguage}
@@ -27,7 +25,6 @@ const SeleccionarIdioma = () => {
           <Picker.Item label="Inglés" value="en" />
         </Picker>
       </View>
-
       <TouchableOpacity style={styles.button} onPress={handleNext}>
         <Text style={styles.buttonText}>Siguiente</Text>
       </TouchableOpacity>
@@ -37,22 +34,22 @@ const SeleccionarIdioma = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center', 
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 300,
+    justifyContent: 'center',
+    alignItems: 'center', 
+    paddingVertical: 280,
+    //marginTop: 150,
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#000',
     marginBottom: 15,
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 18,
     textAlign: 'center',
     color: '#555',
     marginBottom: 20,
@@ -61,13 +58,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
-    width: '60%',
+    width: '70%',
     backgroundColor: '#f8f8f8',
     overflow: 'hidden',
-    marginBottom: 30,
+    marginBottom: 40,
   },
   picker: {
-    height: 30,
+    height: 50,
+    width: '100%',
     color: '#333',
   },
   button: {
@@ -78,12 +76,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
   },
 });
 
 export default SeleccionarIdioma;
-
-

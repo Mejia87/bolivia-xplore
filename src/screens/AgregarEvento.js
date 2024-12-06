@@ -191,9 +191,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 18,
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     marginVertical: 5,
-    color: '#551E18', 
+    color: 'black', 
   },
   input: {
     borderWidth: 1,
