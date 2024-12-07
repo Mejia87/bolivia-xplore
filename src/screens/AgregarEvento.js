@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 12,
     marginBottom: 10,
-    fontSize: 16, // Aumentar el tamaño de letra
+    fontSize: 16, 
     backgroundColor: '#EDE0DD',
     //opacity: 0.9, 
   },
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   imageText: {
     marginLeft: 8,
-    fontSize: 16, // Aumentar el tamaño de letra
+    fontSize: 16, 
     color: '#333333',
   },
   imagePreview: {
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     flex: 1,
-    fontSize: 16, // Aumentar el tamaño de letra
+    fontSize: 16, 
     color: '#333333',
   },
   locationButton: {
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     marginLeft: 8,
-    fontSize: 16, // Aumentar el tamaño de letra
+    fontSize: 16, 
     color: '#333333',
   },
   buttonContainer: {

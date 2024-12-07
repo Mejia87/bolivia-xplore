@@ -5,7 +5,7 @@ import UserProfileScreen from './Perfil'
 export default function Mapa() {
   return (
     <View>
-      <UserProfileScreen/>
+      <Text>mapa</Text>
     </View>
   )
 }

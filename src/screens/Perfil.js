@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker'; // Cambia a ImagePicker si no usas Expo.
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker'; 
 
 const UserProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState({
@@ -9,6 +9,9 @@ const UserProfileScreen = ({ navigation }) => {
     city: 'Cochabamba',
     photo: null,
   });
+
+  const [isEditing, setIsEditing] = useState(false); // Nuevo estado para modo edición
+  const [tempUser, setTempUser] = useState({ ...user }); // Almacena cambios temporales
 
   const handleImagePick = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -28,6 +31,16 @@ const UserProfileScreen = ({ navigation }) => {
     }
   };
 
+  const handleEditToggle = () => {
+    setTempUser({ ...user });
+    setIsEditing(!isEditing);
+  };
+
+  const handleSave = () => {
+    setUser({ ...tempUser });
+    setIsEditing(false); 
+  };
+
   return (
     <View style={styles.container}>
       {/* Botón de volver */}
@@ -41,7 +54,7 @@ const UserProfileScreen = ({ navigation }) => {
           source={
             user.photo
               ? user.photo
-              : require('../../assets/logo.png') // Imagen predeterminada
+              : require('../../assets/logo.png') 
           }
           style={styles.profileImage}
         />
@@ -51,35 +64,66 @@ const UserProfileScreen = ({ navigation }) => {
       </View>
 
       {/* Información del usuario */}
-      <Text style={styles.username}>{user.name}</Text>
-      <Text style={styles.email}>{user.email}</Text>
-      <Text style={styles.city}>{user.city}</Text>
+      {isEditing ? (
+        <>
+          <TextInput
+            style={styles.input}
+            value={tempUser.name}
+            onChangeText={(text) => setTempUser((prev) => ({ ...prev, name: text }))}
+          />
+          <TextInput
+            style={styles.input}
+            value={tempUser.email}
+            onChangeText={(text) => setTempUser((prev) => ({ ...prev, email: text }))}
+          />
+          <TextInput
+            style={styles.input}
+            value={tempUser.city}
+            onChangeText={(text) => setTempUser((prev) => ({ ...prev, city: text }))}
+          />
+        </>
+      ) : (
+        <>
+          <Text style={styles.username}>{user.name}</Text>
+          <Text style={styles.email}>{user.email}</Text>
+          <Text style={styles.city}>{user.city}</Text>
+        </>
+      )}
+
+      {/* Botón de editar / guardar */}
+      <TouchableOpacity
+        style={[styles.editButton, { backgroundColor: isEditing ? '#4CAF50' : '#ffff' }]}
+        onPress={isEditing ? handleSave : handleEditToggle}
+      >
+        <Text style={styles.editButtonText}>{isEditing ? 'Guardar Cambios' : 'Editar información'}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
     alignItems: 'center',
-    paddingVertical: 380,
-    paddingHorizontal: 100,
+    paddingVertical: 320,
+    //paddingHorizontal: 50,
     backgroundColor: '#fff',
+    //flex: 1,
   },
   backArrow: {
     position: 'absolute',
-    top: 0,
+    top: 10,
     left: 15,
   },
   arrowText: {
-    fontSize: 40,
+    fontSize: 30,
     fontWeight: 'bold',
     color: 'black',
   },
   imageContainer: {
+    marginTop: 150,
+    marginBottom: 20,
+    alignItems: 'center',
     position: 'absolute',
-    marginTop: 60, // Ajusta según el diseño
-    marginBottom: 10,
   },
   profileImage: {
     width: 140,
@@ -93,38 +137,56 @@ const styles = StyleSheet.create({
     right: 5,
     width: 35,
     height: 35,
-    backgroundColor: 'gray',
+    backgroundColor: '#551E18',
     borderRadius: 20,
     padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   editPhotoText: {
-    left: 2,
-    height: 30,
-    bottom: 0,
     color: '#fff',
+    top: 1,
+    left: 4,
     fontSize: 25,
-    transform: [{ rotate: '110deg' }],
+    fontWeight: 'bold',
+    transform: [{ rotate: '110deg' }], 
   },
   username: {
-    position: 'absolute',
-    marginTop: 220,
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   email: {
-    position: 'absolute',
-    marginTop: 255,
     fontSize: 16,
     color: '#555',
     marginBottom: 5,
   },
   city: {
-    position: 'absolute',
-    marginTop: 275,
     fontSize: 16,
     color: '#777',
     marginBottom: 20,
+  },
+  input: {
+    width: '70%',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  editButton: {
+    marginTop: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+  },
+  editButtonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
