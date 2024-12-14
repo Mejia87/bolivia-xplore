@@ -55,7 +55,11 @@ const GestorEventos = ({ navigation }) => {
             <View style={styles.searchContainer}>
                 <Search />
             </View>
-            <Button title='agregar evento' buttonStyle={styles.buttonAdd}/>
+            <Button 
+            title='agregar evento' 
+            buttonStyle={styles.buttonAdd}
+            onPress={() => navigation.navigate('eventForm')}
+            />
             <ScrollView>
                 <View style={styles.row}>
                     <Row
@@ -64,6 +68,7 @@ const GestorEventos = ({ navigation }) => {
                         selectedItems={selectedItems}
                         handleCheckboxChange={handleCheckboxChange}
                         data={data}
+                        navigation={navigation}
                     />
                 </View>
             </ScrollView>
@@ -93,7 +98,7 @@ const Row = ({
     setLongPressActive,
     selectedItems,
     handleCheckboxChange,
-    data,
+    data, navigation
 }) => {
     const handleLongPress = () => {
         setLongPressActive(true);
@@ -131,6 +136,7 @@ const Row = ({
                         name="pen"
                         size={20}
                         color={"#86352e"}
+                        onPress={() => navigation.navigate('editar')}
                     />
                 </ListItem>
             ))}

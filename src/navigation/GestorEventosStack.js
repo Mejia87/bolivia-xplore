@@ -3,6 +3,7 @@ import DetalleEvento from '../screens/DetalleEvento';
 import {createStackNavigator} from '@react-navigation/stack';
 import EventForm from '../screens/AgregarEvento';
 import GestorEventos from '../screens/GestorEventos';
+import EditEventForm from '../screens/EditarEvento';
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,11 @@ export default function GestorEventosStack() {
             name= "eventForm"
             component= {EventForm}
             options = {{title: "Evento"}}
+        />
+        <Stack.Screen
+            name= "editar"
+            component= {EditEventForm}
+            options = {{title: "Editar Evento"}}
         />
 
     </Stack.Navigator>
