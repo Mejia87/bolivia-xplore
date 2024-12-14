@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import EditEventForm from './EditarEvento'
 
 const Ajustes = () => {
   return (
     <View>
-      <Text>Pantalla de Ajustes</Text>
+      <EditEventForm/>
     </View>
   )
 }
