@@ -47,7 +47,7 @@ export default function Mapa() {
             >
                 <Marker coordinate={origin} />
 
-                <Marker coordinate={destination} title="virgen de urkupiña">
+                <Marker coordinate={destination} title="virgen de urkupiña" style= {styles.marker}>
                     <View style={styles.customMarker}>
                         <View style={styles.circle}>
                             <Image
@@ -58,7 +58,7 @@ export default function Mapa() {
                     </View>
                     
                 </Marker>
-                <Marker coordinate={{latitude:-17.56854 ,longitude:-65.76883}} title="virgen de la bella">
+                <Marker coordinate={{latitude:-17.56854 ,longitude:-65.76883}} title="virgen de la bella" style= {styles.marker}>
                     <View style={styles.customMarker}>
                         <View style={styles.circle}>
                             <Image
@@ -92,20 +92,25 @@ const styles = StyleSheet.create({
         
     },
     circle: {
-        width: 50,
-        height: 50,
+        width: '100%',
+        height: '100%',
         borderRadius: 100,
         backgroundColor: "#fff",
         justifyContent: "center",
         alignItems: "center",
         borderColor: "red",
         borderWidth: 5,
+        
     },
     imageInsideCircle: {
-        objectFit:'fill',
         borderRadius: 100,
-        width: 'auto',
-        height: 'auto',
+        width:'100%',
+        height:'100%'
 
+    },
+
+    marker: {
+        width:80,
+        height:80,
     },
 });

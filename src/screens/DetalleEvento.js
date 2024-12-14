@@ -8,6 +8,7 @@ import FavoriteButton from '../components/Favorites';
 import BackButton from '../components/BackButton';
 import LocationButton from '../components/LocationButton';
 
+
 enableScreens();
 
 export default function DetalleEvento({route}) {

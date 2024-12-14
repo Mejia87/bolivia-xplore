@@ -55,7 +55,7 @@ const GestorEventos = ({ navigation }) => {
             <View style={styles.searchContainer}>
                 <Search />
             </View>
-            <Button title='agregar evento'/>
+            <Button title='agregar evento' buttonStyle={styles.buttonAdd}/>
             <ScrollView>
                 <View style={styles.row}>
                     <Row
@@ -179,7 +179,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8, 
         shadowRadius: 2, 
         elevation: 5,
-    }
+    },
+    
 });
 
 export default GestorEventos;

@@ -14,6 +14,7 @@ import {
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize"
 import data from '../data/data'
 import { Ionicons } from "@expo/vector-icons"
+import { useRoute } from '@react-navigation/native';
 
 import {API_BASE_URL} from '@env'
 
@@ -47,13 +48,16 @@ const ImageCard = ({evento, navigation}) => {
 };
 
 const Eventos = ({ navigation }) => {
+    const route = useRoute()
+    const {idEvent} = route.params
+
     const [category, setCategory] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchCategory = async () => {
           try {
-            const response = await fetch(`${API_BASE_URL}/api/category/${1}`);
+            const response = await fetch(`${API_BASE_URL}/api/category/${idEvent}`);
             if (!response.ok) {
               throw new Error('Error al obtener los datos');
             }

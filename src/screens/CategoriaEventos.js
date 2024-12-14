@@ -19,27 +19,27 @@ const CategoriaEventos = ({ navigation }) => {
                 <Card
                     title="Celebraciones Folcloricas"
                     image={require("../../assets/celebracionFolklorica.jpg")}
-                    event={() => navigation.navigate("eventoss")}
+                    event={() => navigation.navigate("eventoss",{idEvent: 1})}
                 />
                 <Card
                     title="Ferias Artesanales"
                     image={require("../../assets/feriaTradicional.jpg")}
-                    event={() => navigation.navigate("eventoss")}
+                    event={() => navigation.navigate("eventoss", {idEvent: 2})}
                 />
                 <Card
                     title="Exposiciones de Arte"
                     image={require("../../assets/exposicionArte.jpg")}
-                    event={() => navigation.navigate("eventoss")}
+                    event={() => navigation.navigate("eventoss", {idEvent: 3})}
                 />
                 <Card
                     title="Lugares Turisticos"
                     image={require("../../assets/lugaresTuristicos.jpg")}
-                    event={() => navigation.navigate("eventoss")}
+                    event={() => navigation.navigate("eventoss",{idEvent: 4})}
                 />
                 <Card
                     title="Ferias Gastronomicas"
                     image={require("../../assets/ferias.jpg")}
-                    event={() => navigation.navigate("eventoss")}
+                    event={() => navigation.navigate("eventoss", {idEvent: 5})}
                 />
             </ScrollView>
         </View>

@@ -50,7 +50,7 @@ function Navegacion() {
         >
             <Tab.Screen
                 name = 'mapaPrincipal'
-                component = {CalendarioStack}
+                component = {MapaStack}
                 options={{title: 'Mapa'}}
               />
             <Tab.Screen
