@@ -56,8 +56,10 @@ const Eventos = ({ navigation }) => {
 
     useEffect(() => {
         const fetchCategory = async () => {
+            
           try {
             const response = await fetch(`${API_BASE_URL}/api/category/${idEvent}`);
+            
             if (!response.ok) {
               throw new Error('Error al obtener los datos');
             }
