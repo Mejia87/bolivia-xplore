@@ -1,106 +1,123 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet, FlatList } from "react-native";
-import { Calendar,LocaleConfig } from "react-native-calendars";
+import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator } from "react-native";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { API_BASE_URL } from "@env"; 
 
 const App = () => {
-  const today = new Date().toISOString().split("T")[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+  const today = new Date().toISOString().split("T")[0];
 
+  const [selectedDate, setSelectedDate] = useState(today);
+  const [markedDates, setMarkedDates] = useState({});
+  const [events, setEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const events = {
-    "2024-11-26": [
-      {
-        title: "Virgen de urkupiña",
-        description: "pequeña info de la evento",
-        image: "https://torreciudad.org/wp-content/uploads/2007/10/Virgen-de-Urkupina-Quillacollo-Bolivia-e1618670269796.jpg",
-        isFavorite: true,
-      },
-      {
-        title: "Evento titulo",
-        description: "Descripcion titulo.",
-        profiler: require("./urkupiña.png"),
-        isFavorite: false,
-      },
-    ],
-    "2024-11-23": [
-      {
-        title: "Virgen del carmen",
-        description: "pequeña info de la evento",
-        image: "https://torreciudad.org/wp-content/uploads/2007/10/Virgen-de-Urkupina-Quillacollo-Bolivia-e1618670269796.jpg",
-        isFavorite: true,
-      },
-    ],
-  };
-
-  const [selectedDate, setSelectedDate] = useState(today); 
-  const [tasks, setTasks] = useState(events[today] || []); 
-
-
-  useEffect(() => {
-    setTasks(events[selectedDate] || []);
-  }, [selectedDate]);
-
-
-  const markedDates = Object.keys(events).reduce((acc, date) => {
-    acc[date] = {
-      marked: true,
-      dotColor: "black",
-      selected: date === selectedDate,
-      selectedColor: '#b84235',
-    };
-    return acc;
-  }, {});
-
-  LocaleConfig.locales['es'] = {
+  // Configuración del idioma del calendario
+  LocaleConfig.locales["es"] = {
     monthNames: [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre'
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
     ],
-    monthNamesShort: ['Ene.', 'Feb.', 'Mar', 'Abr', 'May', 'Jun', 'Jul.', 'Ago', 'Sep.', 'Oct.', 'Nov.', 'Dic.'],
-    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
-    dayNamesShort: ['Dom.', 'Lun.', 'Mar.', 'Mie.', 'Jue.', 'Vie.', 'Sab.'],
-    today: "Hoy"
+    monthNamesShort: ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."],
+    dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+    dayNamesShort: ["Dom.", "Lun.", "Mar.", "Mié.", "Jue.", "Vie.", "Sáb."],
+    today: "Hoy",
   };
-  LocaleConfig.defaultLocale = 'es';
+  LocaleConfig.defaultLocale = "es";
+
+  // Cargar los días con eventos
+  useEffect(() => {
+    const fetchMarkedDates = async () => {
+      setIsLoading(true);
+      console.log(API_BASE_URL)
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/event/days-in-month/2024/12`);
+        const data = await response.json();
+        
+        // Formatear los días para `markedDates`
+        const formattedDates = data.reduce((acc, date) => {
+          acc[date] = {
+            marked: true,
+            dotColor: "black",
+          };
+          return acc;
+        }, {});
+        setMarkedDates(formattedDates);
+      } catch (error) {
+        console.error("Error al cargar los días con eventos:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMarkedDates();
+  }, []);
+
+  // Cargar eventos para la fecha seleccionada
+  /* useEffect(() => {
+    const fetchEventsForDate = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/event/events/days-in-month${selectedDate}`); 
+        const data = await response.json();
+        setEvents(data);
+        console.log(data)
+      } catch (error) {
+        console.error("Error al cargar los eventos para la fecha:", error);
+        setEvents([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+   
+
+    fetchEventsForDate();
+  }, [selectedDate]);
+   */
 
   return (
     <View style={styles.container}>
       {/* Calendario */}
       <Calendar
-        markedDates={markedDates}
+        markedDates={{
+          ...markedDates,
+          [selectedDate]: { selected: true, selectedColor: "#b84235" },
+        }}
         onDayPress={(day) => setSelectedDate(day.dateString)}
         style={styles.calendar}
         theme={{
-          backgroundColor: '#ffffff',
-          calendarBackground: '#eee9e8',
-          textSectionTitleColor: '#551e18',
-          todayBackgroundColor: '#551e18',
-          selectedDayTextColor: '#ffffff',
-          todayTextColor: '#ffffff',
-          dayTextColor: '#2d4150',
-          textDisabledColor: '#b84235',
-          arrowColor:"black",
-          textDayFontSize: 19, // Cambiar el tamaño de los números
+          backgroundColor: "#ffffff",
+          calendarBackground: "#eee9e8",
+          textSectionTitleColor: "#551e18",
+          todayBackgroundColor: "#551e18",
+          selectedDayTextColor: "#ffffff",
+          todayTextColor: "#ffffff",
+          dayTextColor: "#2d4150",
+          textDisabledColor: "#b84235",
+          arrowColor: "black",
+          textDayFontSize: 19,
           textDayHeaderFontSize: 16,
         }}
       />
 
       {/* Eventos del día */}
       <View style={styles.taskContainer}>
-        <Text style={styles.dateText}>Eventos para el  {selectedDate}</Text>
-        {tasks.length > 0 ? (
+        <Text style={styles.dateText}>Eventos para el {selectedDate}</Text>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#b84235" />
+        ) : events.length > 0 ? (
           <FlatList
-            data={tasks}
+            data={events}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <View style={styles.task}>
@@ -160,7 +177,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    paddingBottom:10,
+    paddingBottom: 10,
   },
   description: {
     fontSize: 14,
