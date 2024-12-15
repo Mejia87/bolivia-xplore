@@ -21,7 +21,7 @@ import Modal from "../components/Modal";
 import Mapa from "./Mapa";
 import { Button } from "react-native-elements";
 
-//import API_BASE_URL from '@env'
+import {API_BASE_URL} from '@env'
 
 const EventForm = () => {
     const [category, setCategory] = useState("");
@@ -37,40 +37,8 @@ const EventForm = () => {
     const [visible, setVisible] = useState(false);
     const [location, setLocation] = useState(null);
     const [loading, setLoading] = useState(true);
-    // const url = `${API_BASE_URL}/api/event/register`
-
-    const formData = new FormData();
-
-    const eventData = {
-        nombreEvento: name,
-        descripcionEvento: description,
-        ubicacion: "Parque Central",
-        historiaEvento: history,
-        fechaInicioEvento: startDate,
-        fechaFinEvento: endDate,
-        latitud: 1000,
-        longitud: 1200,
-        idTipoEvento: {
-            idTipoEvento: category,
-        },
-    };
-
-    // formData.append('event',JSON.stringify(eventData))
-
-    // try {
-    //   const response = await fetch(url, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //     body: formData,
-    //   });
-
-    //   const result = await response.json()
-    //   console.log('Respuesta del servidor:', result)
-    // } catch (error) {
-    //   console.error('Error al enviar el evento:', error)
-    // }
+    
+    const url = `${API_BASE_URL}/api/event/register`
 
     const handleImagePick = async () => {
         const { status } =
@@ -103,7 +71,7 @@ const EventForm = () => {
         setImageUris(imageUris.filter((imageUri) => imageUri !== uri));
     };
 
-    const handleSave = () => {
+    const handleSave = async() => {
         const nameRegex = /^[a-zA-Z\s]+$/;
         console.log(eventData);
         console.log("imagenes cargadas", imageUris);
@@ -134,7 +102,53 @@ const EventForm = () => {
             }
         }
 
-        Alert.alert("Guardado", "Evento guardado con éxito");
+        const formData = new FormData();
+
+        const eventData = {
+            nombreEvento: name,
+            descripcionEvento: description,
+            ubicacion: "Parque Central",
+            historiaEvento: history,
+            fechaInicioEvento: startDate,
+            fechaFinEvento: endDate,
+            latitud: 1000,
+            longitud: 1200,
+            permanente: true,
+            idTipoEvento: {
+                idTipoEvento: category,
+            },
+        };
+    
+        imageUris.forEach((uri, index)=> {
+            const fileName = `iamge_${index}.jpg`
+            formData.append('images',{ 
+                uri: uri,
+                type: image/jpeg,
+                name: fileName
+            })
+        })
+    
+       try {
+            const response = await fetch(url, {
+             method:'POST',
+             headers: {
+                'Accept': 'aplication/json',
+             },
+
+             body: formData,
+            })
+
+            if(!response.ok) {
+                throw new Error (`Error en la solicitud: ${response.statusText}`)
+            }
+
+            const result = await response.json()
+            console.log(result)
+            Alert.alert('Guardado', 'El evento ha sido registrado con exito')
+       } catch (error) {
+            console.error('Error al enviar el evento:', error)
+            Alert.alert('Error', 'No se pudo registrar el evento')
+       }
     };
 
     return (

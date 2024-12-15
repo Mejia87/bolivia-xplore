@@ -5,9 +5,10 @@ import {
     Text,
     TouchableOpacity,
     Alert,
+    ActivityIndicator,
 } from "react-native";
 import { enableScreens } from "react-native-screens";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Search from "../components/Search";
 import { Button, Icon } from "@rneui/base";
 import { CheckBox, ListItem, Avatar } from "@rneui/themed";
@@ -16,13 +17,46 @@ import data from "../data/data";
 import { ScrollView } from "react-native";
 import Modal from "../components/Modal";
 
+import {API_BASE_URL} from '@env'
+
 enableScreens();
 
 const GestorEventos = ({ navigation }) => {
     const [longPressActive, setLongPressActive] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [events, setEvents] = useState(null)
+    const [loading, setLoading] = useState(true)
 
+    /*useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/event`)
+                
+                if(!response.ok) {
+                    throw new Error('Error al obtener los eventos')
+                }
+
+                const eventList = response.json()
+                setEvents(eventList)
+
+            } catch (error) {
+                console.log('Error', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchEvents()
+    },[])*/
+
+    /*if(loading) {
+        return (
+            <View style= {styles.loading}>
+                <ActivityIndicator size='large' color='#551E18'/>
+            </View>
+        )
+    }*/
     const toggleModal = () => {
         setIsModalVisible(!isModalVisible);
     };
@@ -185,6 +219,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8, 
         shadowRadius: 2, 
         elevation: 5,
+    },
+    loading: {
+        height:'100%',
+        alignItems:'center',
+        justifyContent:'center',
     },
     
 });

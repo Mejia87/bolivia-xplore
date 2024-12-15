@@ -59,7 +59,7 @@ const Eventos = ({ navigation }) => {
             
           try {
             const response = await fetch(`${API_BASE_URL}/api/category/${idEvent}`);
-            
+            console.log(response)
             if (!response.ok) {
               throw new Error('Error al obtener los datos');
             }

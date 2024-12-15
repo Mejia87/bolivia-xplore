@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image} from "react-native";
+import { StyleSheet, Text, View, Image, ActivityIndicator} from "react-native";
 import MapView, { Circle, Marker, Polyline, Callout } from "react-native-maps";
+
+import {API_BASE_URL} from '@env'
 
 import * as Location from "expo-location";
 
 import customMarker from '../../assets/urkupiña.png'
+
+import data from '../data/data'
 
 export default function Mapa() {
     const [origin, setOrigin] = useState({
@@ -16,6 +20,30 @@ export default function Mapa() {
         longitude: -66.2818, //-17.392005, -66.155617
     });
 
+    const [eventList, setEventLis] = useState(null)
+    const [loading, setLoading] = useState(true)
+
+    /*useEffect(() => {
+        const fecthMap = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/event/filtered`)
+                if(!response.ok) {
+                    throw new Error('Error al obtener los eventos')
+                }
+
+                const events = await response.json()
+                setEventLis(events)
+
+            } catch (error) {
+                console.log('Error: ', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fecthMap()
+    },[])*/
+
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync()
@@ -25,15 +53,24 @@ export default function Mapa() {
             }
 
             let location = await Location.getCurrentPositionAsync({})
-            console.log(location.coords.latitude)
-            console.log(location.coords.longitude)
+            
             setOrigin({
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
             })
+            setLoading(false)
         })()
     }, [])
 
+    if(loading) {
+        return(
+            <View style = {styles.loading}>
+                <ActivityIndicator size='large' color='#551E18'/>
+            </View>
+        )
+    }
+
+    
     return (
         <View style={styles.container} >
             <MapView
@@ -47,28 +84,25 @@ export default function Mapa() {
             >
                 <Marker coordinate={origin} />
 
-                <Marker coordinate={destination} title="virgen de urkupiña" style= {styles.marker}>
-                    <View style={styles.customMarker}>
+                {data.map((event, index) => (
+                   
+                    <Marker 
+                    key={index}
+                    coordinate={{latitude: event.latitud, longitude:event.longitud}} 
+                    title= {event.name} 
+                    style= {styles.marker}>
+                   <View style={styles.customMarker}>
                         <View style={styles.circle}>
                             <Image
-                                source={customMarker} 
+                                source={event.images[0].source} 
                                 style={styles.imageInsideCircle}
                             />
                         </View>
                     </View>
                     
                 </Marker>
-                <Marker coordinate={{latitude:-17.56854 ,longitude:-65.76883}} title="virgen de la bella" style= {styles.marker}>
-                    <View style={styles.customMarker}>
-                        <View style={styles.circle}>
-                            <Image
-                                source={customMarker} 
-                                style={styles.imageInsideCircle}
-                            />
-                        </View>
-                    </View>
-                    
-                </Marker>
+            ))}
+                
 
                 
             </MapView>
@@ -77,6 +111,7 @@ export default function Mapa() {
 }
 
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
         justifyContent: "center",
@@ -112,5 +147,11 @@ const styles = StyleSheet.create({
     marker: {
         width:80,
         height:80,
+    },
+
+    loading: {
+        height:'100%',
+        alignItems:'center',
+        justifyContent:'center',
     },
 });
