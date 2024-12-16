@@ -35,6 +35,8 @@ const EditEventForm = () => {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
+  const [isVisibleDate, setIsVisibleDate] = useState(true);
+
   const handleImagePick = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -81,12 +83,21 @@ const EditEventForm = () => {
     Alert.alert('Guardado', 'Evento guardado con éxito');
   };
 
+  const selectionCategory = (category) => {
+    setCategory(category);
+    if (category === "Exposiciones de Arte") {
+        setIsVisibleDate(false);
+        return;
+    }
+    setIsVisibleDate(true)
+};
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.label}>Categoria del Evento</Text>
       <Picker
         selectedValue={category}
-        onValueChange={(itemValue) => setCategory(itemValue)}
+        onValueChange={(itemValue) => selectionCategory(itemValue)}
         style={styles.input}
       >
         <Picker.Item id = 'selecione una categoria' label="Seleccione una categoría" value="" />
@@ -126,45 +137,128 @@ const EditEventForm = () => {
         ))}
       </ScrollView>
 
-      <Text style={styles.label}>Fecha de Inicio del Evento</Text>
-      <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.dateButton}>
-        <Text style={styles.dateText}>
-          {startDate ? startDate.toLocaleDateString() : 'd/m/a'}
-        </Text>
-        <MaterialIcons name="calendar-today" size={24} color="#551E18" />
-      </TouchableOpacity>
-      {showStartDatePicker && (
-        <DateTimePicker
-          value={startDate || new Date()}
-          mode="date"
-          display="default"
-          minimumDate={new Date()}
-          onChange={(event, date) => {
-            setShowStartDatePicker(false);
-            if (date) setStartDate(date);
-          }}
-        />
-      )}
+      {!isVisibleDate ? (
+             <>
+                    <Text style={styles.label}>Hora de Inicio del Evento</Text>
+                    <TouchableOpacity
+                        onPress={() => setShowStartDatePicker(true)}
+                        style={styles.dateButton}
+                    >
+                        <Text style={styles.dateText}>
+                            {startDate
+                                ? `${startDate.getHours()}:${startDate.getMinutes()}`
+                                : "hh:mm"}
+                        </Text>
+                        <MaterialIcons
+                            name="access-time"
+                            size={24}
+                            color="#551E18"
+                        />
+                    </TouchableOpacity>
+                    {showStartDatePicker && (
+                        <DateTimePicker
+                            value={startDate || new Date()}
+                            mode="time"
+                            display="default"
+                            onChange={(event, time) => {
+                                setShowStartDatePicker(false);
+                                if (time) setStartDate(time);
+                            }}
+                        />
+                    )}
 
-      <Text style={styles.label}>Fecha de Finalización del Evento</Text>
-      <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.dateButton}>
-        <Text style={styles.dateText}>
-          {endDate ? endDate.toLocaleDateString() : 'd/m/a'}
-        </Text>
-        <MaterialIcons name="calendar-today" size={24} color="#551E18" />
-      </TouchableOpacity>
-      {showEndDatePicker && (
-        <DateTimePicker
-          value={endDate || new Date()}
-          mode="date"
-          display="default"
-          minimumDate={new Date()}
-          onChange={(event, date) => {
-            setShowEndDatePicker(false);
-            if (date) setEndDate(date);
-          }}
-        />
-      )}
+                    <Text style={styles.label}>
+                        Hora de Finalización del Evento
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => setShowEndDatePicker(true)}
+                        style={styles.dateButton}
+                    >
+                        <Text style={styles.dateText}>
+                            {endDate
+                                ? `${endDate.getHours()}:${endDate.getMinutes()}`
+                                : "hh:mm"}
+                        </Text>
+                        <MaterialIcons
+                            name="access-time"
+                            size={24}
+                            color="#551E18"
+                        />
+                    </TouchableOpacity>
+                    {showEndDatePicker && (
+                        <DateTimePicker
+                            value={endDate || new Date()}
+                            mode="time"
+                            display="default"
+                            onChange={(event, time) => {
+                                setShowEndDatePicker(false);
+                                if (time) setEndDate(time);
+                            }}
+                        />
+                    )}
+                </>
+            ) : (
+                <>
+                    <Text style={styles.label}>Fecha de Inicio del Evento</Text>
+                    <TouchableOpacity
+                        onPress={() => setShowStartDatePicker(true)}
+                        style={styles.dateButton}
+                    >
+                        <Text style={styles.dateText}>
+                            {startDate
+                                ? startDate.toLocaleDateString()
+                                : "d/m/a"}
+                        </Text>
+                        <MaterialIcons
+                            name="calendar-today"
+                            size={24}
+                            color="#551E18"
+                        />
+                    </TouchableOpacity>
+                    {showStartDatePicker && (
+                        <DateTimePicker
+                            value={new Date()}
+                            mode="date"
+                            display="default"
+                            minimumDate={new Date()}
+                            onChange={(event, date) => {
+                                setShowStartDatePicker(false);
+                                if (date) setStartDate(date);
+                            }}
+                        />
+                    )}
+
+                    <Text style={styles.label}>
+                        Fecha de Finalización del Evento
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => setShowEndDatePicker(true)}
+                        style={styles.dateButton}
+                    >
+                        <Text style={styles.dateText}>
+                            {endDate ? endDate.toLocaleDateString() : "d/m/a"}
+                        </Text>
+                        <MaterialIcons
+                            name="calendar-today"
+                            size={24}
+                            color="#551E18"
+                        />
+                    </TouchableOpacity>
+                    {showEndDatePicker && (
+                        <DateTimePicker
+                            value={new Date()}
+                            mode="date"
+                            display="default"
+                            minimumDate={new Date()}
+                            onChange={(event, date) => {
+                                setShowEndDatePicker(false);
+                                if (date) setEndDate(date);
+                            }}
+                        />
+                    )}
+                </>
+            )}
+      
 
       <Text style={styles.label}>Ubicación del Evento</Text>
       <TextInput

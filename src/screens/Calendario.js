@@ -5,7 +5,7 @@ import SeleccionarIdioma from './SeleccionarIdioma'
 export default function Calendario() {
   return (
     <View>
-      <Text>calendario</Text>
+      <SeleccionarIdioma/>
     </View>
   )
 }
