@@ -66,7 +66,7 @@ const DrawerNavegacion = ( ) => {
   const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length)
 
  const NotificationPress = () => {
-      Alert.alert('Irás al evento');
+     
       navigation.navigate('notificaciones', setNotificationCount,notificationCount);
     };
     

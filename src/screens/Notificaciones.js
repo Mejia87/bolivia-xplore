@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet, useWindowDimensions, FlatList, Alert, T
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import Dnotificasiones from '../data/Dnotificasiones';
 import { useRoute } from '@react-navigation/native';
-
+import {API_BASE_URL} from '@env'
 const Notificaciones = () => {
   const route= useRoute()
   const count= route.params
