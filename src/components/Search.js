@@ -1,46 +1,98 @@
-import { StyleSheet, TextInput, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import React from "react"
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, StyleSheet, Dimensions, FlatList, Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import Bsearch from '../data/Bsearch';
 
-const Search = () => {
-    return (
-        <View style={styles.searchContainer}>
-            <Ionicons
-                name="search"
-                size={20}
-                color="gray"
-                style={styles.icon}
-                
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Buscar evento"
-                placeholderTextColor="gray"
-            />
-        </View>
-    );
+const { width, height } = Dimensions.get('window');
+
+const Search = ({ navigation }) => {
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    if (searchText === '') {
+      setFilteredData([]);
+    } else {
+      const filtered = Bsearch.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
+      setFilteredData(filtered);
+    }
+  }, [searchText]);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <Ionicons name='search' size={width * 0.05} color='gray' style={styles.icon} />
+        <TextInput
+          style={[styles.input, { fontSize: width * 0.04 }]}
+          placeholder='Buscar evento'
+          placeholderTextColor='gray'
+          value={searchText}
+          onChangeText={setSearchText}
+        />
+      </View>
+      {filteredData.length > 0 && (
+        <FlatList
+          data={filteredData}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}>
+              <Text style={styles.suggestion}>{item.title}</Text>
+            </TouchableOpacity>
+          )}
+          style={styles.suggestionsContainer}
+        />
+      )}
+    </View>
+  );
 };
 
-export default Search;
-
 const styles = StyleSheet.create({
-    searchContainer: {
-        flexDirection:'row-reverse',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 20,
-        paddingHorizontal: 15,
-        paddingVertical: 5,
-        elevation: 1,
-        marginTop: 20,
-        width: '100%',
-        borderColor: '#86352e', 
-        borderWidth: 1, 
-        justifyContent:'center',
-    },
-      
-      input: {
-        flex: 1,
-        fontSize: 16,
-      },
+  container: {
+    alignItems: 'center',
+  },
+  searchContainer: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    marginTop: 10,
+    height: width * 0.09,
+    width: width * 0.6,
+    borderColor: '#000',
+    borderWidth: 2,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+  },
+  suggestionsContainer: {
+    position: 'absolute',
+    top: width * 0.15,
+    width: width * 0.8,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    zIndex: 100,
+  },
+  suggestion: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
 });
+
+export default Search;

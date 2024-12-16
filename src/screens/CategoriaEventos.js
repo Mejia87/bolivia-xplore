@@ -9,6 +9,17 @@ import {
 
 import Card from "../components/Card";
 import Search from "../components/Search";
+import React from "react";
+import { enableScreens } from "react-native-screens";
+import {
+    View,
+    StyleSheet,
+    Dimensions,
+    ScrollView,
+} from "react-native";
+
+import Card from "../components/Card";
+import Search from "../components/Search";
 enableScreens();
 const { width, height } = Dimensions.get("window");
 const CategoriaEventos = ({ navigation }) => {
@@ -47,6 +58,18 @@ const CategoriaEventos = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    
+    container1: {
+        alignItems: "center",
+    },
+    container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f5f5f5',
+    },
+    
+    
+    
     
     container1: {
         alignItems: "center",

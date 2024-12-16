@@ -161,7 +161,42 @@ const data = [
             { source: require("../../assets/virgen del carmen.png") },
         ],
     },
-    
+    {
+        id: "10",
+        type: "Lugares Turisticos",
+        name: "Cristo de la Concordia",
+        direction:
+            "cochabamba a 15 km de la ciudad de Cochabamba",
+        longitud: -17.3843648,
+        latitud: -66.1351878,
+        description: "El Cristo de la Concordia es una estatua de Jesucristo ubicada en la cima del cerro San Pedro ",
+        history: "",
+        fechaIni: "",
+        fechaFin: "",
+        images: [
+            { source:  require("../../assets/cristoConcordia.jpg") },
+            { source: require("../../assets/cristoConcordia2.jpg") },
+            { source: require("../../assets/cristoConcordia3.jpg") },
+        ],
+    },
+    {
+        id: "11",
+        type: "Feria",
+        name: "FeriaNavideña",
+        direction:
+            "Unbicada en la avenida 6 de agosto",
+        longitud: -17.4132845,
+        latitud: -66.1568529,
+        description: "Feria donde se venden todo tipo de  articulos navideños ",
+        history: "",
+        fechaIni: "",
+        fechaFin: "",
+        images: [
+            { source:  require("../../assets/feriaNavideña.jpg") },
+            { source: require("../../assets/feriaNavideña2.jpg") },
+            { source: require("../../assets/feriaNavideña3.jpg") },
+        ],
+    },
 ];
 
 // const addEvent = (params) => {

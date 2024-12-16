@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { useRoute } from '@react-navigation/native';
 
 import {API_BASE_URL} from '@env'
+import Search from '../components/Search';
 
 
 
@@ -89,19 +90,7 @@ const Eventos = ({ navigation }) => {
 
     return (
         <View style={styles.containers}>
-            <View style={styles.searchContainer}>
-                <Ionicons
-                    name="search"
-                    size={20}
-                    color="gray"
-                    style={styles.icon}
-                />
-                <TextInput
-                    style={[styles.input, { fontSize: width * 0.04 }]} 
-                    placeholder="Buscar evento"
-                    placeholderTextColor="gray"
-                />
-            </View>
+            <Search/>
 
             <FlatList
                 data={category}
@@ -179,28 +168,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    searchContainer: {
-        flexDirection: "row-reverse",
-        alignItems: "center",
-        backgroundColor: "#fff",
-        borderRadius: 20,
-        paddingHorizontal: 15,
-        paddingVertical: 5,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-        elevation: 2,
-        marginTop: 20,
-        width: 300,
-        borderColor: "#000",
-        borderWidth: 2,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    icon1: {
-        marginRight: 10,
-    },
+    
     input: {
         flex: 1,
         border: "white",
