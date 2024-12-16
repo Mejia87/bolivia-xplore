@@ -1,7 +1,11 @@
 import React from 'react'
-import { Text,StyleSheet,TouchableOpacity, View,Image } from 'react-native';
+import { Text,StyleSheet,TouchableOpacity, View,Image, Alert } from 'react-native';
 import {createDrawerNavigator, DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import { Icon } from '@rneui/base';
+import { Badge, Icon } from '@rneui/base';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 
 
 import Perfil from '../screens/Perfil';
@@ -9,10 +13,12 @@ import Notificaciones from '../screens/Notificaciones';
 import Ajustes from '../screens/Ajustes';
 import GestorEventos from '../screens/GestorEventos';
 import Navegacion from './Navegacion';
+import { useState } from 'react';
+import Dnotificasiones from '../data/Dnotificasiones';
 
-
-
+const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+import { useNavigation  } from '@react-navigation/native';
 
 
 
@@ -55,7 +61,15 @@ const Drawer = createDrawerNavigator();
     )
   }
 
-const DrawerNavegacion = () => {
+const DrawerNavegacion = ( ) => {
+  const navigation = useNavigation();
+  const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length)
+
+ const NotificationPress = () => {
+      Alert.alert('Irás al evento');
+      navigation.navigate('notificaciones', setNotificationCount,notificationCount);
+    };
+    
   return (
     <Drawer.Navigator
             initialRouteName='inicio'
@@ -81,7 +95,15 @@ const DrawerNavegacion = () => {
                     headerTitle: () => <Text style={styles.headerTitle}>BoliviaXplore</Text>,
                     headerRight: () => (
                       <View style = {styles.headerRigth}>
+                        <TouchableOpacity onPress={NotificationPress}>
                         <Icon name= 'bell' type='font-awesome-5' size={20} color='#fff'/>
+                        <Badge
+                         status="primary"
+                         value={notificationCount}
+                         containerStyle={{ position: 'absolute', top: 0, left: 10 }}
+                         badgeStyle={{ backgroundColor: 'red' }}
+                       />
+                       </TouchableOpacity>
                       </View>
                     ),
                     

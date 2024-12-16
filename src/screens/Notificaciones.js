@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet, useWindowDimensions, FlatList, Alert, TouchableOpacity, Image } from 'react-native';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import Dnotificasiones from '../data/Dnotificasiones';
+import { useRoute } from '@react-navigation/native';
 
 const Notificaciones = () => {
+  const route= useRoute()
+  const count= route.params
   const { width, height } = useWindowDimensions();
   const [notifications, setNotifications] = useState(Dnotificasiones);
+  const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length);
 
   const handleDelete = (id) => {
     setNotifications(notifications.filter(item => item.id !== id));
+    //setNotificationCount(notificationCount - 1);
   };
 
   const confirmClearNotifications = () => {
@@ -23,7 +28,10 @@ const Notificaciones = () => {
         },
         {
           text: 'Sí',
-          onPress: () => setNotifications([]),
+          onPress: () => {
+            setNotifications([]);
+            setNotificationCount(0);
+          },
         }
       ],
       { cancelable: false }
@@ -86,6 +94,7 @@ const Notificaciones = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

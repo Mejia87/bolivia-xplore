@@ -1,5 +1,5 @@
 export default [
-    { id: '1', title: 'feria de la salteña', subtitle: 'te puede interesar', distancia: '10 km, La Paz',imageNotificasion: require('../../assets/ferias.jpg')},
-    { id: '2', title: 'salar de uyuni', subtitle: 'te puede interesar', distancia: '100 km, oruro',imageNotificasion: require('../../assets/lugaresTuristicos.jpg')},
+    { id: '1', title: 'Cristo de la Concordia', subtitle: 'te puede interesar', distancia: '5 km, Cochabamba',imageNotificasion: require('../../assets/cristoConcordia.jpg')},
+    { id: '2', title: 'Feria Navideña', subtitle: 'te puede interesar', distancia: '10 km, Cochabamba',imageNotificasion: require('../../assets/feriaNavideña.jpg')},
   ];
   
