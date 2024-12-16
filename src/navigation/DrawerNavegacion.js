@@ -11,7 +11,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Perfil from '../screens/Perfil';
 import Notificaciones from '../screens/Notificaciones';
 import Ajustes from '../screens/Ajustes';
-import GestorEventos from '../screens/GestorEventos';
 import Navegacion from './Navegacion';
 import { useState } from 'react';
 import Dnotificasiones from '../data/Dnotificasiones';
@@ -19,6 +18,7 @@ import Dnotificasiones from '../data/Dnotificasiones';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 import { useNavigation  } from '@react-navigation/native';
+import GestorEventosStack from './GestorEventosStack';
 
 
 

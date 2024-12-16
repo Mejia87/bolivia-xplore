@@ -7,16 +7,7 @@ import {
     ScrollView,
 } from "react-native";
 
-import Card from "../components/Card";
-import Search from "../components/Search";
-import React from "react";
-import { enableScreens } from "react-native-screens";
-import {
-    View,
-    StyleSheet,
-    Dimensions,
-    ScrollView,
-} from "react-native";
+
 
 import Card from "../components/Card";
 import Search from "../components/Search";
