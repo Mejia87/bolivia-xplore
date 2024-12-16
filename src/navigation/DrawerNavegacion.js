@@ -1,7 +1,11 @@
 import React from 'react'
-import { Text,StyleSheet,TouchableOpacity, View,Image } from 'react-native';
+import { Text,StyleSheet,TouchableOpacity, View,Image, Alert } from 'react-native';
 import {createDrawerNavigator, DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import { Icon } from '@rneui/base';
+import { Badge, Icon } from '@rneui/base';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 
 
 import Perfil from '../screens/Perfil';
@@ -10,9 +14,11 @@ import Ajustes from '../screens/Ajustes';
 import GestorEventos from '../screens/GestorEventos';
 import Navegacion from './Navegacion';
 
+import Dnotificasiones from '../data/Dnotificasiones';
 
-
+const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -55,7 +61,14 @@ const Drawer = createDrawerNavigator();
     )
   }
 
-const DrawerNavegacion = () => {
+const DrawerNavegacion = ( ) => {
+  const navigation = useNavigation();
+
+ const NotificationPress = () => {
+      Alert.alert('Irás al evento');
+      navigation.navigate('notificaciones');
+    };
+  const notificationCount = Dnotificasiones.length;
   return (
     <Drawer.Navigator
             initialRouteName='inicio'
@@ -81,7 +94,15 @@ const DrawerNavegacion = () => {
                     headerTitle: () => <Text style={styles.headerTitle}>BoliviaXplore</Text>,
                     headerRight: () => (
                       <View style = {styles.headerRigth}>
+                        <TouchableOpacity onPress={NotificationPress}>
                         <Icon name= 'bell' type='font-awesome-5' size={20} color='#fff'/>
+                        <Badge
+                         status="primary"
+                         value={notificationCount}
+                         containerStyle={{ position: 'absolute', top: 0, left: 10 }}
+                         badgeStyle={{ backgroundColor: 'red' }}
+                       />
+                       </TouchableOpacity>
                       </View>
                     ),
                     
@@ -185,40 +206,3 @@ const styles = StyleSheet.create({
 })
 
 export default DrawerNavegacion
-
-
-// const drawerIconOptions = (route,color) => {
-//     let icono 
-//     switch (route.name)  {
-//       case 'perfil':
-//         icono = 'user';
-//         break;
-//       case 'notificaciones':
-//         icono = 'bell';
-//         break;
-//       case 'ajustes':
-//         icono = 'cogs';
-//         break;
-//       case 'gestorEventos':
-//         icono = 'calendar';
-//         break;
-//       case 'acercaDe':
-//         icono = 'info-circle';
-//         break;
-//       case 'cerrarSesion':
-//         icono = 'sign-out';
-//         break;
-//       case 'inicio':
-//         icono = 'home';
-//         break;
-//     }
-    
-//     return  (
-//       <Icon
-//         type='font-awesome-5'
-//         name= {icono}
-//         size={22}
-//         color={color}
-//       />
-//     );
-//   };

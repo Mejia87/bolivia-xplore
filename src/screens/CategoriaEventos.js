@@ -2,20 +2,14 @@ import React from 'react';
 import { enableScreens } from 'react-native-screens';
 import { View,Text, TextInput, Image, StyleSheet, ScrollView, Pressable, Alert,Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons
+import Search from '../components/Search';
 enableScreens();
 const { width, height  } = Dimensions.get('window');
 const CategoriaEventos = ({navigation}) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.container1}>
-        <View style={styles.searchContainer}>
-          <Ionicons  name="search" size={20} color="gray" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Buscar evento"
-            placeholderTextColor="gray"
-          />
-        </View>
+      <Search/>
         <View style={styles.item}>
           <Pressable onPress={() => navigation.navigate('eventoss')}>
             <Image source={require('../../assets/celebracionFolklorica.jpg')} style={styles.image} />
@@ -74,24 +68,7 @@ const styles = StyleSheet.create({
   container1: {
     alignItems: 'center',
   },
-  searchContainer: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
-    marginTop: 10,
-    height:width * 0.09, // Ajusta el ancho al 80% del ancho de la pantalla
-    width: width * 0.6, // Ajusta el ancho al 80% del ancho de la pantalla
-    borderColor: '#000',
-    borderWidth: 2,
-  },
+  
   icon: {
     marginRight: 10,
   },
