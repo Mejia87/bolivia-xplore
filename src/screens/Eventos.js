@@ -67,6 +67,8 @@ const Eventos = ({ navigation }) => {
             const data = await response.json();
             setCategory(data);
 
+            console.log('data', data)
+
           } catch (error) {
             console.error('Error:', error);
           } finally {

@@ -61,7 +61,9 @@ export default function DetalleEvento({route}) {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1, 
-    justifyContent: 'flex-start', 
+    justifyContent: 'center', 
+    alignItems:'center',
+    padding:5,
   },
   buttonContainer: {
     flexDirection:'row',
@@ -82,5 +84,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     fontFamily:'serif',
     fontWeight:'bold',
+    textAlign:'center',
+    padding:10,
   },
 });

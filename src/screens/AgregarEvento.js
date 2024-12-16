@@ -21,12 +21,13 @@ import Modal from "../components/Modal";
 import Mapa from "./Mapa";
 import { Button } from "react-native-elements";
 
-import {API_BASE_URL} from '@env'
+import { API_BASE_URL } from "@env";
 
 const EventForm = () => {
     const [category, setCategory] = useState("");
     const [name, setName] = useState("");
     const [imageUris, setImageUris] = useState([]);
+    const [images, setImages] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [description, setDescription] = useState("");
@@ -37,8 +38,9 @@ const EventForm = () => {
     const [visible, setVisible] = useState(false);
     const [location, setLocation] = useState(null);
     const [loading, setLoading] = useState(true);
-    
-    const url = `${API_BASE_URL}/api/event/register`
+
+    const url = `${API_BASE_URL}/api/event/register`;
+    let apiUrl = `${API_BASE_URL}/api/event/registerimage/`;
 
     const handleImagePick = async () => {
         const { status } =
@@ -64,17 +66,17 @@ const EventForm = () => {
                 ...imageUris,
                 ...result.assets.map((asset) => asset.uri),
             ]);
+            setImages([...images, ...result.assets]);
         }
     };
 
     const handleRemoveImage = (uri) => {
         setImageUris(imageUris.filter((imageUri) => imageUri !== uri));
+        setImages(images.filter((image) => image.uri !== uri));
     };
 
-    const handleSave = async() => {
+    const handleSave = async () => {
         const nameRegex = /^[a-zA-Z\s]+$/;
-        console.log(eventData);
-        console.log("imagenes cargadas", imageUris);
 
         if (!nameRegex.test(name)) {
             Alert.alert(
@@ -111,44 +113,89 @@ const EventForm = () => {
             historiaEvento: history,
             fechaInicioEvento: startDate,
             fechaFinEvento: endDate,
-            latitud: 1000,
-            longitud: 1200,
+            latitud: -17.38265,
+            longitud: -66.36545,
             permanente: true,
             idTipoEvento: {
                 idTipoEvento: category,
             },
         };
-    
-        imageUris.forEach((uri, index)=> {
-            const fileName = `iamge_${index}.jpg`
-            formData.append('images',{ 
-                uri: uri,
-                type: image/jpeg,
-                name: fileName
-            })
-        })
-    
-       try {
+
+        const img = [];
+
+        /*images.forEach((image) => {
+            img.push(
+                {
+                    uri: image.uri,
+                    type: image.type,
+                    name: image.fileName || "imagen.jpg",
+                }
+            )
+        });*/
+        /*const imageUri = imageUris[0];
+        const fileName = imageUri.split("/").pop(); // Obtener el nombre del archivo
+        const fileType = fileName.split(".").pop(); // Obtener la extensión del archivo
+
+        formData.append("images", {
+            uri: imageUri,
+            name: fileName || "image.jpg",
+            type: `image/${fileType}` || "image/jpeg", // Asegúrate de tener el tipo MIME correcto
+        });*/
+
+        imageUris.forEach((imageUri) => {
+            const fileName = imageUri.split("/").pop(); // Obtener el nombre del archivo
+            const fileType = fileName.split(".").pop();
+
+            formData.append("images", {
+                uri: imageUri,
+                type: `image/${fileType}` || "image/jpeg",
+                name: fileName || "image.jpg", // Asegúrate de que los archivos tengan nombre
+            });
+        });
+
+        
+
+        try {
+            
             const response = await fetch(url, {
-             method:'POST',
-             headers: {
-                'Accept': 'aplication/json',
-             },
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
 
-             body: formData,
-            })
+                body: JSON.stringify(eventData),
+            });
 
-            if(!response.ok) {
-                throw new Error (`Error en la solicitud: ${response.statusText}`)
+            console.log(response);
+            if (!response.ok) {
+                throw new Error(
+                    `Error en la solicitud: ${response.statusText}`
+                );
             }
 
-            const result = await response.json()
-            console.log(result)
-            Alert.alert('Guardado', 'El evento ha sido registrado con exito')
-       } catch (error) {
-            console.error('Error al enviar el evento:', error)
-            Alert.alert('Error', 'No se pudo registrar el evento')
-       }
+            const result = await response.json();
+            const codEvent = result.codEvento;
+
+            apiUrl = apiUrl + codEvent;
+
+            console.log("api url", apiUrl);
+
+            const res = await fetch(apiUrl, {
+                method: "POST",
+
+                body: formData,
+            });
+
+            if (!res.ok) {
+                throw new Error(`Error en la solicitud: ${res.statusText}`);
+            }
+
+            
+            Alert.alert("Guardado", "El evento ha sido registrado con exito");
+        } catch (error) {
+            console.error("Error al enviar el evento:", error);
+            Alert.alert("Error", "No se pudo registrar el evento");
+        }
     };
 
     return (
@@ -205,7 +252,7 @@ const EventForm = () => {
                         <Image source={{ uri }} style={styles.imagePreview} />
                         <TouchableOpacity
                             style={styles.removeButton}
-                            onPress={() => handleRemoveImage(uri)}
+                            onPress={() => handleRemoveImage(uri.uri)}
                         >
                             <MaterialIcons
                                 name="close"
@@ -343,7 +390,7 @@ function MapLocation({
     return (
         <Modal isVisible={visible} setIsVisible={setVisible}>
             {location ? (
-                <View style={{height:'90%'}}>
+                <View style={{ height: "90%" }}>
                     <MapView
                         style={{ height: "100%" }}
                         initialRegion={{
@@ -353,18 +400,16 @@ function MapLocation({
                             longitudeDelta: 0.01,
                         }}
                     >
-                        <Marker 
-                        coordinate={location}
-                        draggable />
+                        <Marker coordinate={location} draggable />
                     </MapView>
                     <View style={styles.buttonMap}>
-                        <Button 
-                            title='guardar ubicacion'
+                        <Button
+                            title="guardar ubicacion"
                             containerStyle={styles.viewMapBtnContainerSave}
                             buttonStyle={styles.viewMapBtnSave}
                         />
-                        <Button 
-                            title='cancelar ubicacion'
+                        <Button
+                            title="cancelar ubicacion"
                             containerStyle={styles.viewMapBtnContainerCancel}
                             buttonStyle={styles.viewMapBtnCancel}
                         />
@@ -485,24 +530,20 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     buttonMap: {
-        flexDirection:'row',
-        justifyContent:'center',
-        marginTop:10,
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 10,
     },
     viewMapBtnContainerSave: {
-        paddingRight:5,
+        paddingRight: 5,
     },
     viewMapBtnContainerCancel: {
-        paddingLeft:5,
+        paddingLeft: 5,
     },
-    
-    
+
     viewMapBtnCancel: {
-        backgroundColor:'#ba9490',
-    }
-
-
-
+        backgroundColor: "#ba9490",
+    },
 });
 
 export default EventForm;
