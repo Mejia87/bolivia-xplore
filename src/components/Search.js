@@ -39,7 +39,7 @@ const Search = ({ navigation }) => {
               <Text style={styles.suggestion}>{item.title}</Text>
             </TouchableOpacity>
           )}
-          style={styles.suggestionsContainer} // Usa los nuevos estilos
+          style={styles.suggestionsContainer}
         />
       )}
     </View>
@@ -48,7 +48,6 @@ const Search = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-   
     alignItems: 'center',
   },
   searchContainer: {
@@ -76,8 +75,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   suggestionsContainer: {
-    position: 'absolute', // Posición absoluta para que sea flotante
-    top: width * 0.15, // Ajusta según sea necesario
+    position: 'absolute',
+    top: width * 0.15,
     width: width * 0.8,
     backgroundColor: '#fff',
     borderRadius: 10,
@@ -87,14 +86,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
-    zIndex: 100, // Asegura que esté por encima de otros elementos
+    zIndex: 100,
   },
   suggestion: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
- 
-    
   },
 });
 
