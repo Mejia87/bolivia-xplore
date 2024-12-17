@@ -104,10 +104,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 40,
+    fontFamily: 'system',
+    fontStyle: 'italic',
+    fontSize: 45,
     fontWeight: 'bold',
     color: '#000',
-    marginBottom: 150,
+    marginBottom: 120,
   },
   googleButton: {
     flexDirection: 'row',

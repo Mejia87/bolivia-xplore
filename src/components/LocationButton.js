@@ -11,7 +11,7 @@ const LocationButton = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={goToLocation}>
-        <MaterialIcons name="map" size={24} color="#2196F3" />
+        <MaterialIcons name="place" size={24} color='white' />
         <Text style={styles.text}>Ver en Mapa</Text>
       </TouchableOpacity>
     </View>
@@ -21,24 +21,25 @@ const LocationButton = () => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
-    marginBottom: 0,
+    marginBottom: 10,
     zIndex: 1,
   },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 1,
-    paddingHorizontal: 15,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#2196F3', 
-    backgroundColor: '#fff', 
+    borderColor: '#b84b50', 
+    backgroundColor: '#b84b50', 
   },
+  
   text: {
-    marginLeft: 8,
+    marginLeft: 2,
     fontSize: 16,
-    color: '#2196F3',
+    color: 'white',
     
   },
 });
