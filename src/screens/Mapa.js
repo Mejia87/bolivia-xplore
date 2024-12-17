@@ -4,13 +4,14 @@ import MapView, { Circle, Marker, Polyline, Callout } from "react-native-maps";
 
 import {API_BASE_URL} from '@env'
 
-import * as Location from "expo-location";
-
 import customMarker from '../../assets/urkupiña.png'
 
 import data from '../data/data'
 
+import { useRoute } from "@react-navigation/native";
+
 export default function Mapa() {
+
     const [origin, setOrigin] = useState({
         latitude: -17.3914858,
         longitude: -66.1424565,
@@ -67,6 +68,7 @@ export default function Mapa() {
 
     useEffect(() => {
         (async () => {
+            if(!location){
             let { status } = await Location.requestForegroundPermissionsAsync()
             if (status !== "granted") {
                 alert("Permission denied");
@@ -79,6 +81,7 @@ export default function Mapa() {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
             })
+        }
             setLoading(false)
         })()
     }, [])
@@ -105,7 +108,7 @@ export default function Mapa() {
             >
                 <Marker coordinate={origin} />
 
-                {eventList.map((event, index) => (
+                {(eventList) && eventList.map((event, index) => (
                    
                     <Marker 
                     key={index}
@@ -114,17 +117,19 @@ export default function Mapa() {
                     style= {styles.marker}>
                    <View style={styles.customMarker}>
                         <View style={styles.circle}>
-                            <Image
-                                source={{uri:event.imagenes[0].urlImagen}} 
-                                style={styles.imageInsideCircle}
-                            />
+                        {event.imagenes && event.imagenes[0] && event.imagenes[0].urlImagen ? (
+                                <Image
+                                    source={{uri: event.imagenes[0].urlImagen}} 
+                                    style={styles.imageInsideCircle}
+                                />
+                            ) : (
+                                <Text>Imagen no disponible</Text>
+                            )}
                         </View>
                     </View>
                     
                 </Marker>
             ))}
-                
-
                 
             </MapView>
         </View>
