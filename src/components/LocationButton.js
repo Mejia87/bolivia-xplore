@@ -4,13 +4,13 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const LocationButton = () => {
   const goToLocation = () => {
-    // Aquí puedes agregar la lógica para ir a la ubicación
+    
     console.log('Ir a Ubicación');
-  };
+  }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={goToLocation}>
+      <TouchableOpacity style={styles.button} onPress={ goToLocation}>
         <MaterialIcons name="place" size={24} color='white' />
         <Text style={styles.text}>Ver en Mapa</Text>
       </TouchableOpacity>
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#b84b50', 
