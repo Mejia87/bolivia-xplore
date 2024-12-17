@@ -39,7 +39,7 @@ const Search = ({ navigation }) => {
               <Text style={styles.suggestion}>{item.title}</Text>
             </TouchableOpacity>
           )}
-          style={[styles.suggestionsContainer, { maxHeight: height * 0.4 }]} // Ajusta la altura máxima de la lista de sugerencias
+          style={styles.suggestionsContainer}
         />
       )}
     </View>
@@ -48,7 +48,6 @@ const Search = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
   },
   searchContainer: {
@@ -76,16 +75,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   suggestionsContainer: {
+    position: 'absolute',
+    top: width * 0.15,
     width: width * 0.8,
     backgroundColor: '#fff',
     borderRadius: 10,
-    marginTop: 5,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
+    zIndex: 100,
   },
   suggestion: {
     padding: 10,

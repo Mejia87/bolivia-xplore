@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
 const Bienvenido = () => {
   const handleNext = () => {
-    Alert.alert(' Botón comenzar presionado ');
+    Alert.alert('Botón comenzar presionado');
   };
 
   return (

@@ -11,14 +11,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Perfil from '../screens/Perfil';
 import Notificaciones from '../screens/Notificaciones';
 import Ajustes from '../screens/Ajustes';
-import GestorEventos from '../screens/GestorEventos';
 import Navegacion from './Navegacion';
-
+import { useState } from 'react';
 import Dnotificasiones from '../data/Dnotificasiones';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation  } from '@react-navigation/native';
+import GestorEventosStack from './GestorEventosStack';
 
 
 
@@ -63,12 +63,13 @@ import { useNavigation } from '@react-navigation/native';
 
 const DrawerNavegacion = ( ) => {
   const navigation = useNavigation();
+  const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length)
 
  const NotificationPress = () => {
-      Alert.alert('Irás al evento');
-      navigation.navigate('notificaciones');
+     
+      navigation.navigate('notificaciones', setNotificationCount,notificationCount);
     };
-  const notificationCount = Dnotificasiones.length;
+    
   return (
     <Drawer.Navigator
             initialRouteName='inicio'
@@ -92,6 +93,7 @@ const DrawerNavegacion = ( ) => {
                     title: 'Inicio ',
                     headerTitleAlign:'center',
                     headerTitle: () => <Text style={styles.headerTitle}>BoliviaXplore</Text>,
+                    drawerIcon:() => <Icon name='home' type='font-awesome-5' size={20} color='black' />,
                     headerRight: () => (
                       <View style = {styles.headerRigth}>
                         <TouchableOpacity onPress={NotificationPress}>
@@ -141,7 +143,7 @@ const DrawerNavegacion = ( ) => {
             />
             <Drawer.Screen
                 name = 'gestorEventos'
-                component={GestorEventos}
+                component={GestorEventosStack}
                 options={{
                     title: 'Gestor de eventos',
                     headerTitleAlign: 'center',

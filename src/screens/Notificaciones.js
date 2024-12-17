@@ -2,13 +2,24 @@ import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet, useWindowDimensions, FlatList, Alert, TouchableOpacity, Image } from 'react-native';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import Dnotificasiones from '../data/Dnotificasiones';
+import { useRoute } from '@react-navigation/native';
+import {API_BASE_URL} from '@env'
+
+import { useNavigation } from '@react-navigation/native';
+import DetalleEvento from './DetalleEvento';
+import pdata from '../data/pdata';
 
 const Notificaciones = () => {
+  const navigation = useNavigation();
+  const route= useRoute()
+  const count= route.params
   const { width, height } = useWindowDimensions();
   const [notifications, setNotifications] = useState(Dnotificasiones);
+  const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length);
 
   const handleDelete = (id) => {
     setNotifications(notifications.filter(item => item.id !== id));
+    //setNotificationCount(notificationCount - 1);
   };
 
   const confirmClearNotifications = () => {
@@ -23,15 +34,25 @@ const Notificaciones = () => {
         },
         {
           text: 'Sí',
-          onPress: () => setNotifications([]),
+          onPress: () => {
+            setNotifications([]);
+            setNotificationCount(0);
+          },
         }
       ],
       { cancelable: false }
     );
   };
-
-  const handleNotificationPress = () => {
-    Alert.alert('Irás al evento');
+ 
+  const PNotificationPress = (id) => {
+    const evento = pdata.find(event => event.codEvento === id);
+    if (evento) {
+      //console.log("evento",evento)
+      navigation.navigate('evento', { evento });
+      console.log("evento",evento)
+    } else {
+      Alert.alert('El evento ya finalizo');
+    }
   };
 
   const renderItem = ({ item }) => (
@@ -44,7 +65,8 @@ const Notificaciones = () => {
         )}
         onSwipeableRightOpen={() => handleDelete(item.id)}
       >
-        <TouchableOpacity onPress={handleNotificationPress}>
+       
+        <TouchableOpacity onPress={() => PNotificationPress(item.id)}>
           <View style={styles.notification}>
             <View style={styles.notificationText}>
               <Text style={styles.title}>{item.title}</Text>
@@ -86,6 +108,7 @@ const Notificaciones = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

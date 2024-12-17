@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Notificaciones from '../screens/Notificaciones';
 import DrawerNavegacion from './DrawerNavegacion';
+import DetalleEvento from '../screens/DetalleEvento';
 const Stack = createStackNavigator();
 
 export default function DrawerNavegacionStack() {
@@ -19,6 +20,11 @@ export default function DrawerNavegacionStack() {
         component={Notificaciones}
         options={{ title: "Notificaciones" }}
       />
+      <Stack.Screen
+              name="DetalleEvento"
+              component={DetalleEvento}
+              options={{ title: "Evento" }}
+            />
     </Stack.Navigator>
   );
 }

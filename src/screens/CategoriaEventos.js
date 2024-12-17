@@ -1,109 +1,79 @@
-import React from 'react';
-import { enableScreens } from 'react-native-screens';
-import { View,Text, TextInput, Image, StyleSheet, ScrollView, Pressable, Alert,Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons
-import Search from '../components/Search';
+import React from "react";
+import { enableScreens } from "react-native-screens";
+import {
+    View,
+    StyleSheet,
+    Dimensions,
+    ScrollView,
+} from "react-native";
+
+
+
+import Card from "../components/Card";
+import Search from "../components/Search";
 enableScreens();
-const { width, height  } = Dimensions.get('window');
-const CategoriaEventos = ({navigation}) => {
-  return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.container1}>
-      <Search/>
-        <View style={styles.item}>
-          <Pressable onPress={() => navigation.navigate('eventoss')}>
-            <Image source={require('../../assets/celebracionFolklorica.jpg')} style={styles.image} />
-            <View style={styles.textContainer}>
-            <Text style={styles.text}>Celebraciones Folklóricas</Text>
-            </View>
-          </Pressable>
+const { width, height } = Dimensions.get("window");
+const CategoriaEventos = ({ navigation }) => {
+    return (
+        <View style={styles.container}>
+              <Search/>
+            <ScrollView contentContainerStyle={styles.container1} showsVerticalScrollIndicator={false}>
+             
+                <Card
+                    title="Celebraciones Folcloricas"
+                    image={require("../../assets/celebracionFolklorica.jpg")}
+                    event={() => navigation.navigate("eventoss",{idEvent: 1})}
+                />
+                <Card
+                    title="Ferias Artesanales"
+                    image={require("../../assets/feriaTradicional.jpg")}
+                    event={() => navigation.navigate("eventoss", {idEvent: 2})}
+                />
+                <Card
+                    title="Exposiciones de Arte"
+                    image={require("../../assets/exposicionArte.jpg")}
+                    event={() => navigation.navigate("eventoss", {idEvent: 3})}
+                />
+                <Card
+                    title="Lugares Turisticos"
+                    image={require("../../assets/lugaresTuristicos.jpg")}
+                    event={() => navigation.navigate("eventoss",{idEvent: 4})}
+                />
+                <Card
+                    title="Ferias Gastronomicas"
+                    image={require("../../assets/ferias.jpg")}
+                    event={() => navigation.navigate("eventoss", {idEvent: 5})}
+                />
+            </ScrollView>
         </View>
-
-        <View style={styles.item}>
-          <Pressable onPress={() => navigation.navigate('eventoss')}>
-            <Image source={require('../../assets/feriaTradicional.jpg')} style={styles.image} />
-            <View style={styles.textContainer}>
-            <Text style={styles.text}>Ferias Tradicionales</Text>
-            </View>
-         </Pressable>
-        </View>
-
-       <View style={styles.item}>
-         <Pressable onPress={() => navigation.navigate('eventoss')}>
-           <Image source={require('../../assets/exposicionArte.jpg')} style={styles.image} />
-           <View style={styles.textContainer}>
-             <Text style={styles.text}>Exposiciones de Arte</Text>
-           </View>
-         </Pressable>
-       </View>
-
-      <View style={styles.item}>
-        <Pressable onPress={() => navigation.navigate('eventoss')}>
-          <Image source={require('../../assets/lugaresTuristicos.jpg')} style={styles.image} />
-          <View style={styles.textContainer}>
-            <Text style={styles.text}>Lugares Turísticos</Text>
-          </View>
-        </Pressable>
-      </View>
-      <View style={styles.item}>
-        <Pressable onPress={() => navigation.navigate('eventoss')}>
-          <Image source={require('../../assets/ferias.jpg')} style={styles.image} />
-           <View style={styles.textContainer}>
-             <Text style={styles.text}>Ferias</Text>
-           </View>
-        </Pressable>
-      </View>
-
-      </ScrollView>
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container1: {
-    alignItems: 'center',
-  },
-  
-  icon: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-  },
-  item: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  image: {
-   height:width * 0.3, // Ajusta el ancho al 80% del ancho de la pantalla
-    width: width * 1, // Ajusta el ancho al 80% del ancho de la pantalla
-    borderRadius: 0,
-  },
-  textContainer: {
-    width: width * 1, // Ajusta el ancho al 80% del ancho de la pantalla
-    marginTop: -20,
     
-    backgroundColor: 'rgba(108, 106, 108, 0.7)', // 'gold' en RGBA con 30% de opacidad
-    borderRadius: 0,
-    alignItems: 'center',
-    height: 20,
-   },
-  text: {
-  
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: 'white',
-    alignItems: 'center',
-  },
-
-
-  
+    container1: {
+        alignItems: "center",
+    },
+    container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f5f5f5',
+    },
+    
+    
+    
+    
+    container1: {
+        alignItems: "center",
+    },
+    container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f5f5f5',
+    },
+    
+    
+    
 });
 
 export default CategoriaEventos;

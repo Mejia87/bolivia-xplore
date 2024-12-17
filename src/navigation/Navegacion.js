@@ -6,6 +6,7 @@ import MapaStack from './MapaStack';
 import CalendarioStack from './CalendarioStack';
 import EventosStack from './EventosStack';
 import CategoriaEventosStack from './CategoriaEventosStack';
+import Calendario from '../screens/Calendario';
 
 
 
@@ -42,7 +43,7 @@ function Navegacion() {
     <Tab.Navigator 
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => screenOptions(route, color),
-          tabBarActiveTintColor: '#C5705D',
+          tabBarActiveTintColor: '#b84b50',
           tabBarInactiveTintColor: '#551E18',
           headerShown: false, 
         })}
