@@ -13,7 +13,7 @@ enableScreens();
 
 export default function DetalleEvento({route}) {
   const {evento} = route.params
-  
+  console.log("pruevass",evento)
   const [expanded, setExpanded] = useState(true)
   const [expandedHistory, setExpandedHistory] = useState(true)
   console.log("evento",evento)

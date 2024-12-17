@@ -12,13 +12,14 @@ import pdata from '../data/pdata';
 const Notificaciones = () => {
   const navigation = useNavigation();
   const route= useRoute()
-  const count= route.params
+  //const [notificationCount, setNotificationCount]= route.params
   const { width, height } = useWindowDimensions();
   const [notifications, setNotifications] = useState(Dnotificasiones);
-  const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length);
+ const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length);
 
   const handleDelete = (id) => {
     setNotifications(notifications.filter(item => item.id !== id));
+   // setNotificationCount(notificationCount - 1)
     //setNotificationCount(notificationCount - 1);
   };
 
@@ -49,7 +50,7 @@ const Notificaciones = () => {
     if (evento) {
       //console.log("evento",evento)
       navigation.navigate('evento', { evento });
-      console.log("evento",evento)
+     // console.log("evento",evento)
     } else {
       Alert.alert('El evento ya finalizo');
     }
