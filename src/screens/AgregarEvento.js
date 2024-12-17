@@ -34,6 +34,7 @@ const EventForm = () => {
     const [history, setHistory] = useState("");
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [permanent, setPermanent] = useState(false)
 
     const [visible, setVisible] = useState(false);
     const [location, setLocation] = useState(null);
@@ -115,7 +116,7 @@ const EventForm = () => {
             fechaFinEvento: endDate,
             latitud: -17.38265,
             longitud: -66.36545,
-            permanente: true,
+            permanente: permanent,
             idTipoEvento: {
                 idTipoEvento: category,
             },
@@ -209,20 +210,21 @@ const EventForm = () => {
                 onValueChange={(itemValue) => setCategory(itemValue)}
                 style={styles.input}
             >
-                <Picker.Item id="1" label="Seleccione una categoría" />
+                <Picker.Item id="0" label="Seleccione una categoría" />
                 <Picker.Item
-                    id="2"
+                    id="1"
                     label="Celebraciones Folkloricas"
                     value="1"
                 />
-                <Picker.Item id="3" label="Ferias Tradicionales" value="2" />
+                <Picker.Item id="2" label="Ferias Tradicionales" value="2" />
                 <Picker.Item
-                    id="4"
+                    id="3"
                     label="Conciertos Contemporaneos"
                     value="3"
                 />
-                <Picker.Item id="5" label="Expociones de Arte" value="4" />
-                <Picker.Item id="6" label="Lugares Turisticos" value="5" />
+                <Picker.Item id="4" label="Expociones de Arte" value="4" />
+                <Picker.Item id="5" label="Lugares Turisticos" value="5" />
+                <Picker.Item id="6" label="Ferias" value="6" />
             </Picker>
 
             <Text style={styles.label}>Nombre del Evento</Text>
@@ -278,7 +280,7 @@ const EventForm = () => {
                 <DateTimePicker
                     value={new Date()}
                     mode="date"
-                    display="default"
+                    display="spinner"
                     minimumDate={new Date()}
                     onChange={(event, date) => {
                         setShowStartDatePicker(false);
@@ -301,7 +303,7 @@ const EventForm = () => {
                 <DateTimePicker
                     value={new Date()}
                     mode="date"
-                    display="default"
+                    display="spinner"
                     minimumDate={new Date()}
                     onChange={(event, date) => {
                         setShowEndDatePicker(false);
@@ -345,6 +347,7 @@ const EventForm = () => {
                 onChangeText={setHistory}
             />
 
+                <Text>evento permanente</Text>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.cancelButton}>
                     <Text style={styles.cancelText}>Cancelar</Text>
