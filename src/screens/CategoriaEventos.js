@@ -43,6 +43,11 @@ const CategoriaEventos = ({ navigation }) => {
                     image={require("../../assets/ferias.jpg")}
                     event={() => navigation.navigate("eventoss", {idEvent: 5})}
                 />
+                <Card
+                    title="Recomendaciones"
+                    image={require("../../assets/recomendaciones.png")}
+                    event={() => navigation.navigate("eventosRecom", {idEvent: 7})}
+                />
             </ScrollView>
         </View>
     );
