@@ -11,7 +11,7 @@ export default function Login({ onLogin }) {
       <Text style={styles.title}>BoliviaXplore</Text>
             <TouchableOpacity style={styles.googleButton} onPress={onLogin}>
               <Image
-                source={require('../../assets/image.png',)}
+                source={require('../../assets/google.png',)}
           style={styles.googleIcon}
         />
         <Text style={styles.googleButtonText}>Continuar con Google</Text>
@@ -33,10 +33,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 40,
+    fontFamily: 'system',
+    fontStyle: 'italic',
+    fontSize: 45,
     fontWeight: 'bold',
     color: '#000',
-    marginBottom: 150,
+    marginBottom: 120,
   },
   subtitle: {
     fontSize: 16,
