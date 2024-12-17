@@ -238,7 +238,7 @@ const EventForm = () => {
                 style={styles.imageButton}
                 onPress={handleImagePick}
             >
-                <MaterialIcons name="add-a-photo" size={24} color="#888" />
+                <MaterialIcons name="add-a-photo" size={24} color="#551E18" />
                 <Text style={styles.imageText}>Añadir imágenes</Text>
             </TouchableOpacity>
 
@@ -272,7 +272,7 @@ const EventForm = () => {
                 <Text style={styles.dateText}>
                     {startDate ? startDate.toLocaleDateString() : "d/m/a"}
                 </Text>
-                <MaterialIcons name="calendar-today" size={24} color="#888" />
+                <MaterialIcons name="calendar-today" size={24} color="#551E18" />
             </TouchableOpacity>
             {showStartDatePicker && (
                 <DateTimePicker
@@ -295,7 +295,7 @@ const EventForm = () => {
                 <Text style={styles.dateText}>
                     {endDate ? endDate.toLocaleDateString() : "d/m/a"}
                 </Text>
-                <MaterialIcons name="calendar-today" size={24} color="#888" />
+                <MaterialIcons name="calendar-today" size={24} color="#551E18" />
             </TouchableOpacity>
             {showEndDatePicker && (
                 <DateTimePicker
@@ -315,7 +315,7 @@ const EventForm = () => {
                 <MaterialIcons
                     name="location-on"
                     size={24}
-                    color="#888"
+                    color="#551E18"
                     onPress={() => setVisible(true)}
                 />
                 <MapLocation
@@ -431,12 +431,13 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 18,
+        fontWeight: '500',
         marginVertical: 5,
         color: "#333333",
     },
     input: {
         borderWidth: 1,
-        borderColor: "#888",
+        borderColor: "#f0f0f0",
         borderRadius: 5,
         padding: 12,
         marginBottom: 10,
@@ -447,7 +448,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         borderWidth: 1,
-        borderColor: "#888",
+        borderColor: "#f0f0f0",
         padding: 12,
         borderRadius: 5,
         marginBottom: 10,
@@ -469,7 +470,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         borderWidth: 1,
-        borderColor: "#888",
+        borderColor: "#f0f0f0",
         padding: 12,
         borderRadius: 5,
         marginBottom: 10,
@@ -484,7 +485,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         borderWidth: 1,
-        borderColor: "#888",
+        borderColor: "#f0f0f0",
         padding: 12,
         borderRadius: 5,
         marginBottom: 10,
@@ -501,7 +502,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     cancelButton: {
-        backgroundColor: "red",
+        backgroundColor: "#551E18",
         padding: 15,
         borderRadius: 5,
         flex: 1,
@@ -511,9 +512,10 @@ const styles = StyleSheet.create({
         color: "#fff",
         textAlign: "center",
         fontSize: 16,
+        fontWeight: 'bold',
     },
     saveButton: {
-        backgroundColor: "green",
+        backgroundColor: "#551E18",
         padding: 15,
         borderRadius: 5,
         flex: 1,
@@ -522,6 +524,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         textAlign: "center",
         fontSize: 16,
+        fontWeight: 'bold',
     },
     loading: {
         height: "80%",
