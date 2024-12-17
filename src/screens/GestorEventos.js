@@ -17,7 +17,7 @@ import data from "../data/data";
 import { ScrollView } from "react-native";
 import Modal from "../components/Modal";
 
-import {API_BASE_URL} from '@env'
+import { API_BASE_URL } from "@env";
 
 enableScreens();
 
@@ -25,30 +25,46 @@ const GestorEventos = ({ navigation }) => {
     const [longPressActive, setLongPressActive] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [events, setEvents] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [events, setEvents] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     /*useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/event`)
-                
-                if(!response.ok) {
-                    throw new Error('Error al obtener los eventos')
-                }
+    const fecthMap = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/event/filtered`, {
+                method: 'POST', // Cambiar de GET a POST
+                headers: {
+                    'Content-Type': 'application/json', // Indicar que se envía un JSON
+                },
+                body: JSON.stringify({
+                    distancia: 0.0,
+                    latitud: 0.0,
+                    longitud: 0.0,
+                    favorito: false,
+                    eventoActivo: false,
+                    fecha: null,
+                    busqueda: "",
+                    categoria: null,
+                    codUsuario: null
+                })
+            })
 
-                const eventList = response.json()
-                setEvents(eventList)
-
-            } catch (error) {
-                console.log('Error', error)
-            } finally {
-                setLoading(false)
+            if (!response.ok) {
+                throw new Error('Error al obtener los eventos')
             }
-        }
 
-        fetchEvents()
-    },[])*/
+            const even = await response.json()
+            setEvents(even)
+
+        } catch (error) {
+            console.log('Error: ', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    fecthMap()
+}, [])*/
 
     /*if(loading) {
         return (
@@ -61,14 +77,42 @@ const GestorEventos = ({ navigation }) => {
         setIsModalVisible(!isModalVisible);
     };
 
-    const handleDelete = () => {
-        Alert.alert(
-            "Eliminado",
-            `Se eliminaron ${selectedItems.length} elementos.`
-        );
-        setSelectedItems([]);
-        setLongPressActive(false);
-        toggleModal();
+    const handleDelete = async () => {
+        for (const eventId of selectedItems) {
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/api/event/delete/${eventId}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
+                if (response.ok) {
+                    Alert.alert(
+                        "Eliminado",
+                        `El evento ha sido eliminado correctamente.`
+                    );
+                } else {
+                    const errorData = await response.json();
+                    Alert.alert(
+                        "Error",
+                        `No se pudo eliminar el evento: ${
+                            errorData.message || "Error desconocido"
+                        }`
+                    );
+                }
+            } catch (error) {
+                console.log("Error al eliminar evento: ", error);
+                Alert.alert("Error", "No se pudo eliminar el evento.");
+            }
+
+            setSelectedItems([]);
+            setLongPressActive(false);
+            toggleModal();
+        }
     };
 
     const handleCancel = () => {
@@ -89,10 +133,10 @@ const GestorEventos = ({ navigation }) => {
             <View style={styles.searchContainer}>
                 <Search />
             </View>
-            <Button 
-            title='agregar evento' 
-            buttonStyle={styles.buttonAdd}
-            onPress={() => navigation.navigate('eventForm')}
+            <Button
+                title="agregar evento"
+                buttonStyle={styles.buttonAdd}
+                onPress={() => navigation.navigate("eventForm")}
             />
             <ScrollView>
                 <View style={styles.row}>
@@ -108,8 +152,17 @@ const GestorEventos = ({ navigation }) => {
             </ScrollView>
             {longPressActive && (
                 <View style={styles.actionButtons}>
-                    <Button title="Eliminar" onPress={toggleModal} color={'#a23c33'} buttonStyle={styles.button}/>
-                    <Button title="Cancelar" onPress={handleCancel} color={'#e48d85'} />
+                    <Button
+                        title="Eliminar"
+                        onPress={toggleModal}
+                        color={"#a23c33"}
+                        buttonStyle={styles.button}
+                    />
+                    <Button
+                        title="Cancelar"
+                        onPress={handleCancel}
+                        color={"#e48d85"}
+                    />
                 </View>
             )}
             <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible}>
@@ -118,9 +171,16 @@ const GestorEventos = ({ navigation }) => {
                     seleccionados?
                 </Text>
                 <View style={styles.modalButtons}>
-                    <Button title= 'Eliminar' color={'#a23c33'} onPress={handleDelete} />
-                    <Button title= 'Cancelar' color={'#e48d85'} onPress={toggleModal} />
-
+                    <Button
+                        title="Eliminar"
+                        color={"#a23c33"}
+                        onPress={handleDelete}
+                    />
+                    <Button
+                        title="Cancelar"
+                        color={"#e48d85"}
+                        onPress={toggleModal}
+                    />
                 </View>
             </Modal>
         </View>
@@ -132,7 +192,8 @@ const Row = ({
     setLongPressActive,
     selectedItems,
     handleCheckboxChange,
-    data, navigation
+    data,
+    navigation,
 }) => {
     const handleLongPress = () => {
         setLongPressActive(true);
@@ -170,7 +231,9 @@ const Row = ({
                         name="pen"
                         size={20}
                         color={"#86352e"}
-                        onPress={() => navigation.navigate('editar')}
+                        onPress={() =>
+                            navigation.navigate("editar", item.codEvento)
+                        }
                     />
                 </ListItem>
             ))}
@@ -214,18 +277,17 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     button: {
-        shadowColor:'#3c1613',
+        shadowColor: "#3c1613",
         shadowOffset: { width: 5, height: 2 },
-        shadowOpacity: 0.8, 
-        shadowRadius: 2, 
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
         elevation: 5,
     },
     loading: {
-        height:'100%',
-        alignItems:'center',
-        justifyContent:'center',
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
     },
-    
 });
 
 export default GestorEventos;

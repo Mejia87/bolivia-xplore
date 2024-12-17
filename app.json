@@ -18,10 +18,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.anonymous.boliviaxplore",
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "1026158333493-u6fn0j9he1vkeof4luji87igag5ljvg7.apps.googleusercontent.com"
+        }
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scheme": "bolivia-xplore",
+    "extra": {
+      "eas": {
+        "projectId": "802dd1f9-3319-4a8f-8842-1a499039362e"
+      }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }

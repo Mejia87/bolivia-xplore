@@ -23,26 +23,43 @@ export default function Mapa() {
     const [eventList, setEventLis] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    /*useEffect(() => {
+    useEffect(() => {
         const fecthMap = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/event/filtered`)
-                if(!response.ok) {
+                const response = await fetch(`${API_BASE_URL}/api/event/filtered`, {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json', 
+                    },
+                    body: JSON.stringify({
+                        distancia: 0.0,
+                        latitud: 0.0,
+                        longitud: 0.0,
+                        favorito: false,
+                        eventoActivo: false,
+                        fecha: null,
+                        busqueda: "",
+                        categoria: null,
+                        codUsuario: null
+                    })
+                })
+    
+                if (!response.ok) {
                     throw new Error('Error al obtener los eventos')
                 }
-
+    
                 const events = await response.json()
                 setEventLis(events)
-
+    
             } catch (error) {
                 console.log('Error: ', error)
             } finally {
                 setLoading(false)
             }
         }
-
+    
         fecthMap()
-    },[])*/
+    }, [])
 
     useEffect(() => {
         (async () => {
