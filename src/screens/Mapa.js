@@ -25,23 +25,25 @@ export default function Mapa() {
 
     useEffect(() => {
         const fecthMap = async () => {
+        const payload = {
+            'distancia': '0.0',
+            'latitud': '0.0',
+            'longitud': '0.0',
+            'favorito':false,
+            'eventoActivo':false,
+           'fecha':null,
+            'busqueda': "",
+            'categoria': null,
+            'codUsuario':null
+           }
+
             try {
                 const response = await fetch(`${API_BASE_URL}/api/event/filtered`, {
                     method: 'POST', 
                     headers: {
                         'Content-Type': 'application/json', 
                     },
-                    body: JSON.stringify({
-                        distancia: 0.0,
-                        latitud: 0.0,
-                        longitud: 0.0,
-                        favorito: false,
-                        eventoActivo: false,
-                        fecha: null,
-                        busqueda: "",
-                        categoria: null,
-                        codUsuario: null
-                    })
+                    body: JSON.stringify(payload)
                 })
     
                 if (!response.ok) {
@@ -50,6 +52,8 @@ export default function Mapa() {
     
                 const events = await response.json()
                 setEventLis(events)
+
+                console.log('eventos',events)
     
             } catch (error) {
                 console.log('Error: ', error)
@@ -101,17 +105,17 @@ export default function Mapa() {
             >
                 <Marker coordinate={origin} />
 
-                {data.map((event, index) => (
+                {eventList.map((event, index) => (
                    
                     <Marker 
                     key={index}
                     coordinate={{latitude: event.latitud, longitude:event.longitud}} 
-                    title= {event.name} 
+                    title= {event.nombreEvento} 
                     style= {styles.marker}>
                    <View style={styles.customMarker}>
                         <View style={styles.circle}>
                             <Image
-                                source={event.images[0].source} 
+                                source={{uri:event.imagenes[0].urlImagen}} 
                                 style={styles.imageInsideCircle}
                             />
                         </View>

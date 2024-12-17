@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Alert, Modal, TouchableOpacity, Button } from "react-native";
+import { View, Text, Image, StyleSheet, FlatList, Alert, Modal, TouchableOpacity, Button } from "react-native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import { API_BASE_URL } from "@env";
+
+import {API_BASE_URL} from '@env'
 
 const App = () => {
   const today = new Date().toISOString().split("T")[0];
@@ -12,11 +12,9 @@ const App = () => {
   const [selectedDate, setSelectedDate] = useState(today);
   const [tasks, setTasks] = useState([]);
   const [markedDates, setMarkedDates] = useState({});
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null); // Estado para el evento seleccionado
   const [loading, setLoading] = useState(false);
-  const [events, setEvents] = useState(null);
-
-  
+  const [events, setEvents] = useState(null)
 
   const fetchEventsForMonth = async (year, month) => {
     setLoading(true);
@@ -26,24 +24,24 @@ const App = () => {
         throw new Error("Error al obtener los eventos");
       }
       const data = await response.json();
-      if (typeof data !== "object" || !data) {
-        throw new Error("Formato de datos inválido");
-      }
+      
 
+      setEvents(data)
+
+      
       const formattedDates = Object.keys(data).reduce((acc, day) => {
         const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
         acc[dateKey] = {
           selected: true,
           selectedColor: "#b84235",
-          events: data[day],
+          events: data[day], // Adjuntar los eventos directamente
         };
         return acc;
       }, {});
 
       setMarkedDates(formattedDates);
-      setEvents(data);
     } catch (error) {
-      Alert.alert("Error", error.message || "No se pudieron obtener los eventos.");
+      Alert.alert("Error", "No se pudieron obtener los eventos.");
     } finally {
       setLoading(false);
     }
@@ -54,12 +52,19 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (events) {
-      const day = selectedDate.split("-")[2];
-      setTasks(events[day] || []);
+    const dayEvents = markedDates[selectedDate];
+    const day = selectedDate.split("-")[2];
+    
+    if(events !== null && events[day]) {
+      
+     
+      setTasks(events[day])
+    }else {
+      setTasks([]); 
     }
-  }, [selectedDate, events]);
+  }, [selectedDate, markedDates]);
 
+  
   const handleEventPress = (event) => {
     setSelectedEvent(event);
   };
@@ -92,6 +97,7 @@ const App = () => {
 
   return (
     <View style={styles.container}>
+      {/* Calendario */}
       <Calendar
         markedDates={{
           ...markedDates,
@@ -114,23 +120,21 @@ const App = () => {
         }}
       />
 
+      
       <View style={styles.taskContainer}>
         <Text style={styles.dateText}>Eventos para el {selectedDate}</Text>
         {tasks.length > 0 ? (
           <FlatList
             data={tasks}
-            keyExtractor={(item) => item.id.toString()} // Se usa el ID único
+            keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.task} onPress={() => handleEventPress(item)}>
                 <View style={styles.textContainer}>
                   <Text style={styles.title}>{item.nombreEvento}</Text>
                   <Text style={styles.description}>{item.descripcionEvento}</Text>
                 </View>
-                <Icon
-                  name={item.idFavorite && item.idFavorite.length > 0 ? "star" : "star-outline"}
-                  size={24}
-                  color="gold"
-                />
+                <Image source={{ uri: item.imagenes[0].urlImagen || "https://via.placeholder.com/150" }} style={styles.image} />
+                
               </TouchableOpacity>
             )}
           />
@@ -139,18 +143,20 @@ const App = () => {
         )}
       </View>
 
+      {/* Modal para detalles del evento */}
       <Modal visible={!!selectedEvent} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             {selectedEvent && (
               <>
-                <Text style={styles.modalTitle}>{selectedEvent.nombreEvento || "Sin título"}</Text>
-                <Text style={styles.modalDescription}>{selectedEvent.descripcionEvento || "Sin descripción"}</Text>
+                <Text style={styles.modalTitle}>{selectedEvent.nombreEvento}</Text>
+                <Text style={styles.modalDescription}>{selectedEvent.descripcionEvento}</Text>
                 <Text style={styles.modalLocation}>
                   Ubicación: {selectedEvent.ubicacion || "No especificada"}
                 </Text>
                 <Text style={styles.modalDates}>
-                  Desde: {selectedEvent.fechaInicioEvento ? new Date(selectedEvent.fechaInicioEvento).toLocaleDateString() : "No disponible"} - Hasta: {selectedEvent.fechaFinEvento ? new Date(selectedEvent.fechaFinEvento).toLocaleDateString() : "No disponible"}
+                  Desde: {new Date(selectedEvent.fechaInicioEvento).toLocaleDateString()} - Hasta:{" "}
+                  {new Date(selectedEvent.fechaFinEvento).toLocaleDateString()}
                 </Text>
                 <Button title="Cerrar" onPress={closeModal} />
               </>
@@ -202,6 +208,11 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: "#555",
+  },
+  image: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   noTasksText: {
     textAlign: "center",
