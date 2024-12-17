@@ -3,11 +3,13 @@ import { StyleSheet, Text, View, Image, ActivityIndicator, TouchableOpacity } fr
 import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons"; // Ícono para el botón
 
-import { API_BASE_URL } from '@env';
+import {API_BASE_URL} from '@env'
+
 import * as Location from "expo-location";
 import Search1 from "../components/Search1";
 
-export default function Mapa() {
+export default function Mapa({navigation}) {
+
     const [origin, setOrigin] = useState({
         latitude: -17.3914858,
         longitude: -66.1424565,
@@ -81,8 +83,22 @@ export default function Mapa() {
 
     // Obtener la ubicación al inicio
     useEffect(() => {
-        getUserLocation();
-    }, []);
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync()
+            if (status !== "granted") {
+                alert("Permission denied");
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({})
+            
+            setOrigin({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+            })
+            setLoading(false)
+        })()
+    }, [])
 
     if (loading) {
         return (
@@ -117,11 +133,15 @@ export default function Mapa() {
                         title={event.nombreEvento}
                     >
                         <View style={styles.customMarker}>
+                            
                             <View style={styles.circle}>
+
                                 {event.imagenes && event.imagenes[0] && event.imagenes[0].urlImagen ? (
+                                    
                                     <Image
                                         source={{ uri: event.imagenes[0].urlImagen }}
                                         style={styles.imageInsideCircle}
+                                      //  onPress={navigation.navigate("eventoMapa",event.codEvento)}
                                     />
                                 ) : (
                                     <Text>Imagen no disponible</Text>
