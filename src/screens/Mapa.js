@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons"; // Ícono para el botón
 
 import { API_BASE_URL } from '@env';
 import * as Location from "expo-location";
+import Search1 from "../components/Search1";
 
 export default function Mapa() {
     const [origin, setOrigin] = useState({
@@ -93,6 +94,10 @@ export default function Mapa() {
 
     return (
         <View style={styles.container}>
+            <View style={styles.Scontainer}>
+                <Search1 mapRef={mapRef} />
+            </View>
+
             <MapView
                 ref={mapRef} // Referencia al mapa
                 style={styles.map}
@@ -113,10 +118,14 @@ export default function Mapa() {
                     >
                         <View style={styles.customMarker}>
                             <View style={styles.circle}>
-                                <Image
-                                    source={{ uri: event.imagenes[0].urlImagen }}
-                                    style={styles.imageInsideCircle}
-                                />
+                                {event.imagenes && event.imagenes[0] && event.imagenes[0].urlImagen ? (
+                                    <Image
+                                        source={{ uri: event.imagenes[0].urlImagen }}
+                                        style={styles.imageInsideCircle}
+                                    />
+                                ) : (
+                                    <Text>Imagen no disponible</Text>
+                                )}
                             </View>
                         </View>
                     </Marker>
@@ -136,6 +145,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    Scontainer: {
+        top: 0,
+        position: 'absolute',
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 100,
     },
     map: {
         width: "100%",
