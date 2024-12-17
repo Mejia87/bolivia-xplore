@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   carouselContainer: {
-    height: 300,
+    height: 350,
     marginHorizontal: 10,
   },
 });

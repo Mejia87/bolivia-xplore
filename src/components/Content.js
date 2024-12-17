@@ -1,53 +1,44 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import { Entypo, Ionicons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
-
-
-export default function Content({text}) {
+export default function Content({ text, showLocation = false }) {
   return (
     <View style={styles.container}>
-      <View style={styles.locationWrapper}>
-        <Entypo size={22} name="location-pin" style={styles.locationIcon} />
-        <Text style={styles.location}>
-          Cochabamba
-        </Text>
-      </View>
-
-      
-      <Text style={styles.description}>
-        {text}
-      </Text>
+      {showLocation && (
+        <View style={styles.locationWrapper}>
+          <Entypo size={22} name="location-pin" style={styles.locationIcon} />
+          <Text style={styles.location}></Text>
+        </View>
+      )}
+      <Text style={styles.description}>{text}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   description: {
-    marginTop: 10,
+    marginTop: 0,
     opacity: 0.8,
-    fontSize: 14,
-    fontFamily:'sans-serif',
+    fontSize: 15,
+    //fontFamily: 'sans-serif',
+    marginBottom: 30,
   },
-
   locationIcon: {
+    marginTop: 0,
     opacity: 0.6,
   },
   location: {
-    fontSize: 13,
+    fontSize: 20,
     opacity: 0.6,
     marginVertical: 4,
+
   },
   locationWrapper: {
+    marginTop: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 8,
-  },
-  title: {
-    fontSize: 20,
-    opacity: 0.8,
-    fontFamily:'serif',
-    fontWeight:'bold',
+    marginVertical: 15,
   },
   container: {
     paddingHorizontal: 15,

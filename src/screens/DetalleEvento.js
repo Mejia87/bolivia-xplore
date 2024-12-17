@@ -26,31 +26,33 @@ export default function DetalleEvento({route}) {
         </View>
         <CarouselView images = {evento.imagenes}/>
         <Text style={styles.title}>{evento.nombreEvento}</Text>
+        
         <ListItem.Accordion
-          content= {
+        containerStyle={styles.accordionContainer}
+          content={
             <ListItem.Content>
-              <ListItem.Title>Descripcion</ListItem.Title>
+              <ListItem.Title style = {styles.accordionTitle}>Descripción</ListItem.Title>
             </ListItem.Content>
           }
-
-          isExpanded = {expanded}
+          
+          isExpanded={expanded}
           onPress={() => setExpanded(!expanded)}
         >
-
-          <Content text = {evento.descripcionEvento} />
+        <Content text={evento.descripcionEvento} showLocation={false} />
         </ListItem.Accordion>
+
         <ListItem.Accordion
-          content= {
+        containerStyle={styles.accordionContainer}
+          content={
             <ListItem.Content>
-              <ListItem.Title>Historia</ListItem.Title>
+              <ListItem.Title style = {styles.accordionTitle}>Historia</ListItem.Title>
             </ListItem.Content>
           }
-
-          isExpanded = {expandedHistory}
+          
+          isExpanded={expandedHistory}
           onPress={() => setExpandedHistory(!expandedHistory)}
         >
-
-          <Content text = {evento.historiaEvento} />
+        <Content text={evento.historiaEvento} showLocation={false} />
         </ListItem.Accordion>
         <LocationButton style={styles.location} />
       </View>
@@ -59,32 +61,50 @@ export default function DetalleEvento({route}) {
 }
 
 const styles = StyleSheet.create({
+
   scrollContainer: {
-    flexGrow: 1, 
+    //flexGrow: 1, 
     justifyContent: 'center', 
     alignItems:'center',
-    padding:5,
+    padding: 5,
+    backgroundColor: '#f5f5f5',
   },
+
   buttonContainer: {
     flexDirection:'row',
     flex: 1, 
     width: '100%',
-    justifyContent: 'space-between', 
-     
+    justifyContent: 'space-between',  
   },
   
   favoritos: {
     marginLeft:'100',
   },
+
   location: {
-    marginTop:20,
+    marginTop: 10,
   },
+
   title: {
-    fontSize: 20,
+    marginTop: 5,
+    fontSize: 22,
     opacity: 0.8,
-    fontFamily:'serif',
     fontWeight:'bold',
     textAlign:'center',
     padding:10,
   },
+
+  accordionTitle:{
+    fontWeight: 'bold',
+    marginBottom: 0,
+  },
+
+  accordionContainer:{
+    backgroundColor: '#ba9490',
+    borderRadius: 3,
+    marginBottom: 5,
+    paddingVertical: 8,
+    marginHorizontal: 10,
+  }
+
 });
