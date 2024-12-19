@@ -7,8 +7,8 @@ import {API_BASE_URL} from '@env'
 
 const { width, height } = Dimensions.get('window');
 
-const Search = ({ navigation, events , setEvents}) => {
-  const [searchText, setSearchText] = useState('');
+const Search = ({ navigation, events , nts}) => {
+  const [searchText, setSearchText] = useState('asd');
   const [filteredData, setFilteredData] = useState([]);
   
   useEffect(() => {

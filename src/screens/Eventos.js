@@ -101,7 +101,7 @@ const Eventos = ({ navigation }) => {
                         
                     />
                 )}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item, index) => item.codEvento}
                 numColumns={2} 
                 contentContainerStyle={styles.container}
                 

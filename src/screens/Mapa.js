@@ -44,25 +44,9 @@ export default function Mapa({navigation}) {
 
     useEffect(() => {
         const fetchEvents = async () => {
-            const payload = {
-                'distancia': '0.0',
-                'latitud': '0.0',
-                'longitud': '0.0',
-                'favorito': false,
-                'eventoActivo': false,
-                'fecha': null,
-                'busqueda': "",
-                'categoria': null,
-                'codUsuario': null
-            };
-
             try {
-                const response = await fetch(`${API_BASE_URL}/api/event/filtered`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
+                const response = await fetch(`${API_BASE_URL}/api/event/events-to-map`, {
+                    method: 'GET',
                 });
 
                 if (!response.ok) {
@@ -71,6 +55,20 @@ export default function Mapa({navigation}) {
 
                 const events = await response.json();
                 setEventList(events);
+                (async () => {
+                    let { status } = await Location.requestForegroundPermissionsAsync()
+                    if (status !== "granted") {
+                        alert("Permission denied");
+                        return;
+                    }
+        
+                    let location = await Location.getCurrentPositionAsync({})
+                    
+                    setOrigin({
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                    })
+                })()
             } catch (error) {
                 console.log('Error: ', error);
             } finally {
@@ -83,21 +81,7 @@ export default function Mapa({navigation}) {
 
     // Obtener la ubicación al inicio
     useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync()
-            if (status !== "granted") {
-                alert("Permission denied");
-                return;
-            }
-
-            let location = await Location.getCurrentPositionAsync({})
-            
-            setOrigin({
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-            })
-            setLoading(false)
-        })()
+        
     }, [])
 
     if (loading) {
@@ -110,9 +94,9 @@ export default function Mapa({navigation}) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.Scontainer}>
-                <Search1 mapRef={mapRef} />
-            </View>
+            {eventList && (<View style={styles.Scontainer}>
+                <Search1 mapRef={mapRef} events={ eventList } origin = { origin }/>
+            </View>)}
 
             <MapView
                 ref={mapRef} // Referencia al mapa

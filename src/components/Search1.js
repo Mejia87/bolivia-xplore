@@ -1,65 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Dimensions, FlatList, Text, TouchableOpacity,Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, TextInput, StyleSheet, Dimensions, FlatList, Text, TouchableOpacity,Image, TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Bsearch from '../data/Bsearch';
 
 import { API_BASE_URL } from '@env';
+import calculateDistanceHarvensine from '../js/HarvensineDistance';
 
 const { width, height } = Dimensions.get('window');
 
-const Search1 = ({ navigation, events, setEvents, mapRef }) => {
+const Search1 = ({ events, mapRef, origin }) => {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState([]);
-
   useEffect(() => {
-    const fecthMap = async () => {
-      const payload = {
-        'distancia': '0.0',
-        'latitud': '0.0',
-        'longitud': '0.0',
-        'favorito': false,
-        'eventoActivo': false,
-        'fecha': null,
-        'busqueda': searchText,
-        'categoria': null,
-        'codUsuario': null
-      };
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/event/filtered`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-          throw new Error('Error al obtener los eventos');
-        }
-       
-        const events = await response.json();
-        console.log('eventos', events);
-        setFilteredData(events);
-        setEvents(events);
-        
-
-      } catch (error) {
-        console.log('Error: ', error);
-      } finally {
-        setLoading(false);
-      }
+    const fecthMap = () => {
+     setFilteredData( events.filter((data) =>
+      {
+        return data.nombreEvento.toLowerCase().includes(searchText.trim().toLowerCase())}
+    ) )
     };
- if (searchText.length>0){
-    fecthMap();}else{setFilteredData([])}
-  }, [searchText]);
-
-  useEffect(() => {
-    if (searchText === '') {
-      setFilteredData([]);
+    if (searchText.length>0){
+      fecthMap();
+      console.log("filter", filteredData);
     } else {
-      const filtered = Bsearch.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
-      setFilteredData(filtered);
+      setFilteredData([])
     }
   }, [searchText]);
 
@@ -74,6 +37,30 @@ const Search1 = ({ navigation, events, setEvents, mapRef }) => {
    // navigation.navigate('EventDetail', { eventId: event.id });
   };
 
+  const onPressBackground = () => {
+    setSearchText('');
+    setFilteredData([]);
+  }
+
+  const renderResultRows = ({item}) => {
+    const distance = calculateDistanceHarvensine(item.latitud, item.longitud, origin.latitude, origin.longitude);
+    console.log("distance", distance);
+    return (
+    <TouchableOpacity  onPress={() => {handlePress(item)}}>
+      <View style={styles.containerRow}>
+          <Image
+            source={{uri:item.imagenes[0].urlImagen}}
+            style={styles.notificationImage}
+          />
+          <View style={{ padding:7,margin:0,   gap:5, }}>
+            <Text numberOfLines={2} // Limita a una línea
+  ellipsizeMode="tail" style={styles.suggestionName}>{item.nombreEvento}</Text>
+            <Text style={styles.suggestion}>A {distance}KM de distancia</Text>
+          </View>
+      </View>
+    </TouchableOpacity>
+  )}
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -82,82 +69,96 @@ const Search1 = ({ navigation, events, setEvents, mapRef }) => {
           style={[styles.input, { fontSize: width * 0.04 }]}
           placeholder='Buscar evento'
           placeholderTextColor='gray'
-          value={searchText}
-          onChangeText={setSearchText}
+          value={ searchText }
+          onChangeText={ (e) => {setSearchText(e)} }
         />
       </View>
       
       {filteredData.length > 0 && (
-        <FlatList
+        <><FlatList
           data={filteredData}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handlePress(item)}>
-                <View style={styles.containerRow}>
-              <Text style={styles.suggestion}>{item.nombreEvento}</Text>
-            {/*  <Image
-                              source={{uri:item.imagenes[0].urlImagen}}
-                              style={styles.notificationImage}
-                            />
-            */}</View>
-            </TouchableOpacity>
-          )}
+          keyExtractor={item => item.codEvento+Math.random() * (100 - 1 + 1) + 1}
+          renderItem={renderResultRows}
           style={styles.suggestionsContainer}
         />
+        </>
       )}
+      {(searchText.length > 0) && (<TouchableWithoutFeedback onPress={onPressBackground}>
+      <View style={styles.backgroundScreen}>
+      </View>
+    </TouchableWithoutFeedback>)}
     </View>
   );
 };
 const styles = StyleSheet.create({
+  notificationImage: {
+    width:width*0.11,
+    height: 40,
+    marginLeft: 10,
+    borderRadius: 10,
+  },
+  backgroundScreen:{
+    position:"absolute",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    width: width,
+    height: height,
+    zIndex:-1
+  },
+
   container: {
     alignItems: 'center',
+    width: width * 0.8,
   },
   searchContainer: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
-    marginTop: 10,
-    height: width * 0.09,
-    width: width * 0.6,
-    borderColor: '#000',
-    borderWidth: 2,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    padding: 1,
+    paddingLeft: 10,
+    width: width * 0.8,
+    marginTop:10,
+    backgroundColor: "rgba(255,255,255,1)",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "black",
+  
   },
   icon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
+    color: "black"
   },
   suggestionsContainer: {
-    position: 'absolute',
-    top: width * 0.15,
-    width: width * 0.8,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 10,
+    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    elevation: 2,
     zIndex: 100,
+    width: width*0.8,
   },
   suggestion: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    flexDirection:"row",
+    textAlign: "right",
+    fontWeight: "bold",
+    fontSize: 11,
+    width: width * 0.6,
+    
+  },
+  suggestionName: {
+    flexDirection:"row",
+    fontSize: 12,
+    width: width * 0.6,
   },
   containerRow:{
     flexDirection:"row",
-
+    justifyContent: "start",
+    alignItems: "center",
+    padding:5,
+    paddingLeft: 1,
+    width: width * 0.8,
   }
   ,
 });

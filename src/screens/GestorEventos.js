@@ -224,9 +224,9 @@ const Row = ({
 
     return (
         <>
-            {(data) && data.map((item) => (
+            {(data) && data.map((item, index) => (
                 <ListItem
-                    key={item.id}
+                    key={item.codEvento}
                     containerStyle={styles.row}
                     onLongPress={handleLongPress}
                 >
