@@ -76,7 +76,7 @@ const Search1 = ({ events, mapRef, origin }) => {
       
       {filteredData.length > 0 && (
         <><FlatList
-          data={filteredData}
+        data={filteredData.slice(0, 8)} 
           keyExtractor={item => item.codEvento+Math.random() * (100 - 1 + 1) + 1}
           renderItem={renderResultRows}
           style={styles.suggestionsContainer}
