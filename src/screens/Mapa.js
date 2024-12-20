@@ -23,15 +23,12 @@ export default function Mapa({ navigation }) {
     const latitudParams = route?.params?.latitudParams ?? null;
     const longitudParams = route?.params?.longitudParams ?? null;
 
-    console.log("parametros de ruta", route.params);
-
-    console.log("latitud de evento", latitudParams);
-    console.log("longitud de evento", longitudParams);
+    
 
     const [favorites, setFavorites] = useState([]);
     const codUsuario = 1;
     const [origin, setOrigin] = useState(null);
-const { setStateNavigation } = useContext(NavigationContext);
+    const { setStateNavigation } = useContext(NavigationContext);
     const [region, setRegion] = useState({
         latitude: -17.3914858,
         longitude: -66.1424565,
@@ -159,9 +156,9 @@ const { setStateNavigation } = useContext(NavigationContext);
                 </View>
             )}
 
-            {!loading ? (
+            {!loading && origin ? (
                 <MapView
-                    ref={mapRef} // Referencia al mapa
+                    ref={mapRef} 
                     style={styles.map}
                     region={region}
                     onRegionChangeComplete={setRegion}

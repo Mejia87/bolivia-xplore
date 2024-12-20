@@ -67,7 +67,7 @@ const GestorEventos = ({ navigation }) => {
                     const events = await response.json()
                     setEvents(events)
     
-                    console.log('eventos',events)
+                    
         
                 } catch (error) {
                     console.log('Error: ', error)
