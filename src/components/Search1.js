@@ -20,7 +20,7 @@ const Search1 = ({ events, mapRef, origin }) => {
     };
     if (searchText.length>0){
       fecthMap();
-      console.log("filter", filteredData);
+      //console.log("filter", filteredData);
     } else {
       setFilteredData([])
     }

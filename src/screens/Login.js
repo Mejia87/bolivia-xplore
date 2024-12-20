@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import * as Google from 'expo-auth-session/providers/google'
 import * as WebBroser from 'expo-web-browser'
-import * as React from 'react'
+
 WebBroser.maybeCompleteAuthSession()
 
 export default function Login({ onLogin }) {

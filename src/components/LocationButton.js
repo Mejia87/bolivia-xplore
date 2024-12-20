@@ -10,7 +10,7 @@ const LocationButton = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={ goToLocation}>
+      <TouchableOpacity style={styles.button}>
         <MaterialIcons name="place" size={24} color='white' />
         <Text style={styles.text}>Ver en Mapa</Text>
       </TouchableOpacity>
