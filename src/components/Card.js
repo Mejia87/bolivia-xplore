@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         maxWidth: 350,
         borderRadius: 20,
-        backgroundColor: "red",
+        backgroundColor: "rgba(0,0,0,0)",
     },
 
     image: {

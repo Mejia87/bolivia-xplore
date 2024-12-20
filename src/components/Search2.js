@@ -7,9 +7,9 @@ import {API_BASE_URL} from '@env'
 
 const { width, height } = Dimensions.get('window');
 
-const Search = ({ navigation, events , nts}) => {
-  const [searchText, setSearchText] = useState('asd');
-  const [filteredData, setFilteredData] = useState([]);
+const Search2 = ({  events , setEvents}) => {
+  const [searchText, setSearchText] = useState('');
+ 
   
   useEffect(() => {
           const fecthMap = async () => {
@@ -39,7 +39,7 @@ const Search = ({ navigation, events , nts}) => {
                   }
       
                   const events = await response.json()
-                  setFilteredData(events)
+                 
                   setEvents(events)
                   console.log('eventos',events)
       
@@ -55,10 +55,10 @@ const Search = ({ navigation, events , nts}) => {
 
   useEffect(() => {
     if (searchText === '') {
-      setFilteredData([]);
+      setEvents([]);
     } else {
       const filtered = Bsearch.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
-      setFilteredData(filtered);
+      setEvents(filtered);
     }
   }, [searchText]);
 
@@ -74,18 +74,7 @@ const Search = ({ navigation, events , nts}) => {
           onChangeText={setSearchText}
         />
       </View>
-      {/*filteredData.length > 0 && (
-        <FlatList
-          data={filteredData}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}>
-              <Text style={styles.suggestion}>{item.nombreEvento}</Text>
-            </TouchableOpacity>
-          )}
-          style={styles.suggestionsContainer}
-        />
-      )*/}
+   
     </View>
   );
 };
@@ -139,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Search;
+export default Search2;

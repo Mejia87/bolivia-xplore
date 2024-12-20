@@ -48,36 +48,17 @@ const ImageCard = ({evento, navigation}) => {
     );
 };
 
-const Eventos = ({ navigation }) => {
-    const route = useRoute()
-    const {idEvent,title} = route.params
+const Eventos = ({ currentEvents}) => {
+    
+    
      
     const [category, setCategory] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const fetchCategory = async () => {
-            
-          try {
-            const response = await fetch(`${API_BASE_URL}/api/category/${idEvent}`);
-            console.log(response)
-            if (!response.ok) {
-              throw new Error('Error al obtener los datos');
-            }
-
-            const data = await response.json();
-            setCategory(data);
-
-            console.log('data', data)
-
-          } catch (error) {
-            console.error('Error:', error);
-          } finally {
-            setLoading(false);
-          }
-        }
+    useEffect(() => { console.log("eventos a mostrar",currentEvents)
+        
     
-        fetchCategory()
+      
       }, [])
     
       if (loading) {
@@ -91,9 +72,9 @@ const Eventos = ({ navigation }) => {
     return (
         <View style={styles.containers}>
             
-         <Text style= {{fontSize:20,paddingTop:10,paddingBottom:10,fontWeight:"bold"}}>{title}</Text>
+        
             <FlatList
-                data={category}
+                data={currentEvents}
                 renderItem={({ item }) => (
                     <ImageCard
                         evento={item}
@@ -101,7 +82,7 @@ const Eventos = ({ navigation }) => {
                         
                     />
                 )}
-                keyExtractor={(item, index) => item.codEvento}
+                keyExtractor={(item) => item.id}
                 numColumns={2} 
                 contentContainerStyle={styles.container}
                 
@@ -112,11 +93,9 @@ const Eventos = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-       
-        //flexWrap:"wrap",
+        flexWrap:"wrap",
         padding: 5,
         justifyContent: "center",
-        
         backgroundColor: "#f5f5f5",
     },
     card: {

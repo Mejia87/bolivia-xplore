@@ -16,8 +16,8 @@ export default function CarouselView({images}) {
         dotStyle={styles.dotStyle}
         activeDotStyle={[styles.dotStyle, { backgroundColor: 'white' }]}
       >
-        {images.map((img) => (
-          <ImageBackground resizeMode= 'cover' style={styles.image} source={{uri:img.urlImagen}} key={images.index} />
+        {images.map((img, index) => (
+          <ImageBackground resizeMode= 'cover' style={styles.image} source={{uri:img.urlImagen}} key={images.index+index} />
         ))}
       </Carousel>
     </View>

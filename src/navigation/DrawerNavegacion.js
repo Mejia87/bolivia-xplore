@@ -14,6 +14,7 @@ import Ajustes from '../screens/Ajustes';
 import Navegacion from './Navegacion';
 import { useState } from 'react';
 import Dnotificasiones from '../data/Dnotificasiones';
+import NotificacionesStack from '../navigation/NotificacionesStack'
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -123,7 +124,7 @@ const DrawerNavegacion = ( ) => {
             />
             <Drawer.Screen
                 name = 'notificaciones'
-                component={Notificaciones}
+                component={NotificacionesStack}
                 options={{
                     title: 'Notificaciones',
                     headerTitleAlign: 'center',

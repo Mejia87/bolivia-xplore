@@ -147,7 +147,7 @@ const GestorEventos = ({ navigation }) => {
             </View>
             <View style={styles.buttonContainer}>
                 <Button
-                    title="agregar evento"
+                    title="Agregar Evento"
                     buttonStyle={styles.buttonAdd}
                     onPress={() => navigation.navigate("eventForm")}
                 />
@@ -224,9 +224,9 @@ const Row = ({
 
     return (
         <>
-            {(data) && data.map((item) => (
+            {(data) && data.map((item, index) => (
                 <ListItem
-                    key={item.id}
+                    key={item.codEvento}
                     containerStyle={styles.row}
                     onLongPress={handleLongPress}
                 >
@@ -299,6 +299,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 20,
         textAlign: "center",
+        color: 'white',
     },
     modalButtons: {
         flexDirection: "row",
@@ -319,15 +320,16 @@ const styles = StyleSheet.create({
     },
     buttonAdd: {
         width: 150,
-        height: 50,
+        height: 40,
         alignItems: "center",
-        backgroundColor:'#ce4728'
+        backgroundColor:'#b84b50',
+        borderRadius: 5,
     },
     buttonContainer: {
         with:'100%',
         height:50,
         alignItems:'center',
-        padding:5,
+        padding: 5,
         margin:10,
     },
 });

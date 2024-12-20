@@ -8,29 +8,50 @@ import {
     Alert,
     Image,
     ScrollView,
+    ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
+import MapView, { Circle, Marker, Polyline, Callout } from "react-native-maps";
+import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { createComponentForStaticNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+
+import Modal from "../components/Modal";
+import Mapa from "./Mapa";
+import { Button } from "react-native-elements";
 
 import { API_BASE_URL } from "@env";
 
 const EditEventForm = () => {
+
+    const navigation = useNavigation();
+
     const route = useRoute();
     const { idEvent } = route.params;
 
     const [category, setCategory] = useState("");
     const [name, setName] = useState("");
     const [imageUris, setImageUris] = useState([]);
+    const [images, setImages] = useState([]);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [location, setLocation] = useState("");
     const [description, setDescription] = useState("");
     const [history, setHistory] = useState("");
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [permanent, setPermanent] = useState(false)
+
+    const [visible, setVisible] = useState(false);
+
+    const [location, setLocation] = useState({
+        latitude: -17.38265, // Coordenadas por defecto
+        longitude: -66.36545,
+    });
+
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchEventById(idEvent);
@@ -129,7 +150,7 @@ const EditEventForm = () => {
             fechaFinEvento: endDate.toISOString(),
             latitud: -17.38256,
             longitud: -66.25364,
-            permanente: false,
+            permanent: false,
             idTipoEvento: { idTipoEvento: parseInt(category) },
         };
 
@@ -147,6 +168,7 @@ const EditEventForm = () => {
             }
 
             Alert.alert("Éxito", "El evento se actualizó correctamente.");
+            navigation.goBack();
         } catch (error) {
             console.log("Error:", error);
             Alert.alert("Error", "No se pudo actualizar el evento.");
@@ -192,20 +214,40 @@ const EditEventForm = () => {
                 onValueChange={(itemValue) => setCategory(itemValue)}
                 style={styles.input}
             >
-                <Picker.Item id="1" label="Seleccione una categoría" />
                 <Picker.Item
-                    id="2"
-                    label="Celebraciones Folkloricas"
+                    id="0"
+                    label="Seleccione una categoría"
+                />
+                <Picker.Item
+                    id="1"
+                    label="Festivales Tradicionales"
                     value="1"
                 />
-                <Picker.Item id="3" label="Ferias Tradicionales" value="2" />
+                <Picker.Item
+                    id="2"
+                    label="Celebraciones Folklricas"
+                    value="2"
+                />
+                <Picker.Item
+                    id="3"
+                    label="Lugares Turisticos"
+                    value="3"
+                />
                 <Picker.Item
                     id="4"
                     label="Conciertos Contemporaneos"
-                    value="3"
+                    value="4"
                 />
-                <Picker.Item id="5" label="Expociones de Arte" value="4" />
-                <Picker.Item id="6" label="Lugares Turisticos" value="5" />
+                <Picker.Item
+                    id="5"
+                    label="Exposiciones de Arte"
+                    value="5"
+                />
+                <Picker.Item
+                    id="6"
+                    label="Ferias Artesanales"
+                    value="6"
+                />
             </Picker>
 
             <Text style={styles.label}>Nombre del Evento</Text>
@@ -252,8 +294,14 @@ const EditEventForm = () => {
 
             <Text style={styles.label}>Fecha de Inicio del Evento</Text>
             <TouchableOpacity
-                onPress={() => setShowStartDatePicker(true)}
-                style={styles.dateButton}
+                onPress={() => {
+                    if (!permanent) setShowStartDatePicker(true);
+                }}
+                style={[
+                    styles.dateButton,
+                    permanent && { backgroundColor: "#ddd" },
+                ]}
+                disabled={permanent}
             >
                 <Text style={styles.dateText}>
                     {startDate ? startDate.toLocaleDateString() : "d/m/a"}
@@ -268,8 +316,8 @@ const EditEventForm = () => {
                 <DateTimePicker
                     value={startDate || new Date()}
                     mode="date"
-                    display="default"
-                    minimumDate={new Date()}
+                    display="spinner"
+                    minimumDate={new Date(new Date().setDate(new Date().getDate() + 1))}
                     onChange={(event, date) => {
                         setShowStartDatePicker(false);
                         if (date) setStartDate(date);
@@ -279,8 +327,14 @@ const EditEventForm = () => {
 
             <Text style={styles.label}>Fecha de Finalización del Evento</Text>
             <TouchableOpacity
-                onPress={() => setShowEndDatePicker(true)}
-                style={styles.dateButton}
+                onPress={() => {
+                    if (!permanent) setShowEndDatePicker(true);
+                }}
+                style={[
+                    styles.dateButton,
+                    permanent && { backgroundColor: "#ddd" },
+                ]}
+                disabled={permanent} 
             >
                 <Text style={styles.dateText}>
                     {endDate ? endDate.toLocaleDateString() : "d/m/a"}
@@ -295,8 +349,8 @@ const EditEventForm = () => {
                 <DateTimePicker
                     value={endDate || new Date()}
                     mode="date"
-                    display="default"
-                    minimumDate={new Date()}
+                    display="spinner"
+                    minimumDate={new Date(new Date().setDate(new Date().getDate() + 2))}
                     onChange={(event, date) => {
                         setShowEndDatePicker(false);
                         if (date) setEndDate(date);
@@ -305,12 +359,21 @@ const EditEventForm = () => {
             )}
 
             <Text style={styles.label}>Ubicación del Evento</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Ingrese ubicación..."
-                value={location}
-                onChangeText={setLocation}
-            />
+            <TouchableOpacity style={styles.locationButton}>
+                <MaterialIcons
+                    name="location-on"
+                    size={24}
+                    color="#551E18"
+                    onPress={() => setVisible(true)}
+                />
+                <MapLocation
+                    visible={visible}
+                    setVisible={setVisible}
+                    location={location}
+                    setLocation={setLocation}
+                />
+                <Text style={styles.locationText}>Seleccione ubicación</Text>
+            </TouchableOpacity>
 
             <Text style={styles.label}>Descripción del Evento</Text>
             <TextInput
@@ -329,9 +392,20 @@ const EditEventForm = () => {
                 value={history}
                 onChangeText={setHistory}
             />
+            <View style={styles.row}>
+                <Text style={styles.eventPermanentText}>Evento permanente</Text>
+                <TouchableOpacity
+                    style={[
+                        styles.circleButton,
+                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
+                    ]}
+                    onPress={() => setPermanent(!permanent)} // Alterna el estado
+                />
+            </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.cancelButton}>
+                <TouchableOpacity style={styles.cancelButton}
+                onPress={() => navigation.goBack()}>
                     <Text style={styles.cancelText}>Cancelar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -344,6 +418,86 @@ const EditEventForm = () => {
         </ScrollView>
     );
 };
+
+function MapLocation({
+    visible = false,
+    setVisible = () => {},
+    location = null,
+    setLocation = () => {},
+}) {
+    useEffect(() => {
+        if (visible) {
+            (async () => {
+                let { status } =
+                    await Location.requestForegroundPermissionsAsync();
+                if (status !== "granted") {
+                    Alert.alert(
+                        "Permiso denegado",
+                        "Se necesita permiso para acceder a la ubicación."
+                    );
+                    setVisible(false);
+                    return;
+                }
+
+                let currentLocation = await Location.getCurrentPositionAsync({});
+                setLocation({
+                    latitude: currentLocation.coords.latitude,
+                    longitude: currentLocation.coords.longitude,
+                });
+            })();
+        }
+    }, [visible]);
+
+    return (
+        <Modal isVisible={visible} setIsVisible={setVisible}>
+            {location ? (
+                <View style={{ height: "90%" }}>
+                    <MapView
+                        style={{ height: "100%" }}
+                        initialRegion={{
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                            latitudeDelta: 0.01,
+                            longitudeDelta: 0.01,
+                        }}
+                    >
+                        <Marker
+                            coordinate={location}
+                            draggable
+                            onDragEnd={(e) => {
+                                const { latitude, longitude } =
+                                    e.nativeEvent.coordinate;
+                                setLocation({ latitude, longitude });
+                            }}
+                        />
+                    </MapView>
+                    <View style={styles.buttonMap}>
+                        <Button
+                            title="guardar ubicacion"
+                            containerStyle={styles.viewMapBtnContainerSave}
+                            buttonStyle={styles.viewMapBtnSave}
+                            onPress={() => {
+                                console.log("Ubicación guardada:", location);
+                                setVisible(false);
+                            }}
+                        />
+                        <Button
+                            title="cancelar ubicacion"
+                            containerStyle={styles.viewMapBtnContainerCancel}
+                            buttonStyle={styles.viewMapBtnCancel}
+                            onPress={() => setVisible(false)}
+                        />
+                    </View>
+                </View>
+            ) : (
+                <View style={styles.loading}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            )}
+        </Modal>
+    );
+}
+
 
 const styles = StyleSheet.create({
     container: {
@@ -439,13 +593,57 @@ const styles = StyleSheet.create({
         backgroundColor: "#551E18",
         padding: 15,
         borderRadius: 5,
-        alignItems: "center",
+        flex: 1,
     },
     saveText: {
       color: '#fff',
       textAlign: 'center',
       fontSize: 16,
       fontWeight: 'bold',
+    },
+
+    loading: {
+        height: "80%",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    buttonMap: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 10,
+    },
+    viewMapBtnContainerSave: {
+        paddingRight: 5,
+    },
+    viewMapBtnContainerCancel: {
+        paddingLeft: 5,
+    },
+
+    viewMapBtnCancel: {
+        backgroundColor: "#ba9490",
+    },
+
+    row: {
+        flexDirection: "row",
+    },
+    eventPermanentText: {
+        fontSize: 18,
+        fontWeight:'500',
+        color: "#333333",
+        marginLeft: 90,
+    },
+    circleButton: {
+        width: 20, 
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: "#333333",
+        backgroundColor: "#FFFFFF",
+        marginLeft: 20,
+    },
+    circleButtonSelected: {
+        backgroundColor: "#551E18", 
     },
 });
 
