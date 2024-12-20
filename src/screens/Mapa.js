@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { StyleSheet, Text, View, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons"; // Ícono para el botón
@@ -7,14 +7,20 @@ import {API_BASE_URL} from '@env'
 
 import * as Location from "expo-location";
 import Search1 from "../components/Search1";
+import MapWithCursor from "../components/FavoriteCursor";
 
 export default function Mapa({navigation}) {
 
-    const [origin, setOrigin] = useState({
+    const [favorites, setFavorites] = useState([]);
+    const codUsuario = 1; //esta linea debe ser reemplazada por la original
+    const [origin, setOrigin] = useState(null);
+    
+    const [region, setRegion] = useState({
         latitude: -17.3914858,
         longitude: -66.1424565,
-    });
-
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
     const [eventList, setEventList] = useState(null);
     const [loading, setLoading] = useState(true);
     const mapRef = useRef(null); // Referencia al mapa para manipularlo
@@ -31,30 +37,49 @@ export default function Mapa({navigation}) {
         setOrigin({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-        });
+        });  
+        centerMap();      
+    };
 
-        // Centrar el mapa en la nueva ubicación
+    const processEventFactory = (events) => {
+        const colors = [
+                "rgba(76, 207, 72, 0.7)", 
+                "rgba(197, 177, 28, 0.7)", 
+                "rgba(26, 176, 206, 0.7)", 
+                "rgba(154, 175, 76, 0.7)", 
+                "rgba(57, 127, 170, 0.7)", 
+                "rgba(147, 206, 153, 0.7)", 
+                "rgba(41, 105, 184, 0.7)", 
+                "rgba(187, 150, 50, 0.7)", 
+                "rgba(140, 173, 159, 0.7)",
+                "rgba(192, 178, 90, 0.7)",
+                "rgba(194, 99, 40, 0.7)",
+                "rgba(145, 224, 111, 0.7)",
+                "rgba(1, 141, 163, 0.7)"
+        ];
+        const red = "red";
+        const eventWithFavorites = events.map((event) => {
+            let isFavorite = event.favorito.some((fav) => fav.codUsuario == codUsuario);
+            event.favorito = isFavorite; 
+            event.color = (isFavorite) ? colors.pop() : red;
+            return event;
+        })
+        setFavorites(eventWithFavorites.filter((event) => event.favorito ))
+        setEventList(eventWithFavorites)
+    }
+
+    const centerMap = () => {
         mapRef.current?.animateToRegion({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude:origin.latitude,
+            longitude: origin.longitude,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
         });
-    };
+    }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/event/events-to-map`, {
-                    method: 'GET',
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error al obtener los eventos');
-                }
-
-                const events = await response.json();
-                setEventList(events);
                 (async () => {
                     let { status } = await Location.requestForegroundPermissionsAsync()
                     if (status !== "granted") {
@@ -68,7 +93,19 @@ export default function Mapa({navigation}) {
                         latitude: location.coords.latitude,
                         longitude: location.coords.longitude,
                     })
+                    setRegion({... region, latitude: location.coords.latitude, longitude: location.coords.longitude})
                 })()
+                const response = await fetch(`${API_BASE_URL}/api/event/events-to-map`, {
+                    method: 'GET',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al obtener los eventos');
+                }
+
+                const events = await response.json();
+                processEventFactory(events);
+                
             } catch (error) {
                 console.log('Error: ', error);
             } finally {
@@ -79,10 +116,10 @@ export default function Mapa({navigation}) {
         fetchEvents();
     }, []);
 
-    // Obtener la ubicación al inicio
     useEffect(() => {
-        
-    }, [])
+        centerMap();
+    },[loading])
+    // Obtener la ubicación al inicio
 
     if (loading) {
         return (
@@ -101,6 +138,8 @@ export default function Mapa({navigation}) {
             <MapView
                 ref={mapRef} // Referencia al mapa
                 style={styles.map}
+                region={region}
+                onRegionChangeComplete={setRegion}
                 initialRegion={{
                     latitude: origin.latitude,
                     longitude: origin.longitude,
@@ -118,7 +157,7 @@ export default function Mapa({navigation}) {
                     >
                         <View style={styles.customMarker}>
                             
-                            <View style={styles.circle}>
+                            <View style={[styles.circle, {borderColor: event.color, borderWidth: (event.favorito) ? 4:2}]}>
 
                                 {event.imagenes && event.imagenes[0] && event.imagenes[0].urlImagen ? (
                                     
@@ -135,10 +174,11 @@ export default function Mapa({navigation}) {
                     </Marker>
                 ))}
             </MapView>
-
+            { favorites.map((data) => <MapWithCursor key={ data.codEvento } mapRef={mapRef} event={ data } region={ region } />) }
+            
             {/* Botón para redirigir a la ubicación */}
             <TouchableOpacity style={styles.locateButton} onPress={getUserLocation}>
-                <Ionicons name="navigate" size={30} color="#fff" />
+                <Ionicons name="location" size={30} color="#fff" />
             </TouchableOpacity>
         </View>
     );
@@ -173,7 +213,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         justifyContent: "center",
         alignItems: "center",
-        borderColor: "red",
         borderWidth: 2,
     },
     imageInsideCircle: {
