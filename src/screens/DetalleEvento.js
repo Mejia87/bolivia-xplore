@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ListItem } from "@rneui/themed";
 import {
     StyleSheet,
@@ -14,13 +14,14 @@ import FavoriteButton from "../components/Favorites";
 import BackButton from "../components/BackButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
+import { PoticionContext } from "../js/positionContext";
 
 enableScreens();
 
 export default function DetalleEvento({ navigation }) {
     const route = useRoute();
     const { evento } = route.params;
-
+    const { setPoint } = useContext(PoticionContext)
     const current = new Date();
     const dateEvent = new Date(evento.fechaInicioEvento);
 
@@ -29,9 +30,6 @@ export default function DetalleEvento({ navigation }) {
 
     const [expanded, setExpanded] = useState(true);
     const [expandedHistory, setExpandedHistory] = useState(true);
-
-    console.log("detalle latitud:", evento.latitud);
-    console.log("detalle longitud:", evento.longitud);
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -82,14 +80,12 @@ export default function DetalleEvento({ navigation }) {
                     <View style={styles.containerLocation}>
                         <TouchableOpacity
                             style={styles.buttonLocation}
-                            onPress={() =>
+                            onPress={() => {
+                                setPoint({ latitud : evento.latitud, longitud : evento.longitud })
                                 navigation.navigate("mapaPrincipal", {
                                     screen: "mapa",
-                                    params: {
-                                        latitudParams: evento.latitud,
-                                        longitudParams: evento.longitud,
-                                    },
                                 })
+                            }
                             }
                         >
                             <MaterialIcons

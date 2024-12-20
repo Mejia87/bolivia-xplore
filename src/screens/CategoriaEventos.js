@@ -28,13 +28,13 @@ const CategoriaEventos = ({ navigation }) => {
     const categorias = [
         {
             title: "Celebraciones Folcloricas",
-            image: require("../../assets/celebracionFolklorica.jpg"),
+            image: require("../../assets/recomendaciones.png"),
             eventC: () => navigation.navigate("eventoss",{idEvent: 1, title:"Celebraciones Folcloricas"})
         },
         {
             title: "Festivales Tradicionales",
             image: require("../../assets/feriaTradicional.jpg"),
-            eventC: () => navigation.navigate("eventoss", {idEvent: 2, title: "Festivales Tradicionales"})
+            eventC: () => navigation.navigate("eventoss", {idEvent: 4, title: "Festivales Tradicionales"})
         },
         {
             title: "Lugares Turisticos",
@@ -44,16 +44,16 @@ const CategoriaEventos = ({ navigation }) => {
         {
             title: "Museos",
             image: require("../../assets/exposicionArte.jpg"),
-            eventC: () => navigation.navigate("eventoss",{idEvent: 4, title:"Museos"})
+            eventC: () => navigation.navigate("eventoss",{idEvent: 2, title:"Museos"})
         },
         {
             title: "Expocicion de Arte",
-            image: require("../../assets/ferias.jpg"),
+            image: require("../../assets/museo.jpg"),
             eventC: () => navigation.navigate("eventoss", {idEvent: 5,title:"Expocicion de Arte"})
         },
         {
             title: "Ferias Artesanales",
-            image: require("../../assets/recomendaciones.png"),
+            image: require("../../assets/ferias.jpg"),
             eventC: () => navigation.navigate("eventoss", {idEvent: 6,title:"Ferias Artesanales"})
         }
     ]

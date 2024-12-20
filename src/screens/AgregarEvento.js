@@ -115,7 +115,7 @@ const EventForm = () => {
         const eventData = {
             nombreEvento: name,
             descripcionEvento: description,
-            ubicacion: "Parque Central",
+            ubicacion: adress,
             historiaEvento: history,
             fechaInicioEvento: startDate,
             fechaFinEvento: endDate,
@@ -129,7 +129,7 @@ const EventForm = () => {
 
         console.log("evento registrado", eventData);
 
-        /*imageUris.forEach((imageUri) => {
+        imageUris.forEach((imageUri) => {
             const fileName = imageUri.split("/").pop(); // Obtener el nombre del archivo
             const fileType = fileName.split(".").pop();
 
@@ -179,7 +179,7 @@ const EventForm = () => {
         } catch (error) {
             console.error("Error al enviar el evento:", error);
             Alert.alert("Error", "No se pudo registrar el evento");
-        }*/
+        }
     };
 
     return (
