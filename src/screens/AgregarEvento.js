@@ -16,6 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import MapView, { Circle, Marker, Polyline, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import Modal from "../components/Modal";
 import Mapa from "./Mapa";
@@ -24,6 +25,7 @@ import { Button } from "react-native-elements";
 import { API_BASE_URL } from "@env";
 
 const EventForm = () => {
+    const navigation = useNavigation();
     const [category, setCategory] = useState("");
     const [name, setName] = useState("");
     const [imageUris, setImageUris] = useState([]);
@@ -199,6 +201,7 @@ const EventForm = () => {
 
             
             Alert.alert("Guardado", "El evento ha sido registrado con exito");
+            navigation.goBack();
         } catch (error) {
             console.error("Error al enviar el evento:", error);
             Alert.alert("Error", "No se pudo registrar el evento");
@@ -396,7 +399,8 @@ const EventForm = () => {
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.cancelButton}>
+                <TouchableOpacity style={styles.cancelButton}
+                    onPress={() => navigation.goBack()}>
                     <Text style={styles.cancelText}>Cancelar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity

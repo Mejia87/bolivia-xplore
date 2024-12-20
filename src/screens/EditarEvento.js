@@ -16,7 +16,8 @@ import * as ImagePicker from "expo-image-picker";
 import MapView, { Circle, Marker, Polyline, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { createComponentForStaticNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import Modal from "../components/Modal";
 import Mapa from "./Mapa";
@@ -25,6 +26,9 @@ import { Button } from "react-native-elements";
 import { API_BASE_URL } from "@env";
 
 const EditEventForm = () => {
+
+    const navigation = useNavigation();
+
     const route = useRoute();
     const { idEvent } = route.params;
 
@@ -164,6 +168,7 @@ const EditEventForm = () => {
             }
 
             Alert.alert("Éxito", "El evento se actualizó correctamente.");
+            navigation.goBack();
         } catch (error) {
             console.log("Error:", error);
             Alert.alert("Error", "No se pudo actualizar el evento.");
@@ -399,7 +404,8 @@ const EditEventForm = () => {
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.cancelButton}>
+                <TouchableOpacity style={styles.cancelButton}
+                onPress={() => navigation.goBack()}>
                     <Text style={styles.cancelText}>Cancelar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
