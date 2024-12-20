@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
+import React, { useContext ,useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
 import {
     StyleSheet,
     Text,
@@ -9,12 +9,13 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons"; // Ícono para el botón
-
+import { useFocusEffect } from "@react-navigation/native";
 import { API_BASE_URL } from "@env";
 
 import * as Location from "expo-location";
 import Search1 from "../components/Search1";
 import MapWithCursor from "../components/FavoriteCursor";
+import { NavigationContext } from "../js/NavigationContext";
 import { useRoute } from "@react-navigation/native";
 
 export default function Mapa({ navigation }) {
@@ -30,7 +31,7 @@ export default function Mapa({ navigation }) {
     const [favorites, setFavorites] = useState([]);
     const codUsuario = 1;
     const [origin, setOrigin] = useState(null);
-
+const { setStateNavigation } = useContext(NavigationContext);
     const [region, setRegion] = useState({
         latitude: -17.3914858,
         longitude: -66.1424565,
@@ -77,9 +78,10 @@ export default function Mapa({ navigation }) {
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
         });
-    };
-
-    useLayoutEffect(() => {
+    }
+    
+    useFocusEffect(useCallback(() => {
+        setStateNavigation("Mapa")
         const fetchEvents = async () => {
             try {
                 (async () => {
@@ -131,7 +133,7 @@ export default function Mapa({ navigation }) {
         };
 
         fetchEvents();
-    }, []);
+    }, []))
 
     useEffect(() => {
         centerMap();

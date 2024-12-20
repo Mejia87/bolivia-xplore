@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { View, Text, Image, StyleSheet, FlatList, Alert, Modal, TouchableOpacity, Button } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
-
+import { NavigationContext } from "../js/NavigationContext";
 import {API_BASE_URL} from '@env'
 
 const App = () => {
   const today = new Date().toISOString().split("T")[0];
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
-
+  const { setStateNavigation } = useContext(NavigationContext);
   const [selectedDate, setSelectedDate] = useState(today);
   const [tasks, setTasks] = useState([]);
   const [markedDates, setMarkedDates] = useState({});
@@ -47,9 +48,10 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
+    setStateNavigation("Calendario")
     fetchEventsForMonth(currentYear, currentMonth);
-  }, []);
+  }, []))
 
   useEffect(() => {
     const dayEvents = markedDates[selectedDate];
