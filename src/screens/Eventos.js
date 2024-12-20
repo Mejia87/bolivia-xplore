@@ -113,7 +113,7 @@ const Eventos = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
        
-        flexWrap:"wrap",
+        //flexWrap:"wrap",
         padding: 5,
         justifyContent: "center",
         

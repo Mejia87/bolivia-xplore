@@ -11,7 +11,7 @@ export default function Login({ onLogin }) {
       <Text style={styles.title}>BoliviaXplore</Text>
             <TouchableOpacity style={styles.googleButton} onPress={onLogin}>
               <Image
-                source={require('../../assets/image.png',)}
+                source={require('../../assets/google.png',)}
           style={styles.googleIcon}
         />
         <Text style={styles.googleButtonText}>Continuar con Google</Text>

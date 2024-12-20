@@ -93,11 +93,9 @@ const Eventos = ({ currentEvents}) => {
 
 const styles = StyleSheet.create({
     container: {
-       
         flexWrap:"wrap",
         padding: 5,
         justifyContent: "center",
-        
         backgroundColor: "#f5f5f5",
     },
     card: {
