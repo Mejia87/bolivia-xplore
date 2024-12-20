@@ -5,7 +5,7 @@ import { StyleSheet, SafeAreaView, Platform } from 'react-native';
 
 import DrawerNavegacion from './src/navigation/DrawerNavegacion';
 import { NavigationContainer } from '@react-navigation/native';
-import Login from './src/screens/Login';
+import Login2 from './src/screens/Login';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticación
@@ -17,7 +17,7 @@ export default function App() {
         {isAuthenticated ? (
           <DrawerNavegacion />
         ) : (
-          <Login onLogin={() => setIsAuthenticated(true)} /> 
+          <Login2 onLogin={() => setIsAuthenticated(true)} /> 
         )}
       </NavigationContainer>
     </SafeAreaView>
