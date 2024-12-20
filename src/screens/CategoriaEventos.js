@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { enableScreens } from "react-native-screens";
+import { useFocusEffect } from "@react-navigation/native";
 import {
     View,
     StyleSheet,
@@ -11,7 +12,7 @@ import {
     Text
 } from "react-native";
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize"
-
+import { NavigationContext } from "../js/NavigationContext";
 
 
 import Card from "../components/Card";
@@ -23,6 +24,10 @@ const { width, height } = Dimensions.get("window");
 
 const CategoriaEventos = ({ navigation }) => {
     const [data, setData] = useState([]);
+    const { setStateNavigation } = useContext(NavigationContext);
+    useFocusEffect(useCallback(() => {
+        setStateNavigation("Categorías");
+    },[]))
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.container1} showsVerticalScrollIndicator={false}>
@@ -39,12 +44,12 @@ const CategoriaEventos = ({ navigation }) => {
                 />
                 <Card
                     title="Lugares Turisticos"
-                    image={require("../../assets/exposicionArte.jpg")}
+                    image={require("../../assets/lugaresTuristicos.jpg")}
                     event={() => navigation.navigate("eventoss", {idEvent: 3,title:"Lugares Turisticos"})}
                 />
                 <Card
                     title="Museos"
-                    image={require("../../assets/lugaresTuristicos.jpg")}
+                    image={require("../../assets/exposicionArte.jpg")}
                     event={() => navigation.navigate("eventoss",{idEvent: 4,title:"Museos"})}
                 />
                 <Card
@@ -67,6 +72,7 @@ const CategoriaEventos = ({ navigation }) => {
 const styles = StyleSheet.create({
     title:{
         fontSize: 30,
+        fontWeight: "bold", 
     },
     container1: {
         alignItems: "center",

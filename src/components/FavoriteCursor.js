@@ -35,7 +35,6 @@ const MapWithCursor = ({ event, region, mapRef }) => {
     );
 
     const angleDeg = angle * (180 / Math.PI)
-    console.log(angleDeg)
     setDegAngle(angleDeg)
     // Ajusta la posición del cursor en los bordes de la pantalla
     let x = width / 2 + (width / 2 - 20) * Math.cos(angle)-30;

@@ -1,8 +1,8 @@
-import React from 'react'
+import React,{ useContext } from 'react'
 import { Text,StyleSheet,TouchableOpacity, View,Image, Alert } from 'react-native';
 import {createDrawerNavigator, DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import { Badge, Icon } from '@rneui/base';
-
+import { NavigationContext } from '../js/NavigationContext';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -65,7 +65,7 @@ import GestorEventosStack from './GestorEventosStack';
 const DrawerNavegacion = ( ) => {
   const navigation = useNavigation();
   const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length)
-
+  const { stateNavigation } = useContext(NavigationContext);
  const NotificationPress = () => {
      
       navigation.navigate('notificaciones', setNotificationCount,notificationCount);
@@ -93,7 +93,7 @@ const DrawerNavegacion = ( ) => {
                 options={{
                     title: 'Inicio ',
                     headerTitleAlign:'center',
-                    headerTitle: () => <Text style={styles.headerTitle}>BoliviaXplore</Text>,
+                    headerTitle: () => <Text style={styles.headerTitle}>{ stateNavigation }</Text>,
                     drawerIcon:() => <Icon name='home' type='font-awesome-5' size={20} color='black' />,
                     headerRight: () => (
                       <View style = {styles.headerRigth}>
