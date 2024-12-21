@@ -103,11 +103,13 @@ const CategoriaEventos = ({ navigation }) => {
                         {evento.nombreEvento}
                     </Text>
                     <View style= {[ styles.containerView ]}>
-                        <Ionicons name='location' size={width * 0.04} color={"white"} style={styles.icon} /> 
+                        <View style={styles.icon}>
+                            <Ionicons name='location' size={width * 0.04} color={"white"}  /> 
+                        </View>
                         <Text
                             style={[styles.subtitle, { fontSize: RFPercentage(1.4) }]}
                         >
-                            ubicacion{evento.ubicacion}
+                            {evento.ubicacion}
                         </Text>
                     </View>
                 </View>
@@ -123,6 +125,9 @@ const CategoriaEventos = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    icon:{
+        height:"100%",
+    },
     container2: {
         justifyContent: "center",
         backgroundColor: "#f5f5f5",
@@ -151,7 +156,7 @@ const styles = StyleSheet.create({
         width: "100%",
         flexDirection: "row",
         alignItems: "center",
-        padding: 10
+        padding: 10,
     },
     title2: {
         padding:10,
