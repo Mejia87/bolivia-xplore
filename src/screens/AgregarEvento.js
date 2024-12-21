@@ -115,7 +115,7 @@ const EventForm = () => {
         const eventData = {
             nombreEvento: name,
             descripcionEvento: description,
-            ubicacion: "Parque Central",
+            ubicacion: adress,
             historiaEvento: history,
             fechaInicioEvento: startDate,
             fechaFinEvento: endDate,

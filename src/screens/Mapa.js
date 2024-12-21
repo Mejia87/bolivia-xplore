@@ -16,19 +16,17 @@ import * as Location from "expo-location";
 import Search1 from "../components/Search1";
 import MapWithCursor from "../components/FavoriteCursor";
 import { NavigationContext } from "../js/NavigationContext";
+import { PoticionContext } from "../js/positionContext";
 import { useRoute } from "@react-navigation/native";
 
 export default function Mapa({ navigation }) {
     const route = useRoute();
-    const latitudParams = route?.params?.latitudParams ?? null;
-    const longitudParams = route?.params?.longitudParams ?? null;
-
-    
 
     const [favorites, setFavorites] = useState([]);
     const codUsuario = 1;
     const [origin, setOrigin] = useState(null);
     const { setStateNavigation } = useContext(NavigationContext);
+    const { point } = useContext(PoticionContext);
     const [region, setRegion] = useState({
         latitude: -17.3914858,
         longitude: -66.1424565,
@@ -76,8 +74,28 @@ export default function Mapa({ navigation }) {
             longitudeDelta: 0.01,
         });
     }
-    
+
+    const moveMap = (latitude, longitude) => {
+        mapRef.current?.animateToRegion({
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+        });
+    }
+
+    useEffect(() => {
+        const {latitud, longitud} = point
+        if(latitud != null && longitud != null){
+            moveMap(latitud, longitud)
+        }
+    },[ point ])
+
     useFocusEffect(useCallback(() => {
+        setStateNavigation("Mapa") 
+    }, []))
+
+    useEffect(() => {
         setStateNavigation("Mapa")
         const fetchEvents = async () => {
             try {
@@ -91,17 +109,12 @@ export default function Mapa({ navigation }) {
 
                     let location = await Location.getCurrentPositionAsync({});
 
-                    if (latitudParams && longitudParams) {
-                        setOrigin({
-                            latitude: latitudParams,
-                            longitude: longitudParams,
-                        });
-                    } else {
+
                         setOrigin({
                             latitude: location.coords.latitude,
                             longitude: location.coords.longitude,
                         });
-                    }
+
 
                     setRegion({
                         ...region,
@@ -130,9 +143,7 @@ export default function Mapa({ navigation }) {
         };
 
         fetchEvents();
-    }, []))
-
-    
+    }, [])
 
     if (loading) {
         return (
@@ -225,7 +236,7 @@ export default function Mapa({ navigation }) {
             ))}
 
             {/* Botón para redirigir a la ubicación */}
-            <TouchableOpacity style={styles.locateButton} onPress={centerMap}>
+            <TouchableOpacity style={styles.locateButton} onPress={ centerMap }>
                 <Ionicons name="location" size={30} color="#fff" />
             </TouchableOpacity>
         </View>

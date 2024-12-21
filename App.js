@@ -8,13 +8,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import Login from './src/screens/Login';
 import Presentacion from './src/screens/Presentacion';
 import { NavigationContext } from './src/js/NavigationContext';
-
+import { PoticionContext } from './src/js/positionContext';
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticación
   const [showPresentation, setShowPresentation] = useState(false); // Controla la pantalla de presentación
   const [stateNavigation, setStateNavigation] = useState("Mapa");
+  const [point, setPoint ] = useState({
+    latitud : null,
+    longitud: null
+  })
   return (
     <SafeAreaView style={styles.safeArea}>
+      <PoticionContext.Provider value={{ point, setPoint }}>
       <NavigationContext.Provider value={{ stateNavigation, setStateNavigation }} >
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" translucent={false} />
         <NavigationContainer>
@@ -33,6 +38,7 @@ export default function App() {
           )}
         </NavigationContainer>
       </NavigationContext.Provider>
+      </PoticionContext.Provider>
     </SafeAreaView>
   );
 }
