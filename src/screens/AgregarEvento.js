@@ -16,7 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import MapView, { Circle, Marker, Polyline, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { CurrentRenderContext, useNavigation } from "@react-navigation/native";
 
 import Modal from "../components/Modal";
 import Mapa from "./Mapa";
@@ -115,7 +115,7 @@ const EventForm = () => {
         const eventData = {
             nombreEvento: name,
             descripcionEvento: description,
-            ubicacion: adress,
+            ubicacion: address,
             historiaEvento: history,
             fechaInicioEvento: startDate,
             fechaFinEvento: endDate,
@@ -329,7 +329,9 @@ const EventForm = () => {
                     name="location-on"
                     size={24}
                     color="#551E18"
-                    onPress={() => {setVisible(true)}}
+                    onPress={() => {
+                        setVisible(true);
+                    }}
                 />
                 <MapLocation
                     visible={visible}
@@ -364,9 +366,9 @@ const EventForm = () => {
                 <TouchableOpacity
                     style={[
                         styles.circleButton,
-                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
+                        permanent && styles.circleButtonSelected,
                     ]}
-                    onPress={() => setPermanent(!permanent)} // Alterna el estado
+                    onPress={() => setPermanent(!permanent)}
                 />
             </View>
 
@@ -395,7 +397,8 @@ function MapLocation({
     setLocation = () => {},
     setAddress = () => {},
 }) {
-    const [newRegion, setNewRegion] = useState(null);
+    const [mapRegion, setMapRegion] = useState(null);
+    const [markerPosition, setMarkerPosition] = useState(null);
 
     useEffect(() => {
         if (visible) {
@@ -414,7 +417,17 @@ function MapLocation({
                 let currentLocation = await Location.getCurrentPositionAsync(
                     {}
                 );
-                setLocation({
+
+                const initialRegion = {
+                    latitude: currentLocation.coords.latitude,
+                    longitude: currentLocation.coords.longitude,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                };
+
+                setMapRegion(initialRegion);
+
+                setMarkerPosition({
                     latitude: currentLocation.coords.latitude,
                     longitude: currentLocation.coords.longitude,
                 });
@@ -423,14 +436,14 @@ function MapLocation({
     }, [visible]);
 
     const confirmLocation = async () => {
-        setLocation(newRegion);
+        setLocation(markerPosition);
         const [addressCurrent] = await Location.reverseGeocodeAsync(location);
         if (addressCurrent) {
-            const city = '-' + addressCurrent.city || ""
-            const region = addressCurrent.region + ',' || ""
-            const subRegion = addressCurrent.subregion || ""
+            const city = "-" + addressCurrent.city || "";
+            const region = addressCurrent.region + "," || "";
+            const subRegion = addressCurrent.subregion || "";
             const regionText = `${region} ${subRegion} ${city} `;
-            console.log('region obtenida', addressCurrent)
+            console.log("region obtenida", addressCurrent);
             setAddress(regionText);
         }
         console.log("Ubicación guardada:", location);
@@ -439,27 +452,26 @@ function MapLocation({
 
     return (
         <Modal isVisible={visible} setIsVisible={setVisible}>
-            {location ? (
+            {mapRegion ? (
                 <View style={{ height: "90%" }}>
                     <MapView
                         style={{ height: "100%" }}
-                        initialRegion={{
-                            latitude: location.latitude,
-                            longitude: location.longitude,
-                            latitudeDelta: 0.01,
-                            longitudeDelta: 0.01,
-                        }}
-                        onRegionChange={(region) => setNewRegion(region)}
+                        initialRegion={mapRegion}
+                        onRegionChangeComplete={(region) =>
+                            setMapRegion(region)
+                        }
                     >
-                        <Marker
-                            coordinate={location}
-                            draggable
-                            onDragEnd={(e) => {
-                                const { latitude, longitude } =
-                                    e.nativeEvent.coordinate;
-                                setLocation({ latitude, longitude });
-                            }}
-                        />
+                        {markerPosition && (
+                            <Marker
+                                coordinate={markerPosition}
+                                draggable
+                                onDragEnd={(e) => {
+                                    const { latitude, longitude } =
+                                        e.nativeEvent.coordinate;
+                                    setMarkerPosition({ latitude, longitude });
+                                }}
+                            />
+                        )}
                     </MapView>
                     <View style={styles.buttonMap}>
                         <Button
@@ -472,7 +484,10 @@ function MapLocation({
                             title="cancelar ubicacion"
                             containerStyle={styles.viewMapBtnContainerCancel}
                             buttonStyle={styles.viewMapBtnCancel}
-                            onPress={() => {setVisible(false); setAdress('seleccione una ubicación')}}
+                            onPress={() => {
+                                setVisible(false);
+                                setAddress("seleccione una ubicación");
+                            }}
                         />
                     </View>
                 </View>

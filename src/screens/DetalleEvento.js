@@ -27,7 +27,7 @@ export default function DetalleEvento({ navigation }) {
     const finEvent = new Date(evento.fechaFinEvento);
 
     const visibleLocation =
-        (evento.tipoEvento === "PERMANENTE") || ( initEvent >= current && current <= finEvent );
+        (evento.tipoEvento === "PERMANENTE") || ( initEvent <= current && current <= finEvent );
 
     const [expanded, setExpanded] = useState(true);
     const [expandedHistory, setExpandedHistory] = useState(true);
