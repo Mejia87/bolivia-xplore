@@ -42,35 +42,38 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ajustes</Text>
+      <View style={{ justifyContent:"space-between" }}>
+        <Text style={styles.title}>Ajustes</Text>
 
-      {/* Recomendaciones de Notificaciones */}
-      <View style={styles.optionContainer}>
-        <Text style={styles.optionTitle}>Recomendaciones de Notificaciones</Text>
-        <Switch
-          value={notificationRecommendations}
-          onValueChange={setNotificationRecommendations}
-        />
+        {/* Recomendaciones de Notificaciones */}
+        <View style={styles.optionContainer}>
+          <Text style={styles.optionTitle}>Recomendaciones de Notificaciones</Text>
+          <Switch
+            value={notificationRecommendations}
+            onValueChange={setNotificationRecommendations}
+          />
+        </View>
+
+        {/* Permitir Notificaciones de Eventos Cercanos */}
+        <View style={styles.optionContainer}>
+          <Text style={styles.optionTitle}>Permitir Notificaciones de Eventos Cercanos</Text>
+          <Switch value={nearbyEvents} onValueChange={setNearbyEvents} />
+        </View>
+
+        {/* Permitir Notificaciones de Eventos Próximos */}
+        <View style={styles.optionContainer}>
+          <Text style={styles.optionTitle}>Permitir Notificaciones de Eventos Próximos</Text>
+          <Switch value={upcomingEvents} onValueChange={setUpcomingEvents} />
+        </View>
+
+        {/* Botón para guardar cambios */}
+        <TouchableOpacity style={styles.saveButton} onPress={updatePreferences}>
+          <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+        </TouchableOpacity>
+
+        {/* Versión */}
       </View>
-
-      {/* Permitir Notificaciones de Eventos Cercanos */}
-      <View style={styles.optionContainer}>
-        <Text style={styles.optionTitle}>Permitir Notificaciones de Eventos Cercanos</Text>
-        <Switch value={nearbyEvents} onValueChange={setNearbyEvents} />
-      </View>
-
-      {/* Permitir Notificaciones de Eventos Próximos */}
-      <View style={styles.optionContainer}>
-        <Text style={styles.optionTitle}>Permitir Notificaciones de Eventos Próximos</Text>
-        <Switch value={upcomingEvents} onValueChange={setUpcomingEvents} />
-      </View>
-
-      {/* Botón para guardar cambios */}
-      <TouchableOpacity style={styles.saveButton} onPress={updatePreferences}>
-        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-      </TouchableOpacity>
-
-      {/* Versión */}
+      
       <View style={styles.optionContainer}>
         <Text style={styles.optionTitle}>Versión</Text>
         <Text style={styles.optionSubtitle}>1.0</Text>

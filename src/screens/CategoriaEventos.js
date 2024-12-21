@@ -117,8 +117,10 @@ const CategoriaEventos = ({ navigation }) => {
         );
     };
 
-    return (<>
-                <Search2 events={data} setEvents={ setData }/>
+    return (<><View style={{marginTop:20}}>
+        <Search2  events={data} setEvents={ setData }/>
+    </View>
+                
     {(data.length == 0) ? <RenderCategories />:<RenderResultSearch />}
         
     </>);

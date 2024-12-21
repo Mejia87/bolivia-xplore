@@ -1,4 +1,4 @@
-import React, { useContext ,useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
+import React, { useContext ,useEffect, useState, useRef, useCallback } from "react";
 import {
     StyleSheet,
     Text,
@@ -18,12 +18,11 @@ import MapWithCursor from "../components/FavoriteCursor";
 import { NavigationContext } from "../js/NavigationContext";
 import { PoticionContext } from "../js/positionContext";
 import { useRoute } from "@react-navigation/native";
-
+import { UserContext } from "../js/UserContext";
 export default function Mapa({ navigation }) {
     const route = useRoute();
 
     const [favorites, setFavorites] = useState([]);
-    const codUsuario = 1;
     const [origin, setOrigin] = useState(null);
     const { setStateNavigation } = useContext(NavigationContext);
     const { point } = useContext(PoticionContext);
@@ -36,6 +35,8 @@ export default function Mapa({ navigation }) {
     const [eventList, setEventList] = useState(null);
     const [loading, setLoading] = useState(true);
     const mapRef = useRef(null);
+
+    const { user } = useContext(UserContext);
 
     const processEventFactory = (events) => {
         const colors = [
@@ -56,7 +57,7 @@ export default function Mapa({ navigation }) {
         const red = "red";
         const eventWithFavorites = events.map((event) => {
             let isFavorite = event.favorito.some(
-                (fav) => fav.codUsuario == codUsuario
+                (fav) => fav.codUsuario == user.codUsuario
             );
             event.favorito = isFavorite;
             event.color = isFavorite ? colors.pop() : red;
