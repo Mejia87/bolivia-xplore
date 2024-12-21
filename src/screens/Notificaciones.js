@@ -59,13 +59,16 @@ const Notificaciones = () => {
   };
  
   const PNotificationPress = (id) => {
+    if (id === "100") {
+      navigation.navigate('Notificaciones');
+        return;
+    }
+
     const evento = pdata.find(event => event.codEvento === id);
     if (evento) {
-      //console.log("evento",evento)
-      navigation.navigate('evento', { evento });
-     // console.log("evento",evento)
+        navigation.navigate('evento', { evento });
     } else {
-      Alert.alert('El evento ya finalizo');
+        Alert.alert('El evento ya finalizo');
     }
   };
 
