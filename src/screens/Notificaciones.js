@@ -1,27 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState,useContext  } from 'react';
+
 import { View, Text, Button, StyleSheet, useWindowDimensions, FlatList, Alert, TouchableOpacity, Image } from 'react-native';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import Dnotificasiones from '../data/Dnotificasiones';
 import { useRoute } from '@react-navigation/native';
 import {API_BASE_URL} from '@env'
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import DetalleEvento from './DetalleEvento';
 import pdata from '../data/pdata';
-
+import DrawerNavegacion from '../navigation/DrawerNavegacion';
+import { NotificationContext } from '../navigation/NotificationContext';
 const Notificaciones = () => {
+  
+  const { notificationCount, setNotificationCount } = useContext(NotificationContext);
   const navigation = useNavigation();
   const route= useRoute()
   //const [notificationCount, setNotificationCount]= route.params
   const { width, height } = useWindowDimensions();
-  const [notifications, setNotifications] = useState(Dnotificasiones);
- const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length);
+  //const [notifications, setNotifications] = useState(Dnotificasiones);
+ //const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length);
+ //const [notificationCount, setNotificationCount] = useState( Dnotificasiones ? Dnotificasiones.length : 0)
+    
+ const [notifications, setNotifications] = useState(Dnotificasiones || []);
+  React.useEffect(() => {
+    setNotificationCount(notifications.length);
+  }, [notifications]);
 
   const handleDelete = (id) => {
     setNotifications(notifications.filter(item => item.id !== id));
-   // setNotificationCount(notificationCount - 1)
+    setNotificationCount(notificationCount - 1)
+    //traido desde debajo del return// <DrawerNavegacion notificationCount={notificationCount} />
     //setNotificationCount(notificationCount - 1);
   };
+  
 
   const confirmClearNotifications = () => {
     Alert.alert(
@@ -38,6 +50,7 @@ const Notificaciones = () => {
           onPress: () => {
             setNotifications([]);
             setNotificationCount(0);
+            <DrawerNavegacion notificationCount={notificationCount} />
           },
         }
       ],
@@ -88,8 +101,12 @@ const Notificaciones = () => {
 
   return (
     <View style={styles.container}>
+    
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Notificaciones</Text>
+      <TouchableOpacity style={styles.arrowBackButton} onPress={() => navigation.goBack()}>
+      <Icon name="arrow-back" size={20} color="white" style={styles.icon} />
+     </TouchableOpacity>
+     {/*<Text style={styles.headerTitle}>Notificaciones</Text>*/}
         <TouchableOpacity style={styles.clearButton} onPress={confirmClearNotifications}>
           <Text style={styles.clearButtonText}>Limpiar</Text>
         </TouchableOpacity>
@@ -127,6 +144,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    
   },
   clearButton: {
     backgroundColor: '#8B2020',
@@ -139,6 +157,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   clearButtonText: {
+     alignSelf: 'flex-end',
     color: 'white',
     fontWeight: 'bold',
   },
@@ -180,6 +199,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   deleteButtonText: {
+    
     color: 'white',
     fontWeight: 'bold',
   },
@@ -200,6 +220,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'gray',
   },
+  
+  arrowBackButton: {
+    backgroundColor: '#8B2020',
+    padding: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  
 });
 
 export default Notificaciones;

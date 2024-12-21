@@ -9,6 +9,9 @@ import Login from './src/screens/Login';
 import Presentacion from './src/screens/Presentacion';
 import { NavigationContext } from './src/js/NavigationContext';
 import { PoticionContext } from './src/js/positionContext';
+import { NotificationProvider } from './src/navigation/NotificationContext';
+import Notificaciones from './src/screens/Notificaciones';
+
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticación
   const [showPresentation, setShowPresentation] = useState(false); // Controla la pantalla de presentación
@@ -19,6 +22,7 @@ export default function App() {
   })
   return (
     <SafeAreaView style={styles.safeArea}>
+        <NotificationProvider>
       <PoticionContext.Provider value={{ point, setPoint }}>
       <NavigationContext.Provider value={{ stateNavigation, setStateNavigation }} >
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" translucent={false} />
@@ -39,6 +43,7 @@ export default function App() {
         </NavigationContainer>
       </NavigationContext.Provider>
       </PoticionContext.Provider>
+      </NotificationProvider>
     </SafeAreaView>
   );
 }
