@@ -18,6 +18,7 @@ import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
+
 import Modal from "../components/Modal";
 import Mapa from "./Mapa";
 import { Button } from "react-native-elements";
@@ -36,7 +37,7 @@ const EventForm = () => {
     const [history, setHistory] = useState("");
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-    const [permanent, setPermanent] = useState(false)
+    const [permanent, setPermanent] = useState(false);
 
     const [visible, setVisible] = useState(false);
 
@@ -50,6 +51,21 @@ const EventForm = () => {
 
     const url = `${API_BASE_URL}/api/event/register`;
     let apiUrl = `${API_BASE_URL}/api/event/registerimage/`;
+
+    const getEventTypeText = () => {
+        if (permanent) {
+            if (!startDate && !endDate) {
+                return "Usted esta registrando un evento permanente.";
+            }
+            if (startDate && endDate) {
+                return "Usted esta registrando un evento semipermanente.";
+            }
+        }
+        if (!permanent && startDate && endDate) {
+            return "Usted esta registrando un evento temporal.";
+        }
+        return "Usted esta registrando un tipo de evento: ";
+    };
 
     const handleImagePick = async () => {
         const { status } =
@@ -294,16 +310,12 @@ const EventForm = () => {
                 ))}
             </ScrollView>
 
+            
+
             <Text style={styles.label}>Fecha de Inicio del Evento</Text>
             <TouchableOpacity
-                onPress={() => {
-                    if (!permanent) setShowStartDatePicker(true);
-                }}
-                style={[
-                    styles.dateButton,
-                    permanent && { backgroundColor: "#ddd" },
-                ]}
-                disabled={permanent}
+                onPress={() => setShowStartDatePicker(true)}
+                style={styles.dateButton}
             >
                 <Text style={styles.dateText}>
                     {startDate ? startDate.toLocaleDateString() : "d/m/a"}
@@ -314,7 +326,7 @@ const EventForm = () => {
                 <DateTimePicker
                     value={new Date()}
                     mode="date"
-                    display="spinner"
+                    display="default"
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 1))}
                     onChange={(event, date) => {
                         setShowStartDatePicker(false);
@@ -325,14 +337,8 @@ const EventForm = () => {
 
             <Text style={styles.label}>Fecha de Finalización del Evento</Text>
             <TouchableOpacity
-                onPress={() => {
-                    if (!permanent) setShowEndDatePicker(true);
-                }}
-                style={[
-                    styles.dateButton,
-                    permanent && { backgroundColor: "#ddd" },
-                ]}
-                disabled={permanent} 
+                onPress={() => setShowEndDatePicker(true)}
+                style={styles.dateButton}
             >
                 <Text style={styles.dateText}>
                     {endDate ? endDate.toLocaleDateString() : "d/m/a"}
@@ -343,7 +349,7 @@ const EventForm = () => {
                 <DateTimePicker
                     value={new Date()}
                     mode="date"
-                    display="spinner"
+                    display="default"
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 2))}
                     onChange={(event, date) => {
                         setShowEndDatePicker(false);
@@ -351,6 +357,17 @@ const EventForm = () => {
                     }}
                 />
             )}
+
+            <View style={styles.row}>
+                <Text style={styles.eventPermanentText}>Evento permanente</Text>
+                <TouchableOpacity
+                    style={[
+                        styles.circleButton,
+                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
+                    ]}
+                    onPress={() => setPermanent(!permanent)} // Alterna el estado
+                />
+            </View>
 
             <Text style={styles.label}>Ubicación del Evento</Text>
             <TouchableOpacity style={styles.locationButton}>
@@ -387,22 +404,15 @@ const EventForm = () => {
                 onChangeText={setHistory}
             />
 
-            <View style={styles.row}>
-                <Text style={styles.eventPermanentText}>Evento permanente</Text>
-                <TouchableOpacity
-                    style={[
-                        styles.circleButton,
-                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
-                    ]}
-                    onPress={() => setPermanent(!permanent)} // Alterna el estado
-                />
-            </View>
+            <Text style={styles.label}>Tipo de Evento</Text>
+            <Text style={styles.eventTypeText}>{getEventTypeText()}</Text>
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.cancelButton}
                     onPress={() => navigation.goBack()}>
                     <Text style={styles.cancelText}>Cancelar</Text>
                 </TouchableOpacity>
+                
                 <TouchableOpacity
                     style={styles.saveButton}
                     onPress={handleSave}
@@ -410,6 +420,7 @@ const EventForm = () => {
                     <Text style={styles.saveText}>Guardar</Text>
                 </TouchableOpacity>
             </View>
+
         </ScrollView>
     );
 };
@@ -625,7 +636,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight:'500',
         color: "#333333",
-        marginLeft: 90,
+        marginLeft: 0,
+        marginBottom: 10,
     },
     circleButton: {
         width: 20, 
@@ -634,10 +646,18 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#333333",
         backgroundColor: "#FFFFFF",
-        marginLeft: 20,
+        marginLeft: 188,
+        marginBottom: 10,
     },
     circleButtonSelected: {
         backgroundColor: "#551E18", 
+    },
+
+    eventTypeText: {
+        fontSize: 16,
+        fontWeight: "500",
+        color: "#555",
+        marginVertical: 10,
     },
 });
 

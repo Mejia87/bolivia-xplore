@@ -92,6 +92,21 @@ const EditEventForm = () => {
         }
     };
 
+    const getEventTypeText = () => {
+        if (permanent) {
+            if (!startDate && !endDate) {
+                return "Usted esta registrando un evento permanente.";
+            }
+            if (startDate && endDate) {
+                return "Usted esta registrando un evento semipermanente.";
+            }
+        }
+        if (!permanent && startDate && endDate) {
+            return "Usted esta registrando un evento temporal.";
+        }
+        return "Usted esta registrando un tipo de evento: ";
+    };
+
     const handleImagePick = async () => {
         const { status } =
             await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -294,14 +309,8 @@ const EditEventForm = () => {
 
             <Text style={styles.label}>Fecha de Inicio del Evento</Text>
             <TouchableOpacity
-                onPress={() => {
-                    if (!permanent) setShowStartDatePicker(true);
-                }}
-                style={[
-                    styles.dateButton,
-                    permanent && { backgroundColor: "#ddd" },
-                ]}
-                disabled={permanent}
+                onPress={() => setShowStartDatePicker(true)}
+                style={styles.dateButton}
             >
                 <Text style={styles.dateText}>
                     {startDate ? startDate.toLocaleDateString() : "d/m/a"}
@@ -316,7 +325,7 @@ const EditEventForm = () => {
                 <DateTimePicker
                     value={startDate || new Date()}
                     mode="date"
-                    display="spinner"
+                    display="default"
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 1))}
                     onChange={(event, date) => {
                         setShowStartDatePicker(false);
@@ -327,14 +336,8 @@ const EditEventForm = () => {
 
             <Text style={styles.label}>Fecha de Finalización del Evento</Text>
             <TouchableOpacity
-                onPress={() => {
-                    if (!permanent) setShowEndDatePicker(true);
-                }}
-                style={[
-                    styles.dateButton,
-                    permanent && { backgroundColor: "#ddd" },
-                ]}
-                disabled={permanent} 
+                onPress={() => setShowEndDatePicker(true)}
+                style={styles.dateButton}
             >
                 <Text style={styles.dateText}>
                     {endDate ? endDate.toLocaleDateString() : "d/m/a"}
@@ -349,7 +352,7 @@ const EditEventForm = () => {
                 <DateTimePicker
                     value={endDate || new Date()}
                     mode="date"
-                    display="spinner"
+                    display="default"
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 2))}
                     onChange={(event, date) => {
                         setShowEndDatePicker(false);
@@ -357,6 +360,17 @@ const EditEventForm = () => {
                     }}
                 />
             )}
+
+            <View style={styles.row}>
+                <Text style={styles.eventPermanentText}>Evento permanente</Text>
+                <TouchableOpacity
+                    style={[
+                        styles.circleButton,
+                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
+                    ]}
+                    onPress={() => setPermanent(!permanent)} // Alterna el estado
+                />
+            </View>
 
             <Text style={styles.label}>Ubicación del Evento</Text>
             <TouchableOpacity style={styles.locationButton}>
@@ -392,16 +406,10 @@ const EditEventForm = () => {
                 value={history}
                 onChangeText={setHistory}
             />
-            <View style={styles.row}>
-                <Text style={styles.eventPermanentText}>Evento permanente</Text>
-                <TouchableOpacity
-                    style={[
-                        styles.circleButton,
-                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
-                    ]}
-                    onPress={() => setPermanent(!permanent)} // Alterna el estado
-                />
-            </View>
+
+            <Text style={styles.label}>Tipo de Evento</Text>
+            <Text style={styles.eventTypeText}>{getEventTypeText()}</Text>
+            
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.cancelButton}
@@ -629,9 +637,10 @@ const styles = StyleSheet.create({
     },
     eventPermanentText: {
         fontSize: 18,
-        fontWeight:'500',
+        fontWeight:'bold',
         color: "#333333",
-        marginLeft: 90,
+        marginLeft: 0,
+        marginBottom: 10,
     },
     circleButton: {
         width: 20, 
@@ -640,7 +649,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#333333",
         backgroundColor: "#FFFFFF",
-        marginLeft: 20,
+        marginLeft: 188,
+        marginBottom: 10,
     },
     circleButtonSelected: {
         backgroundColor: "#551E18", 
