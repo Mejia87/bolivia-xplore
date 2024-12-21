@@ -47,7 +47,7 @@ const EditEventForm = () => {
     const [visible, setVisible] = useState(false);
 
     const [location, setLocation] = useState({
-        latitude: -17.38265, // Coordenadas por defecto
+        latitude: -17.38265, 
         longitude: -66.36545,
     });
 
