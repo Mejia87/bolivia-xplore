@@ -1,7 +1,16 @@
-import React from 'react';
+import 'react-native-gesture-handler'
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
+import * as Google from 'expo-auth-session/providers/google'
+import * as WebBroser from 'expo-web-browser'
+
+WebBroser.maybeCompleteAuthSession()
+
 export default function Login({ onLogin }) {
+
+  const [] = useState()
+
   return (
     <View style={styles.container}>
       <Image

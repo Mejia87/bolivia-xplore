@@ -41,12 +41,9 @@ const EventForm = () => {
 
     const [visible, setVisible] = useState(false);
 
-    const [location, setLocation] = useState({
-        latitude: -17.38265, // Coordenadas por defecto
-        longitude: -66.36545,
-    });
-    
-    
+    const [location, setLocation] = useState(null);
+    const [adress, setAdress] = useState("seleccione ubicación");
+
     const [loading, setLoading] = useState(true);
 
     const url = `${API_BASE_URL}/api/event/register`;
@@ -81,7 +78,7 @@ const EventForm = () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsMultipleSelection: true,
-            allowsEditing: true,
+            allowsEditing: false,
             aspect: [4, 3],
             quality: 1,
         });
@@ -134,38 +131,19 @@ const EventForm = () => {
         const eventData = {
             nombreEvento: name,
             descripcionEvento: description,
-            ubicacion: "Parque Central",
+            ubicacion: adress,
             historiaEvento: history,
             fechaInicioEvento: startDate,
             fechaFinEvento: endDate,
-            latitud: -17.38265,
-            longitud: -66.36545,
+            latitud: location.latitude,
+            longitud: location.longitude,
             permanente: permanent,
             idTipoEvento: {
                 idTipoEvento: category,
             },
         };
 
-        const img = [];
-
-        /*images.forEach((image) => {
-            img.push(
-                {
-                    uri: image.uri,
-                    type: image.type,
-                    name: image.fileName || "imagen.jpg",
-                }
-            )
-        });*/
-        /*const imageUri = imageUris[0];
-        const fileName = imageUri.split("/").pop(); // Obtener el nombre del archivo
-        const fileType = fileName.split(".").pop(); // Obtener la extensión del archivo
-
-        formData.append("images", {
-            uri: imageUri,
-            name: fileName || "image.jpg",
-            type: `image/${fileType}` || "image/jpeg", // Asegúrate de tener el tipo MIME correcto
-        });*/
+        console.log("evento registrado", eventData);
 
         imageUris.forEach((imageUri) => {
             const fileName = imageUri.split("/").pop(); // Obtener el nombre del archivo
@@ -178,10 +156,7 @@ const EventForm = () => {
             });
         });
 
-        
-
         try {
-            
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -215,7 +190,6 @@ const EventForm = () => {
                 throw new Error(`Error en la solicitud: ${res.statusText}`);
             }
 
-            
             Alert.alert("Guardado", "El evento ha sido registrado con exito");
             navigation.goBack();
         } catch (error) {
@@ -235,10 +209,7 @@ const EventForm = () => {
                 onValueChange={(itemValue) => setCategory(itemValue)}
                 style={styles.input}
             >
-                <Picker.Item
-                    id="0"
-                    label="Seleccione una categoría"
-                    />
+                <Picker.Item id="0" label="Seleccione una categoría" />
                 <Picker.Item
                     id="1"
                     label="Festivales Tradicionales"
@@ -249,26 +220,14 @@ const EventForm = () => {
                     label="Celebraciones Folklricas"
                     value="2"
                 />
-                <Picker.Item
-                    id="3"
-                    label="Lugares Turisticos"
-                    value="3"
-                />
+                <Picker.Item id="3" label="Lugares Turisticos" value="3" />
                 <Picker.Item
                     id="4"
                     label="Conciertos Contemporaneos"
                     value="4"
                 />
-                <Picker.Item
-                    id="5"
-                    label="Exposiciones de Arte"
-                    value="5"
-                />
-                <Picker.Item
-                    id="6"
-                    label="Ferias Artesanales"
-                    value="6"
-                />
+                <Picker.Item id="5" label="Exposiciones de Arte" value="5" />
+                <Picker.Item id="6" label="Ferias Artesanales" value="6" />
             </Picker>
 
             <Text style={styles.label}>Nombre del Evento</Text>
@@ -320,14 +279,20 @@ const EventForm = () => {
                 <Text style={styles.dateText}>
                     {startDate ? startDate.toLocaleDateString() : "d/m/a"}
                 </Text>
-                <MaterialIcons name="calendar-today" size={24} color="#551E18" />
+                <MaterialIcons
+                    name="calendar-today"
+                    size={24}
+                    color="#551E18"
+                />
             </TouchableOpacity>
             {showStartDatePicker && (
                 <DateTimePicker
                     value={new Date()}
                     mode="date"
-                    display="default"
-                    minimumDate={new Date(new Date().setDate(new Date().getDate() + 1))}
+                    display="spinner"
+                    minimumDate={
+                        new Date(new Date().setDate(new Date().getDate() + 1))
+                    }
                     onChange={(event, date) => {
                         setShowStartDatePicker(false);
                         if (date) setStartDate(date);
@@ -343,7 +308,11 @@ const EventForm = () => {
                 <Text style={styles.dateText}>
                     {endDate ? endDate.toLocaleDateString() : "d/m/a"}
                 </Text>
-                <MaterialIcons name="calendar-today" size={24} color="#551E18" />
+                <MaterialIcons
+                    name="calendar-today"
+                    size={24}
+                    color="#551E18"
+                />
             </TouchableOpacity>
             {showEndDatePicker && (
                 <DateTimePicker
@@ -375,15 +344,16 @@ const EventForm = () => {
                     name="location-on"
                     size={24}
                     color="#551E18"
-                    onPress={() => setVisible(true)}
+                    onPress={() => {setVisible(true)}}
                 />
                 <MapLocation
                     visible={visible}
                     setVisible={setVisible}
                     location={location}
                     setLocation={setLocation}
+                    setAdress={setAdress}
                 />
-                <Text style={styles.locationText}>Seleccione ubicación</Text>
+                <Text style={styles.locationText}>{adress}</Text>
             </TouchableOpacity>
 
             <Text style={styles.label}>Descripción del Evento</Text>
@@ -408,8 +378,10 @@ const EventForm = () => {
             <Text style={styles.eventTypeText}>{getEventTypeText()}</Text>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.cancelButton}
-                    onPress={() => navigation.goBack()}>
+                <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => navigation.goBack()}
+                >
                     <Text style={styles.cancelText}>Cancelar</Text>
                 </TouchableOpacity>
                 
@@ -430,7 +402,10 @@ function MapLocation({
     setVisible = () => {},
     location = null,
     setLocation = () => {},
+    setAdress = () => {},
 }) {
+    const [newRegion, setNewRegion] = useState(null);
+
     useEffect(() => {
         if (visible) {
             (async () => {
@@ -445,7 +420,9 @@ function MapLocation({
                     return;
                 }
 
-                let currentLocation = await Location.getCurrentPositionAsync({});
+                let currentLocation = await Location.getCurrentPositionAsync(
+                    {}
+                );
                 setLocation({
                     latitude: currentLocation.coords.latitude,
                     longitude: currentLocation.coords.longitude,
@@ -453,6 +430,21 @@ function MapLocation({
             })();
         }
     }, [visible]);
+
+    const confirmLocation = async () => {
+        setLocation(newRegion);
+        const [addressCurrent] = await Location.reverseGeocodeAsync(location);
+        if (addressCurrent) {
+            const city = '-' + addressCurrent.city || ""
+            const region = addressCurrent.region + ',' || ""
+            const subRegion = addressCurrent.subregion || ""
+            const regionText = `${region} ${subRegion} ${city} `;
+            console.log('region obtenida', addressCurrent)
+            setAdress(regionText);
+        }
+        console.log("Ubicación guardada:", location);
+        setVisible(false);
+    };
 
     return (
         <Modal isVisible={visible} setIsVisible={setVisible}>
@@ -466,6 +458,7 @@ function MapLocation({
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01,
                         }}
+                        onRegionChange={(region) => setNewRegion(region)}
                     >
                         <Marker
                             coordinate={location}
@@ -482,16 +475,13 @@ function MapLocation({
                             title="guardar ubicacion"
                             containerStyle={styles.viewMapBtnContainerSave}
                             buttonStyle={styles.viewMapBtnSave}
-                            onPress={() => {
-                                console.log("Ubicación guardada:", location);
-                                setVisible(false);
-                            }}
+                            onPress={() => confirmLocation()}
                         />
                         <Button
                             title="cancelar ubicacion"
                             containerStyle={styles.viewMapBtnContainerCancel}
                             buttonStyle={styles.viewMapBtnCancel}
-                            onPress={() => setVisible(false)}
+                            onPress={() => {setVisible(false); setAdress('seleccione una ubicación')}}
                         />
                     </View>
                 </View>
@@ -504,7 +494,6 @@ function MapLocation({
     );
 }
 
-
 const styles = StyleSheet.create({
     container: {
         padding: 20,
@@ -512,7 +501,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 18,
-        fontWeight: '500',
+        fontWeight: "500",
         marginVertical: 5,
         color: "#333333",
     },
@@ -593,7 +582,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         textAlign: "center",
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: "bold",
     },
     saveButton: {
         backgroundColor: "#551E18",
@@ -605,7 +594,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         textAlign: "center",
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: "bold",
     },
     loading: {
         height: "80%",
@@ -634,13 +623,13 @@ const styles = StyleSheet.create({
     },
     eventPermanentText: {
         fontSize: 18,
-        fontWeight:'500',
+        fontWeight: "500",
         color: "#333333",
         marginLeft: 0,
         marginBottom: 10,
     },
     circleButton: {
-        width: 20, 
+        width: 20,
         height: 20,
         borderRadius: 10,
         borderWidth: 2,
@@ -650,7 +639,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     circleButtonSelected: {
-        backgroundColor: "#551E18", 
+        backgroundColor: "#551E18",
     },
 
     eventTypeText: {

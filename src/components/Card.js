@@ -22,8 +22,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: 20,
         maxWidth: 350,
-        borderRadius: 20,
+        borderRadius: 5,
         backgroundColor: "rgba(0,0,0,0)",
+        overflow: "hidden",
     },
 
     image: {
@@ -34,9 +35,8 @@ const styles = StyleSheet.create({
     textContainer: {
         width: 350,
         marginTop: -20,
-
-        backgroundColor: "rgba(108, 106, 108, 0.7)",
-        borderRadius: 10,
+        justifyContent: "center",
+        backgroundColor: "rgba(108, 106, 108, 0.8)",
         alignItems: "center",
         height: 20,
     },

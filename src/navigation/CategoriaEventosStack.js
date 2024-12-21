@@ -5,7 +5,7 @@ import CategoriaEventosEventos from '../screens/CategoriaEventos';
 import DetalleEvento from '../screens/DetalleEvento';
 import Eventos from '../screens/Eventos';
 import EventosRecom from '../screens/EventosRecom'
-
+import MapaStack from '../navigation/MapaStack'
 
 const Stack = createStackNavigator();
 
@@ -32,6 +32,7 @@ export default function CategoriaEventosStack() {
             component= {EventosRecom}
             options = {{title: "eventosRecom"}}
         />
+        
     </Stack.Navigator>
   );
 }

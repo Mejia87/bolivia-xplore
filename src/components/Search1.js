@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TextInput, StyleSheet, Dimensions, FlatList, Text, TouchableOpacity,Image, TouchableWithoutFeedback } from 'react-native';
+import { View, TextInput, StyleSheet, Dimensions, FlatList, Text, TouchableOpacity,Image, TouchableWithoutFeedback, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Bsearch from '../data/Bsearch';
 
@@ -20,7 +20,7 @@ const Search1 = ({ events, mapRef, origin }) => {
     };
     if (searchText.length>0){
       fecthMap();
-      console.log("filter", filteredData);
+      //console.log("filter", filteredData);
     } else {
       setFilteredData([])
     }
@@ -44,7 +44,6 @@ const Search1 = ({ events, mapRef, origin }) => {
 
   const renderResultRows = ({item}) => {
     const distance = calculateDistanceHarvensine(item.latitud, item.longitud, origin.latitude, origin.longitude);
-    console.log("distance", distance);
     return (
     <TouchableOpacity  onPress={() => {handlePress(item)}}>
       <View style={styles.containerRow}>
@@ -83,10 +82,7 @@ const Search1 = ({ events, mapRef, origin }) => {
         />
         </>
       )}
-      {(searchText.length > 0) && (<TouchableWithoutFeedback onPress={onPressBackground}>
-      <View style={styles.backgroundScreen}>
-      </View>
-    </TouchableWithoutFeedback>)}
+      {(searchText.length > 0) && (<Pressable style={styles.backgroundScreen} onPress={onPressBackground} />)}
     </View>
   );
 };

@@ -28,8 +28,6 @@ const ImageCard = ({evento, navigation}) => {
     const handlePressimage = () => {
          navigation.navigate("evento",{evento});
      }
-
-     console.log('evento obtenido', evento)
     return (
         <TouchableOpacity style={styles.card} onPress={handlePressimage}>
 
@@ -57,19 +55,14 @@ const Eventos = ({ navigation }) => {
 
     useEffect(() => {
         const fetchCategory = async () => {
-            
           try {
             const response = await fetch(`${API_BASE_URL}/api/category/${idEvent}`);
-            console.log(response)
             if (!response.ok) {
               throw new Error('Error al obtener los datos');
             }
 
             const data = await response.json();
             setCategory(data);
-
-            console.log('data', data)
-
           } catch (error) {
             console.error('Error:', error);
           } finally {
