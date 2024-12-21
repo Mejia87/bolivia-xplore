@@ -132,9 +132,7 @@ export default function Mapa({ navigation }) {
         fetchEvents();
     }, []))
 
-    useEffect(() => {
-        centerMap();
-    }, [loading]);
+    
 
     if (loading) {
         return (
@@ -227,7 +225,7 @@ export default function Mapa({ navigation }) {
             ))}
 
             {/* Botón para redirigir a la ubicación */}
-            <TouchableOpacity style={styles.locateButton} onPress={centerMap()}>
+            <TouchableOpacity style={styles.locateButton} onPress={centerMap}>
                 <Ionicons name="location" size={30} color="#fff" />
             </TouchableOpacity>
         </View>

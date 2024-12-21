@@ -41,7 +41,7 @@ const EventForm = () => {
     const [visible, setVisible] = useState(false);
 
     const [location, setLocation] = useState(null);
-    const [adress, setAdress] = useState("seleccione ubicación");
+    const [address, setAddress] = useState("seleccione ubicación");
 
     const [loading, setLoading] = useState(true);
 
@@ -129,7 +129,7 @@ const EventForm = () => {
 
         console.log("evento registrado", eventData);
 
-        /*imageUris.forEach((imageUri) => {
+        imageUris.forEach((imageUri) => {
             const fileName = imageUri.split("/").pop(); // Obtener el nombre del archivo
             const fileType = fileName.split(".").pop();
 
@@ -179,7 +179,7 @@ const EventForm = () => {
         } catch (error) {
             console.error("Error al enviar el evento:", error);
             Alert.alert("Error", "No se pudo registrar el evento");
-        }*/
+        }
     };
 
     return (
@@ -336,9 +336,9 @@ const EventForm = () => {
                     setVisible={setVisible}
                     location={location}
                     setLocation={setLocation}
-                    setAdress={setAdress}
+                    setAddress={setAddress}
                 />
-                <Text style={styles.locationText}>{adress}</Text>
+                <Text style={styles.locationText}>{address}</Text>
             </TouchableOpacity>
 
             <Text style={styles.label}>Descripción del Evento</Text>
@@ -393,7 +393,7 @@ function MapLocation({
     setVisible = () => {},
     location = null,
     setLocation = () => {},
-    setAdress = () => {},
+    setAddress = () => {},
 }) {
     const [newRegion, setNewRegion] = useState(null);
 
@@ -431,7 +431,7 @@ function MapLocation({
             const subRegion = addressCurrent.subregion || ""
             const regionText = `${region} ${subRegion} ${city} `;
             console.log('region obtenida', addressCurrent)
-            setAdress(regionText);
+            setAddress(regionText);
         }
         console.log("Ubicación guardada:", location);
         setVisible(false);
