@@ -55,6 +55,8 @@ const Search2 = ({  events , setEvents}) => {
 
       if(searchText.trim().length > 0){
         fecthMap()
+      } else {
+        cleanSearch()
       }
   }
 
@@ -67,19 +69,24 @@ const Search2 = ({  events , setEvents}) => {
           placeholder='Buscar evento'
           placeholderTextColor='gray'
           value={searchText}
+          onBlur={ onPressedSearch }
+          onKeyPress={(e) => {
+            if(e.nativeEvent.key === 'Enter'){
+              onPressedSearch()
+            }
+          } }
           onChangeText={(e) => {
             setSearchText(e)
-            onPressedSearch()
           }}
         />{
-          (filtered) ? (<TouchableOpacity style={ [styles.presableSearch,{ backgroundColor:"red", color:"black" }] } onPress={ cleanSearch }>
-            <Ionicons name='close' size={width * 0.05} color='gray' style={styles.icon} />
-          </TouchableOpacity>):(<TouchableOpacity style={ styles.presableSearch } onPress={ onPressedSearch }>
+          (filtered) && (<TouchableOpacity style={ [styles.presableSearch,{marginRight:5,borderRadius: 10,padding:0, backgroundColor:"red", color:"black" }] } onPress={ cleanSearch }>
+            <Ionicons name='close' size={width * 0.02} color='gray' style={[styles.icon, { fontSize:20}]} />
+          </TouchableOpacity>)}
+          <TouchableOpacity style={ styles.presableSearch } onPress={ onPressedSearch }>
             <Ionicons name='search' size={width * 0.05} color='gray' style={styles.icon} />
-          </TouchableOpacity>)
-        } 
+          </TouchableOpacity> 
       </View>
-      {((searchText.length > 0) && ((events.length > 0) ? <Text>Resultados para : {searchText}</Text>:<Text style={{ color:"red" }}>No se encontraron eventos para : {searchText}</Text>))}
+      {((filtered) && ((events.length > 0) ? <Text>Resultados para : {searchText}</Text>:<Text style={{ color:"red" }}>No se encontraron eventos para : {searchText}</Text>))}
     </View>
   );
 };
