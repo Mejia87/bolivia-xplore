@@ -450,6 +450,11 @@ function MapLocation({
         setVisible(false);
     };
 
+    const handleMapPress = (e) => {
+        const { latitude, longitude } = e.nativeEvent.coordinate;
+        setMarkerPosition({ latitude, longitude });
+    }
+
     return (
         <Modal isVisible={visible} setIsVisible={setVisible}>
             {mapRegion ? (
@@ -460,16 +465,12 @@ function MapLocation({
                         onRegionChangeComplete={(region) =>
                             setMapRegion(region)
                         }
+                        onPress={handleMapPress}
                     >
                         {markerPosition && (
                             <Marker
                                 coordinate={markerPosition}
-                                draggable
-                                onDragEnd={(e) => {
-                                    const { latitude, longitude } =
-                                        e.nativeEvent.coordinate;
-                                    setMarkerPosition({ latitude, longitude });
-                                }}
+                                
                             />
                         )}
                     </MapView>
