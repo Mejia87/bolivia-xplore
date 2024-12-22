@@ -8,7 +8,7 @@ import {
     ActivityIndicator,
 } from "react-native";
 import { enableScreens } from "react-native-screens";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Search from "../components/Search";
 import { Button, Icon } from "@rneui/base";
 import { CheckBox, ListItem, Avatar } from "@rneui/themed";
@@ -18,6 +18,7 @@ import { ScrollView } from "react-native";
 import Modal from "../components/Modal";
 import { Ionicons } from '@expo/vector-icons';
 import { API_BASE_URL } from "@env";
+import { useFocusEffect } from "@react-navigation/native";
 
 enableScreens();
 
@@ -32,10 +33,12 @@ const GestorEventos = ({ navigation }) => {
     
 
      useEffect(() => {
-            
-        updateEvent()
-            
+        updateEvent()   
         }, [])
+
+   useFocusEffect(useCallback(() => {
+        updateEvent() 
+    }, []))
 
     const  updateEvent = async () =>  {
         
@@ -102,33 +105,20 @@ const GestorEventos = ({ navigation }) => {
                         
                     }
                 );
-
-                if (response.ok) {
-                    Alert.alert(
-                        "Eliminado",
-                        `El evento ha sido eliminado correctamente.`
-                    );
-
-                    updateEvent()
-
-                } else {
-                    const errorData = await response.json();
-                    Alert.alert(
-                        "Error",
-                        `No se pudo eliminar el evento: ${
-                            errorData.message || "Error desconocido"
-                        }`
-                    );
-                }
             } catch (error) {
                 console.log("Error al eliminar evento: ", error);
                 Alert.alert("Error", "No se pudo eliminar el evento.");
             }
-
-            setSelectedItems([]);
-            setLongPressActive(false);
-            toggleModal();
         }
+        Alert.alert(
+            "Eliminado",
+            `Eliminación finalizada`
+        );
+
+        updateEvent();
+        setSelectedItems([]);
+        setLongPressActive(false);
+        toggleModal();
     };
 
     const handleCancel = () => {
@@ -231,9 +221,9 @@ const Row = ({
 
     const categoria = {
         1:'Celebraciones Folcloricas',
-        2:'Festivales Tradicionales',
+        4:'Festivales Tradicionales',
         3:'Lugares Turisticos',
-        4:'Conciertos Contenporaneos',
+        2:'Museos',
         5:'Exposiciones de Arte',
         6:'Ferias Artesanales'
     }
@@ -323,7 +313,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 20,
         textAlign: "center",
-        color: 'white',
+        color: 'black',
     },
     modalButtons: {
         flexDirection: "row",

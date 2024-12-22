@@ -28,13 +28,13 @@ export default function App() {
     nombreUsuario:"admin",
     fotoUsuario: "https://vidaenusa.org/wp-content/uploads/2023/12/cuanto-gana-administrador-empresas-usa.jpg",
     preferences: {
-        "idPreferences": 1,
-        "language": "es",
-        "distance": 200.0,
-        "recomendations": true,
-        "favoriteNearNotification": true,
-        "notificationsRecomendation": true,
-        "nearNotification": true
+        idPreferences: 1,
+        language: "es",
+        distance: 200.0,
+        recomendations: true,
+        favoriteNearNotification: true,
+        notificationsRecomendation: true,
+        nearNotification: true
     }
   })
   return (

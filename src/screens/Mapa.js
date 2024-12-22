@@ -36,7 +36,7 @@ export default function Mapa({ navigation }) {
     const [loading, setLoading] = useState(true);
     const mapRef = useRef(null);
 
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
 
     const processEventFactory = (events) => {
         const colors = [
