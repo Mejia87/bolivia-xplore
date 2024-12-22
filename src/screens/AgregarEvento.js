@@ -316,7 +316,7 @@ const EventForm = () => {
                 <DateTimePicker
                     value={new Date()}
                     mode="date"
-                    display="spinner"
+                    display="default"
                     minimumDate={
                         new Date(new Date().setDate(new Date().getDate() + 1))
                     }
