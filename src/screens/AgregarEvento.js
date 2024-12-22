@@ -202,16 +202,9 @@ const EventForm = () => {
                 throw new Error(`Error en la solicitud: ${res.statusText}`);
             }
 
-            Alert.alert("Guardado",
-                "El evento ha sido registrado con éxito, y las imágenes se han cargado correctamente.",
-                [
-                    {
-                        text: "ok",
-                        onPress: () => navigation.GoBack(),
-                    },
-                ]
-            );
-
+            Alert.alert("Guardado", "El evento ha sido registrado con éxito, y las imágenes se han cargado correctamente.");
+            navigation.goBack();
+                  
         } catch (error) {
             console.error("Error al enviar el evento:", error);
             Alert.alert("Error", "No se pudo registrar el evento");
