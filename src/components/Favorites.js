@@ -15,7 +15,7 @@ const FavoriteButton = () => {
         <MaterialIcons
           name={isFavorite ? 'star' : 'star-border'}
           size={24}
-          color={isFavorite ? 'orange' : 'gray'}
+          color={isFavorite ? 'yellow' : 'gray'}
         />
         <Text style={styles.text}>
           {isFavorite ? 'Quitar de Favoritos' : 'Agregar a Favoritos'}
@@ -26,6 +26,14 @@ const FavoriteButton = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+  
+    margin: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(95, 31, 23, 0.35)',
+    shadowRadius: 5,
+
+  },
   
   button: {
     flexDirection: 'row',

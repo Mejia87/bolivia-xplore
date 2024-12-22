@@ -15,7 +15,7 @@ const BackButton = () => {
 
 const styles = StyleSheet.create({
   arrowBackButton: {
-    height: 39.5,
+    //height: 39.5,
     backgroundColor: '#8B2020',
     padding: 10,
     borderRadius: 10,
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
+    margin: 10,
   },
   
 });
