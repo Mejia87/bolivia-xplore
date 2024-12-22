@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
-
+import { Ionicons } from '@expo/vector-icons';
 export default function Bienvenida({ onContinue }) {
   const { width } = Dimensions.get('window');
   const [currentPage, setCurrentPage] = useState(0);
@@ -50,20 +50,27 @@ export default function Bienvenida({ onContinue }) {
           />
         ))}
       </View>
-      <TouchableOpacity style={styles.button} onPress={onContinue}>
-        <Text style={styles.buttonText}>Comenzar</Text>
-      </TouchableOpacity>
+      <View style={{ width:"100%",flexDirection:"row",justifyContent:"flex-end" }}>
+        <TouchableOpacity style={styles.button} onPress={onContinue}>
+          <Text style={styles.buttonText}>Comenzar  <Ionicons name="arrow-forward" size={20} color='gray' style={styles.icon} /></Text>
+        </TouchableOpacity>
+      </View>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  icon:{
+    color:"white",
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 10,
+    width:"100%"
   },
   title: {
     fontSize: 20,
@@ -115,8 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#b84b50',
   },
   button: {
-    marginTop: 20,
-    right: -115,
+    justifyContent:"flex-end",
     paddingVertical: 10,
     paddingHorizontal: 40,
     backgroundColor: '#b84b50',
@@ -127,5 +133,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    justifyContent:"center",
+    alignItems:"center",
   },
 });
