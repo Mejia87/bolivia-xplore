@@ -1,4 +1,11 @@
-import React, { useContext ,useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
+import React, {
+    useContext,
+    useEffect,
+    useState,
+    useRef,
+    useLayoutEffect,
+    useCallback,
+} from "react";
 import {
     StyleSheet,
     Text,
@@ -6,9 +13,11 @@ import {
     Image,
     ActivityIndicator,
     TouchableOpacity,
+    Button,
+    TouchableWithoutFeedback,
 } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-import { Ionicons } from "@expo/vector-icons"; // Ícono para el botón
+import MapView, { Marker, Callout } from "react-native-maps";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { API_BASE_URL } from "@env";
 
@@ -73,7 +82,7 @@ export default function Mapa({ navigation }) {
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
         });
-    }
+    };
 
     const moveMap = (latitude, longitude) => {
         mapRef.current?.animateToRegion({
@@ -82,21 +91,23 @@ export default function Mapa({ navigation }) {
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
         });
-    }
+    };
 
     useEffect(() => {
-        const {latitud, longitud} = point
-        if(latitud != null && longitud != null){
-            moveMap(latitud, longitud)
+        const { latitud, longitud } = point;
+        if (latitud != null && longitud != null) {
+            moveMap(latitud, longitud);
         }
-    },[ point ])
+    }, [point]);
 
-    useFocusEffect(useCallback(() => {
-        setStateNavigation("Mapa") 
-    }, []))
+    useFocusEffect(
+        useCallback(() => {
+            setStateNavigation("Mapa");
+        }, [])
+    );
 
     useEffect(() => {
-        setStateNavigation("Mapa")
+        setStateNavigation("Mapa");
         const fetchEvents = async () => {
             try {
                 (async () => {
@@ -109,12 +120,10 @@ export default function Mapa({ navigation }) {
 
                     let location = await Location.getCurrentPositionAsync({});
 
-
-                        setOrigin({
-                            latitude: location.coords.latitude,
-                            longitude: location.coords.longitude,
-                        });
-
+                    setOrigin({
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                    });
 
                     setRegion({
                         ...region,
@@ -143,7 +152,7 @@ export default function Mapa({ navigation }) {
         };
 
         fetchEvents();
-    }, [])
+    }, []);
 
     if (loading) {
         return (
@@ -167,7 +176,7 @@ export default function Mapa({ navigation }) {
 
             {!loading && origin ? (
                 <MapView
-                    ref={mapRef} 
+                    ref={mapRef}
                     style={styles.map}
                     region={region}
                     onRegionChangeComplete={setRegion}
@@ -188,7 +197,6 @@ export default function Mapa({ navigation }) {
                                     latitude: event.latitud,
                                     longitude: event.longitud,
                                 }}
-                                title={event.nombreEvento}
                             >
                                 <View style={styles.customMarker}>
                                     <View
@@ -211,13 +219,41 @@ export default function Mapa({ navigation }) {
                                                         .urlImagen,
                                                 }}
                                                 style={styles.imageInsideCircle}
-                                                //  onPress={navigation.navigate("eventoMapa",event.codEvento)}
                                             />
                                         ) : (
                                             <Text>Imagen no disponible</Text>
                                         )}
                                     </View>
                                 </View>
+                                <Callout onPress={() =>{ navigation.navigate(
+                                                    "detalleEventoMap",
+                                                    {evento: event}
+                                                ); console.log('event', event)}}>
+                                    <View
+                                        pointerEvents="box-none"
+                                        style={styles.containerCallout}
+                                    >
+                                        <Text style={styles.title}>
+                                            {event.nombreEvento}
+                                        </Text>
+                                        <Text style={styles.subtitle}>
+                                            {event.descripcionEvento}
+                                        </Text>
+                                        <TouchableOpacity
+                                            style={styles.buttonCallout}
+                                            onPress={() =>
+                                                navigation.navigate(
+                                                    "detalleEventoMap",
+                                                    { event }
+                                                )
+                                            }
+                                        >
+                                            <Text style={styles.buttonText}>
+                                                Ver detalle
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </Callout>
                             </Marker>
                         ))}
                 </MapView>
@@ -236,7 +272,7 @@ export default function Mapa({ navigation }) {
             ))}
 
             {/* Botón para redirigir a la ubicación */}
-            <TouchableOpacity style={styles.locateButton} onPress={ centerMap }>
+            <TouchableOpacity style={styles.locateButton} onPress={centerMap}>
                 <Ionicons name="location" size={30} color="#fff" />
             </TouchableOpacity>
         </View>
@@ -299,5 +335,32 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+    },
+
+    containerCallout: {
+        width: 300,
+
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    title: {
+        textAlign: "center",
+        fontWeight: "bold",
+    },
+    subtitle: {
+        color: "#555",
+    },
+    buttonCallout: {
+        backgroundColor: "#f05454",
+        paddingVertical: 10,
+        paddingHorizontal: 50,
+        borderRadius: 10,
+        marginTop: 10,
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+        textAlign: "center",
     },
 });

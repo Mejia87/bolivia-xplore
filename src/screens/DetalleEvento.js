@@ -21,10 +21,12 @@ enableScreens();
 export default function DetalleEvento({ navigation }) {
     const route = useRoute();
     const { evento } = route.params;
+    console.log(evento)
     const { setPoint } = useContext(PoticionContext)
     const current = new Date();
+
     const initEvent = new Date(evento.fechaInicioEvento);
-    const finEvent = new Date(evento.fechaFinEvento);
+    const finEvent = new Date(evento.fechaFinEvento) ;
 
     const visibleLocation =
         (evento.tipoEvento === "PERMANENTE") || ( initEvent <= current && current <= finEvent );
