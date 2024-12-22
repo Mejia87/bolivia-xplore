@@ -18,6 +18,7 @@ import { useRoute } from '@react-navigation/native';
 
 import {API_BASE_URL} from '@env'
 import Search from '../components/Search';
+import BackButton from "../components/BackButton";
 
 
 
@@ -87,8 +88,12 @@ const Eventos = ({ navigation }) => {
 
     return (
         <View style={styles.containers}>
-            
-         <Text style= {{fontSize:20,paddingTop:10,paddingBottom:10,fontWeight:"bold"}}>{title}</Text>
+            <View style={styles.header}>
+            <View style={styles.Scontainer}>
+            <BackButton/>
+            </View>
+         <Text style= {{flex: 1, textAlign: 'center',fontSize:20,paddingTop:10,paddingBottom:10,fontWeight:"bold"}}>{title}</Text>
+         </View>
             <FlatList
                 data={category}
                 renderItem={({ item }) => (
@@ -200,6 +205,22 @@ const styles = StyleSheet.create({
         alignItems: "center",
         padding: 10,
     },
+    Scontainer: {
+        left: 10,
+        top: 5,
+        position: "absolute",
+        flex: 1,
+        justifyContent: "flex-start", 
+        alignItems: "center",
+        zIndex: 50,
+    },
+    header: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: 'white',
+      },
 });
 
 export default Eventos;

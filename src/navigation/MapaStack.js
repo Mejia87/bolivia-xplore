@@ -15,6 +15,11 @@ export default function MapaStack() {
             component= {Mapa}
             options = {{title: "Mapa"}}
         />
+        <Stack.Screen
+            name= "detalleEventoMap"
+            component= {DetalleEvento}
+            options = {{title: "Detalle de evento"}}
+        />
         
         
     </Stack.Navigator>
