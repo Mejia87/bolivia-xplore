@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Switch, StyleSheet,Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { API_BASE_URL } from '@env';
 import { enableScreens } from 'react-native-screens';
-import Slider from '@react-native-community/slider';
 import { UserContext } from '../js/UserContext';
 
 enableScreens();
@@ -72,15 +71,7 @@ export default function SettingsScreen() {
 
         <View style={styles.optionContainer}>
           <Text style={styles.optionTitle}>Distancia</Text>
-          <Slider style={styles.slider}
-              minimumValue={10} 
-              maximumValue={200} 
-              step={20} 
-              value={distance} 
-              onValueChange={(value) => {setDistance(value);}} 
-              minimumTrackTintColor="#1EB1FC" 
-              maximumTrackTintColor="#000000" 
-              thumbTintColor="#1EB1FC" />
+          
               <Text>{ distance }</Text>
         </View>
 

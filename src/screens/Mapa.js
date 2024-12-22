@@ -339,8 +339,8 @@ const styles = StyleSheet.create({
     },
 
     containerCallout: {
-        width: 150,
-        height: 150,
+        width: 300,
+
         justifyContent: "center",
         alignItems: "center",
     },
