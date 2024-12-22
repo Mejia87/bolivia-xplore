@@ -34,6 +34,7 @@ const EventForm = () => {
     const [endDate, setEndDate] = useState(null);
     const [description, setDescription] = useState("");
     const [history, setHistory] = useState("");
+    const [showHistory, setShowHistory] = useState(true);
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
     const [permanent, setPermanent] = useState(false);
@@ -47,6 +48,32 @@ const EventForm = () => {
 
     const url = `${API_BASE_URL}/api/event/register`;
     let apiUrl = `${API_BASE_URL}/api/event/registerimage/`;
+
+    const handleCategoryChange = (value) => {
+        setCategory(value);
+
+        if (value === "6") { 
+            setShowHistory(false);
+            setHistory("");
+        } else {
+            setShowHistory(true);
+        }
+    };
+
+    const getEventTypeText = () => {
+        if (permanent) {
+            if (!startDate && !endDate) {
+                return "Usted esta registrando un evento permanente.";
+            }
+            if (startDate && endDate) {
+                return "Usted esta registrando un evento semipermanente.";
+            }
+        }
+        if (!permanent && startDate && endDate) {
+            return "Usted esta registrando un evento temporal.";
+        }
+        return "Usted esta registrando un tipo de evento: ";
+    };
 
     const handleImagePick = async () => {
         const { status } =
@@ -174,8 +201,16 @@ const EventForm = () => {
                 throw new Error(`Error en la solicitud: ${res.statusText}`);
             }
 
-            Alert.alert("Guardado", "El evento ha sido registrado con exito");
-            navigation.goBack();
+            Alert.alert("Guardado",
+                "El evento ha sido registrado con éxito, y las imágenes se han cargado correctamente.",
+                [
+                    {
+                        text: "ok",
+                        onPress: () => navigation.GoBack(),
+                    },
+                ]
+            );
+
         } catch (error) {
             console.error("Error al enviar el evento:", error);
             Alert.alert("Error", "No se pudo registrar el evento");
@@ -190,28 +225,43 @@ const EventForm = () => {
             <Text style={styles.label}>Categoria del Evento</Text>
             <Picker
                 selectedValue={category}
-                onValueChange={(itemValue) => setCategory(itemValue)}
+                onValueChange={handleCategoryChange}
                 style={styles.input}
             >
-                <Picker.Item id="0" label="Seleccione una categoría" />
+                <Picker.Item
+                    id="0"
+                    label="Seleccione una categoría"
+                />
                 <Picker.Item
                     id="1"
-                    label="Festivales Tradicionales"
+                    label="Celebraciones Folkloricas"
                     value="1"
                 />
                 <Picker.Item
                     id="2"
-                    label="Celebraciones Folklricas"
-                    value="2"
-                />
-                <Picker.Item id="3" label="Lugares Turisticos" value="3" />
-                <Picker.Item
-                    id="4"
-                    label="Conciertos Contemporaneos"
+                    label="Festivales Tradicionales"
                     value="4"
                 />
-                <Picker.Item id="5" label="Exposiciones de Arte" value="5" />
-                <Picker.Item id="6" label="Ferias Artesanales" value="6" />
+                <Picker.Item
+                    id="3"
+                    label="Lugares Turisticos"
+                    value="3"
+                />
+                <Picker.Item
+                    id="4"
+                    label="Museos"
+                    value="2"
+                />
+                <Picker.Item
+                    id="5"
+                    label="Expocicion de Arte"
+                    value="5"
+                />
+                <Picker.Item
+                    id="6"
+                    label="Ferias Artesanales"
+                    value="6"
+                />
             </Picker>
 
             <Text style={styles.label}>Nombre del Evento</Text>
@@ -241,7 +291,7 @@ const EventForm = () => {
                         <Image source={{ uri }} style={styles.imagePreview} />
                         <TouchableOpacity
                             style={styles.removeButton}
-                            onPress={() => handleRemoveImage(uri.uri)}
+                            onPress={() => handleRemoveImage(uri)}
                         >
                             <MaterialIcons
                                 name="close"
@@ -253,16 +303,11 @@ const EventForm = () => {
                 ))}
             </ScrollView>
 
+
             <Text style={styles.label}>Fecha de Inicio del Evento</Text>
             <TouchableOpacity
-                onPress={() => {
-                    if (!permanent) setShowStartDatePicker(true);
-                }}
-                style={[
-                    styles.dateButton,
-                    permanent && { backgroundColor: "#ddd" },
-                ]}
-                disabled={permanent}
+                onPress={() => setShowStartDatePicker(true)}
+                style={styles.dateButton}
             >
                 <Text style={styles.dateText}>
                     {startDate ? startDate.toLocaleDateString() : "d/m/a"}
@@ -290,14 +335,8 @@ const EventForm = () => {
 
             <Text style={styles.label}>Fecha de Finalización del Evento</Text>
             <TouchableOpacity
-                onPress={() => {
-                    if (!permanent) setShowEndDatePicker(true);
-                }}
-                style={[
-                    styles.dateButton,
-                    permanent && { backgroundColor: "#ddd" },
-                ]}
-                disabled={permanent}
+                onPress={() => setShowEndDatePicker(true)}
+                style={styles.dateButton}
             >
                 <Text style={styles.dateText}>
                     {endDate ? endDate.toLocaleDateString() : "d/m/a"}
@@ -312,16 +351,25 @@ const EventForm = () => {
                 <DateTimePicker
                     value={new Date()}
                     mode="date"
-                    display="spinner"
-                    minimumDate={
-                        new Date(new Date().setDate(new Date().getDate() + 2))
-                    }
+                    display="default"
+                    minimumDate={new Date(new Date().setDate(new Date().getDate() + 2))}
                     onChange={(event, date) => {
                         setShowEndDatePicker(false);
                         if (date) setEndDate(date);
                     }}
                 />
             )}
+
+            <View style={styles.row}>
+                <Text style={styles.eventPermanentText}>Evento permanente</Text>
+                <TouchableOpacity
+                    style={[
+                        styles.circleButton,
+                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
+                    ]}
+                    onPress={() => setPermanent(!permanent)} // Alterna el estado
+                />
+            </View>
 
             <Text style={styles.label}>Ubicación del Evento</Text>
             <TouchableOpacity style={styles.locationButton}>
@@ -379,6 +427,7 @@ const EventForm = () => {
                 >
                     <Text style={styles.cancelText}>Cancelar</Text>
                 </TouchableOpacity>
+                
                 <TouchableOpacity
                     style={styles.saveButton}
                     onPress={handleSave}
@@ -386,6 +435,7 @@ const EventForm = () => {
                     <Text style={styles.saveText}>Guardar</Text>
                 </TouchableOpacity>
             </View>
+
         </ScrollView>
     );
 };
@@ -632,7 +682,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "500",
         color: "#333333",
-        marginLeft: 90,
+        marginLeft: 0,
+        marginBottom: 10,
     },
     circleButton: {
         width: 20,
@@ -641,10 +692,18 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#333333",
         backgroundColor: "#FFFFFF",
-        marginLeft: 20,
+        marginLeft: 188,
+        marginBottom: 10,
     },
     circleButtonSelected: {
         backgroundColor: "#551E18",
+    },
+
+    eventTypeText: {
+        fontSize: 16,
+        fontWeight: "500",
+        color: "#555",
+        marginVertical: 10,
     },
 });
 

@@ -22,7 +22,8 @@ export default function Bienvenida({ onContinue }) {
   const customWidth = width * 0.95; 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bienvenido a BoliviaXplore</Text>
+      <Text style={styles.title}>Bienvenido a</Text>
+      <Text style={styles.subtitle}>BoliviaXplore</Text>
       <Text style={styles.welcomeText}>"Descubre la riqueza cultural de Bolivia.
          Explora eventos únicos, lugares mágicos y tradiciones inolvidables que te
           conectarán con lo mejor de nuestra tierra."</Text>
@@ -65,7 +66,15 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 0,
+    color: '#333',
+  },
+
+  subtitle: {
+    fontSize: 40,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
@@ -74,6 +83,7 @@ const styles = StyleSheet.create({
 
   welcomeText: {
     fontSize: 17,
+    fontStyle: "italic",
     textAlign: 'center',
     color: '#555',
     marginBottom: 20,
@@ -84,7 +94,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   carouselImage: {
-    height: 350,
+    height: 400,
     width: 50,
     resizeMode: 'cover',
     borderRadius: 10,
@@ -106,6 +116,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
+    right: -115,
     paddingVertical: 10,
     paddingHorizontal: 40,
     backgroundColor: '#b84b50',

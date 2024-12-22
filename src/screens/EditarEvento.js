@@ -40,16 +40,16 @@ const EditEventForm = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [description, setDescription] = useState("");
     const [history, setHistory] = useState("");
+    const [showHistory, setShowHistory] = useState(true);
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
     const [permanent, setPermanent] = useState(false)
 
     const [visible, setVisible] = useState(false);
 
-    const [location, setLocation] = useState({
-        latitude: -17.38265, 
-        longitude: -66.36545,
-    });
+    
+    const [location, setLocation] = useState(null);
+    const [adress, setAdress] = useState("seleccione ubicación");
 
     const [loading, setLoading] = useState(true);
 
@@ -92,6 +92,32 @@ const EditEventForm = () => {
         }
     };
 
+    const handleCategoryChange = (value) => {
+        setCategory(value);
+
+        if (value === "6") {
+            setShowHistory(false);
+            setHistory("");
+        } else {
+            setShowHistory(true);
+        }
+    };
+
+    const getEventTypeText = () => {
+        if (permanent) {
+            if (!startDate && !endDate) {
+                return "Usted esta registrando un evento permanente.";
+            }
+            if (startDate && endDate) {
+                return "Usted esta registrando un evento semipermanente.";
+            }
+        }
+        if (!permanent && startDate && endDate) {
+            return "Usted esta registrando un evento temporal.";
+        }
+        return "Usted esta registrando un tipo de evento: ";
+    };
+
     const handleImagePick = async () => {
         const { status } =
             await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -105,6 +131,7 @@ const EditEventForm = () => {
 
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsMultipleSelection: true,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
@@ -211,7 +238,7 @@ const EditEventForm = () => {
             <Text style={styles.label}>Categoria del Evento</Text>
             <Picker
                 selectedValue={category}
-                onValueChange={(itemValue) => setCategory(itemValue)}
+                onValueChange={handleCategoryChange}
                 style={styles.input}
             >
                 <Picker.Item
@@ -220,13 +247,13 @@ const EditEventForm = () => {
                 />
                 <Picker.Item
                     id="1"
-                    label="Festivales Tradicionales"
+                    label="Celebraciones Folkloricas"
                     value="1"
                 />
                 <Picker.Item
                     id="2"
-                    label="Celebraciones Folklricas"
-                    value="2"
+                    label="Festivales Tradicionales"
+                    value="4"
                 />
                 <Picker.Item
                     id="3"
@@ -235,12 +262,12 @@ const EditEventForm = () => {
                 />
                 <Picker.Item
                     id="4"
-                    label="Conciertos Contemporaneos"
-                    value="4"
+                    label="Museos"
+                    value="2"
                 />
                 <Picker.Item
                     id="5"
-                    label="Exposiciones de Arte"
+                    label="Expocicion de Arte"
                     value="5"
                 />
                 <Picker.Item
@@ -294,14 +321,8 @@ const EditEventForm = () => {
 
             <Text style={styles.label}>Fecha de Inicio del Evento</Text>
             <TouchableOpacity
-                onPress={() => {
-                    if (!permanent) setShowStartDatePicker(true);
-                }}
-                style={[
-                    styles.dateButton,
-                    permanent && { backgroundColor: "#ddd" },
-                ]}
-                disabled={permanent}
+                onPress={() => setShowStartDatePicker(true)}
+                style={styles.dateButton}
             >
                 <Text style={styles.dateText}>
                     {startDate ? startDate.toLocaleDateString() : "d/m/a"}
@@ -316,7 +337,7 @@ const EditEventForm = () => {
                 <DateTimePicker
                     value={startDate || new Date()}
                     mode="date"
-                    display="spinner"
+                    display="default"
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 1))}
                     onChange={(event, date) => {
                         setShowStartDatePicker(false);
@@ -327,14 +348,8 @@ const EditEventForm = () => {
 
             <Text style={styles.label}>Fecha de Finalización del Evento</Text>
             <TouchableOpacity
-                onPress={() => {
-                    if (!permanent) setShowEndDatePicker(true);
-                }}
-                style={[
-                    styles.dateButton,
-                    permanent && { backgroundColor: "#ddd" },
-                ]}
-                disabled={permanent} 
+                onPress={() => setShowEndDatePicker(true)}
+                style={styles.dateButton}
             >
                 <Text style={styles.dateText}>
                     {endDate ? endDate.toLocaleDateString() : "d/m/a"}
@@ -349,7 +364,7 @@ const EditEventForm = () => {
                 <DateTimePicker
                     value={endDate || new Date()}
                     mode="date"
-                    display="spinner"
+                    display="default"
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 2))}
                     onChange={(event, date) => {
                         setShowEndDatePicker(false);
@@ -358,21 +373,33 @@ const EditEventForm = () => {
                 />
             )}
 
+            <View style={styles.row}>
+                <Text style={styles.eventPermanentText}>Evento permanente</Text>
+                <TouchableOpacity
+                    style={[
+                        styles.circleButton,
+                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
+                    ]}
+                    onPress={() => setPermanent(!permanent)} // Alterna el estado
+                />
+            </View>
+
             <Text style={styles.label}>Ubicación del Evento</Text>
             <TouchableOpacity style={styles.locationButton}>
                 <MaterialIcons
                     name="location-on"
                     size={24}
                     color="#551E18"
-                    onPress={() => setVisible(true)}
+                    onPress={() => {setVisible(true)}}
                 />
                 <MapLocation
                     visible={visible}
                     setVisible={setVisible}
                     location={location}
                     setLocation={setLocation}
+                    setAdress={setAdress}
                 />
-                <Text style={styles.locationText}>Seleccione ubicación</Text>
+                <Text style={styles.locationText}>{adress}</Text>
             </TouchableOpacity>
 
             <Text style={styles.label}>Descripción del Evento</Text>
@@ -384,24 +411,22 @@ const EditEventForm = () => {
                 onChangeText={setDescription}
             />
 
-            <Text style={styles.label}>Historia del Evento</Text>
-            <TextInput
-                style={[styles.input, { height: 80 }]}
-                placeholder="Ingrese la historia del evento..."
-                multiline
-                value={history}
-                onChangeText={setHistory}
-            />
-            <View style={styles.row}>
-                <Text style={styles.eventPermanentText}>Evento permanente</Text>
-                <TouchableOpacity
-                    style={[
-                        styles.circleButton,
-                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
-                    ]}
-                    onPress={() => setPermanent(!permanent)} // Alterna el estado
-                />
-            </View>
+            {showHistory && (
+                <>
+                    <Text style={styles.label}>Historia del Evento</Text>
+                    <TextInput
+                        style={[styles.input, { height: 80 }]}
+                        placeholder="Ingrese la historia del evento..."
+                        multiline
+                        value={history}
+                        onChangeText={setHistory}
+                    />
+                </>
+            )}
+
+            <Text style={styles.label}>Tipo de Evento</Text>
+            <Text style={styles.eventTypeText}>{getEventTypeText()}</Text>
+            
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.cancelButton}
@@ -424,7 +449,10 @@ function MapLocation({
     setVisible = () => {},
     location = null,
     setLocation = () => {},
+    setAdress = () => {},
 }) {
+    const [newRegion, setNewRegion] = useState(null);
+
     useEffect(() => {
         if (visible) {
             (async () => {
@@ -439,7 +467,9 @@ function MapLocation({
                     return;
                 }
 
-                let currentLocation = await Location.getCurrentPositionAsync({});
+                let currentLocation = await Location.getCurrentPositionAsync(
+                    {}
+                );
                 setLocation({
                     latitude: currentLocation.coords.latitude,
                     longitude: currentLocation.coords.longitude,
@@ -447,6 +477,21 @@ function MapLocation({
             })();
         }
     }, [visible]);
+
+    const confirmLocation = async () => {
+        setLocation(newRegion);
+        const [addressCurrent] = await Location.reverseGeocodeAsync(location);
+        if (addressCurrent) {
+            const city = '-' + addressCurrent.city || ""
+            const region = addressCurrent.region + ',' || ""
+            const subRegion = addressCurrent.subregion || ""
+            const regionText = `${region} ${subRegion} ${city} `;
+            console.log('region obtenida', addressCurrent)
+            setAdress(regionText);
+        }
+        console.log("Ubicación guardada:", location);
+        setVisible(false);
+    };
 
     return (
         <Modal isVisible={visible} setIsVisible={setVisible}>
@@ -460,6 +505,7 @@ function MapLocation({
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01,
                         }}
+                        onRegionChange={(region) => setNewRegion(region)}
                     >
                         <Marker
                             coordinate={location}
@@ -476,16 +522,13 @@ function MapLocation({
                             title="guardar ubicacion"
                             containerStyle={styles.viewMapBtnContainerSave}
                             buttonStyle={styles.viewMapBtnSave}
-                            onPress={() => {
-                                console.log("Ubicación guardada:", location);
-                                setVisible(false);
-                            }}
+                            onPress={() => confirmLocation()}
                         />
                         <Button
                             title="cancelar ubicacion"
                             containerStyle={styles.viewMapBtnContainerCancel}
                             buttonStyle={styles.viewMapBtnCancel}
-                            onPress={() => setVisible(false)}
+                            onPress={() => {setVisible(false); setAdress('seleccione una ubicación')}}
                         />
                     </View>
                 </View>
@@ -629,9 +672,10 @@ const styles = StyleSheet.create({
     },
     eventPermanentText: {
         fontSize: 18,
-        fontWeight:'500',
+        fontWeight:'bold',
         color: "#333333",
-        marginLeft: 90,
+        marginLeft: 0,
+        marginBottom: 10,
     },
     circleButton: {
         width: 20, 
@@ -640,7 +684,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#333333",
         backgroundColor: "#FFFFFF",
-        marginLeft: 20,
+        marginLeft: 188,
+        marginBottom: 10,
     },
     circleButtonSelected: {
         backgroundColor: "#551E18", 
