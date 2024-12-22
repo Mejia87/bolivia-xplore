@@ -35,6 +35,7 @@ const EventForm = () => {
     const [endDate, setEndDate] = useState(null);
     const [description, setDescription] = useState("");
     const [history, setHistory] = useState("");
+    const [showHistory, setShowHistory] = useState(true);
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
     const [permanent, setPermanent] = useState(false);
@@ -48,6 +49,17 @@ const EventForm = () => {
 
     const url = `${API_BASE_URL}/api/event/register`;
     let apiUrl = `${API_BASE_URL}/api/event/registerimage/`;
+
+    const handleCategoryChange = (value) => {
+        setCategory(value);
+
+        if (value === "6") { 
+            setShowHistory(false);
+            setHistory("");
+        } else {
+            setShowHistory(true);
+        }
+    };
 
     const getEventTypeText = () => {
         if (permanent) {
@@ -190,8 +202,16 @@ const EventForm = () => {
                 throw new Error(`Error en la solicitud: ${res.statusText}`);
             }
 
-            Alert.alert("Guardado", "El evento ha sido registrado con exito");
-            navigation.goBack();
+            Alert.alert("Guardado",
+                "El evento ha sido registrado con éxito, y las imágenes se han cargado correctamente.",
+                [
+                    {
+                        text: "ok",
+                        onPress: () => navigation.GoBack(),
+                    },
+                ]
+            );
+
         } catch (error) {
             console.error("Error al enviar el evento:", error);
             Alert.alert("Error", "No se pudo registrar el evento");
@@ -206,28 +226,43 @@ const EventForm = () => {
             <Text style={styles.label}>Categoria del Evento</Text>
             <Picker
                 selectedValue={category}
-                onValueChange={(itemValue) => setCategory(itemValue)}
+                onValueChange={handleCategoryChange}
                 style={styles.input}
             >
-                <Picker.Item id="0" label="Seleccione una categoría" />
+                <Picker.Item
+                    id="0"
+                    label="Seleccione una categoría"
+                />
                 <Picker.Item
                     id="1"
-                    label="Festivales Tradicionales"
+                    label="Celebraciones Folkloricas"
                     value="1"
                 />
                 <Picker.Item
                     id="2"
-                    label="Celebraciones Folklricas"
-                    value="2"
-                />
-                <Picker.Item id="3" label="Lugares Turisticos" value="3" />
-                <Picker.Item
-                    id="4"
-                    label="Conciertos Contemporaneos"
+                    label="Festivales Tradicionales"
                     value="4"
                 />
-                <Picker.Item id="5" label="Exposiciones de Arte" value="5" />
-                <Picker.Item id="6" label="Ferias Artesanales" value="6" />
+                <Picker.Item
+                    id="3"
+                    label="Lugares Turisticos"
+                    value="3"
+                />
+                <Picker.Item
+                    id="4"
+                    label="Museos"
+                    value="2"
+                />
+                <Picker.Item
+                    id="5"
+                    label="Expocicion de Arte"
+                    value="5"
+                />
+                <Picker.Item
+                    id="6"
+                    label="Ferias Artesanales"
+                    value="6"
+                />
             </Picker>
 
             <Text style={styles.label}>Nombre del Evento</Text>
@@ -257,7 +292,7 @@ const EventForm = () => {
                         <Image source={{ uri }} style={styles.imagePreview} />
                         <TouchableOpacity
                             style={styles.removeButton}
-                            onPress={() => handleRemoveImage(uri.uri)}
+                            onPress={() => handleRemoveImage(uri)}
                         >
                             <MaterialIcons
                                 name="close"
@@ -269,7 +304,6 @@ const EventForm = () => {
                 ))}
             </ScrollView>
 
-            
 
             <Text style={styles.label}>Fecha de Inicio del Evento</Text>
             <TouchableOpacity
@@ -365,14 +399,18 @@ const EventForm = () => {
                 onChangeText={setDescription}
             />
 
-            <Text style={styles.label}>Historia del Evento</Text>
-            <TextInput
-                style={[styles.input, { height: 80 }]}
-                placeholder="Ingrese la historia del evento..."
-                multiline
-                value={history}
-                onChangeText={setHistory}
-            />
+            {showHistory && (
+                <>
+                    <Text style={styles.label}>Historia del Evento</Text>
+                    <TextInput
+                        style={[styles.input, { height: 80 }]}
+                        placeholder="Ingrese la historia del evento..."
+                        multiline
+                        value={history}
+                        onChangeText={setHistory}
+                    />
+                </>
+            )}
 
             <Text style={styles.label}>Tipo de Evento</Text>
             <Text style={styles.eventTypeText}>{getEventTypeText()}</Text>

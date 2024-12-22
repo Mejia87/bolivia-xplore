@@ -27,7 +27,7 @@ const CategoriaEventos = ({ navigation }) => {
     const { setStateNavigation } = useContext(NavigationContext);
     const categorias = [
         {
-            title: "Celebraciones Folcloricas",
+            title: "Celebraciones Folkloricas",
             image: require("../../assets/recomendaciones.png"),
             eventC: () => navigation.navigate("eventoss",{idEvent: 1, title:"Celebraciones Folcloricas"})
         },
