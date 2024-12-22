@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     Scontainer: {
-        left: 10,
-        top: 5,
+      //left: 10,
+        top: 0.01,
         position: "absolute",
         flex: 1,
         justifyContent: "flex-start", 

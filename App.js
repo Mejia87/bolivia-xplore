@@ -11,6 +11,7 @@ import { NavigationContext } from './src/js/NavigationContext';
 import { PoticionContext } from './src/js/positionContext';
 import { NotificationProvider } from './src/navigation/NotificationContext';
 import Notificaciones from './src/screens/Notificaciones';
+import { UserContext } from './src/js/UserContext';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticación
@@ -20,9 +21,26 @@ export default function App() {
     latitud : null,
     longitud: null
   })
+  const [user, setUser] = useState({
+    codUsuario:1,
+    authProvider:"12345",
+    correoUsuario:"adminpru671@gmail.com",
+    nombreUsuario:"admin",
+    fotoUsuario: "https://vidaenusa.org/wp-content/uploads/2023/12/cuanto-gana-administrador-empresas-usa.jpg",
+    preferences: {
+        idPreferences: 1,
+        language: "es",
+        distance: 200.0,
+        recomendations: true,
+        favoriteNearNotification: true,
+        notificationsRecomendation: true,
+        nearNotification: true
+    }
+  })
   return (
     <SafeAreaView style={styles.safeArea}>
-        <NotificationProvider>
+      <UserContext.Provider value={{ user, setUser }}>
+      <NotificationProvider>
       <PoticionContext.Provider value={{ point, setPoint }}>
       <NavigationContext.Provider value={{ stateNavigation, setStateNavigation }} >
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" translucent={false} />
@@ -44,6 +62,7 @@ export default function App() {
       </NavigationContext.Provider>
       </PoticionContext.Provider>
       </NotificationProvider>
+      </UserContext.Provider>
     </SafeAreaView>
   );
 }

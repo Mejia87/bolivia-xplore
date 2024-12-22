@@ -1,24 +1,48 @@
-import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, Switch, StyleSheet,Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { API_BASE_URL } from '@env';
+import { enableScreens } from 'react-native-screens';
+import { UserContext } from '../js/UserContext';
 
+enableScreens();
+const { width, height } = Dimensions.get("window");
 export default function SettingsScreen() {
   const [notificationRecommendations, setNotificationRecommendations] = useState(false);
   const [nearbyEvents, setNearbyEvents] = useState(false);
   const [upcomingEvents, setUpcomingEvents] = useState(false);
+  const [distance, setDistance] = useState(200);
+  const { user, setUser } = useContext(UserContext);
 
-  // Simulación del ID y distancia predeterminada
-  const userPreferences = {
-    idPreferences: 1,
-    distance: 10.0, // Siempre en formato decimal
-    favoriteNearNotification: nearbyEvents,
-    language: 'en',
-    nearEventNotification: upcomingEvents,
-    recomendations: true,
-    notificationRecomendation: notificationRecommendations,
-  };
+  useEffect(() => {
+    setNotificationRecommendations(user.preferences.notificationRecomendation);
+    setNearbyEvents(user.preferences.nearNotification);
+    setDistance(user.preferences.distance);
+    setUpcomingEvents(user.preferences.recomendations);
+  },[])
+
+  const doSomething = () => {
+    updatePreferences()
+    setUser({...user,preferences:{ 
+        idPreferences: 1,
+        language: "es",
+        distance: distance,
+        recomendations: true,
+        favoriteNearNotification: nearbyEvents,
+        notificationsRecomendation: notificationRecommendations,
+        nearNotification: upcomingEvents,
+     }})
+  }
 
   const updatePreferences = async () => {
+    const userPreferences = {
+      idPreferences: user.preferences.idPreferences,
+      distance: distance+".0",
+      favoriteNearNotification: nearbyEvents,
+      language: 'es',
+      nearNotification: upcomingEvents,
+      recomendations: true,
+      notificationsRecomendation: notificationRecommendations,
+    };
     try {
       const response = await fetch(`${API_BASE_URL}/api/user/updatepreferences`, {
         method: 'PUT',
@@ -42,35 +66,35 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ajustes</Text>
+      <View>
+        <Text style={styles.title}>Ajustes</Text>
 
-      {/* Recomendaciones de Notificaciones */}
-      <View style={styles.optionContainer}>
-        <Text style={styles.optionTitle}>Recomendaciones de Notificaciones</Text>
-        <Switch
-          value={notificationRecommendations}
-          onValueChange={setNotificationRecommendations}
-        />
+        <View style={styles.optionContainer}>
+          <Text style={styles.optionTitle}>Distancia</Text>
+          
+              <Text>{ distance }</Text>
+        </View>
+
+        <View style={styles.optionContainer}>
+          <Text style={styles.optionTitle}>Recomendaciones de Notificaciones</Text>
+          <Switch
+            value={notificationRecommendations}
+            onValueChange={(e) => {setNotificationRecommendations(e);doSomething();}}
+          />
+        </View>
+
+        <View style={styles.optionContainer}>
+          <Text style={styles.optionTitle}>Notificaciones de Eventos Cercanos</Text>
+          <Switch value={nearbyEvents} onValueChange={(e) => {setNearbyEvents(e);doSomething();}} />
+        </View>
+
+        <View style={styles.optionContainer}>
+          <Text style={styles.optionTitle}>Notificaciones de Eventos Próximos</Text>
+          <Switch value={upcomingEvents} onValueChange={(e) => {setUpcomingEvents(e); doSomething();}} />
+        </View>
+
       </View>
-
-      {/* Permitir Notificaciones de Eventos Cercanos */}
-      <View style={styles.optionContainer}>
-        <Text style={styles.optionTitle}>Permitir Notificaciones de Eventos Cercanos</Text>
-        <Switch value={nearbyEvents} onValueChange={setNearbyEvents} />
-      </View>
-
-      {/* Permitir Notificaciones de Eventos Próximos */}
-      <View style={styles.optionContainer}>
-        <Text style={styles.optionTitle}>Permitir Notificaciones de Eventos Próximos</Text>
-        <Switch value={upcomingEvents} onValueChange={setUpcomingEvents} />
-      </View>
-
-      {/* Botón para guardar cambios */}
-      <TouchableOpacity style={styles.saveButton} onPress={updatePreferences}>
-        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-      </TouchableOpacity>
-
-      {/* Versión */}
+      
       <View style={styles.optionContainer}>
         <Text style={styles.optionTitle}>Versión</Text>
         <Text style={styles.optionSubtitle}>1.0</Text>
@@ -80,8 +104,13 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
+  slider: { 
+    width: width*0.6, 
+    height: 40,
+  },
   container: {
     flex: 1,
+    justifyContent:"space-between",
     backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 20,

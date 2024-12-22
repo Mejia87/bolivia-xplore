@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
-
+import { Ionicons } from '@expo/vector-icons';
 export default function Bienvenida({ onContinue }) {
   const { width } = Dimensions.get('window');
   const [currentPage, setCurrentPage] = useState(0);
@@ -22,7 +22,8 @@ export default function Bienvenida({ onContinue }) {
   const customWidth = width * 0.95; 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bienvenido a BoliviaXplore</Text>
+      <Text style={styles.title}>Bienvenido a</Text>
+      <Text style={styles.subtitle}>BoliviaXplore</Text>
       <Text style={styles.welcomeText}>"Descubre la riqueza cultural de Bolivia.
          Explora eventos únicos, lugares mágicos y tradiciones inolvidables que te
           conectarán con lo mejor de nuestra tierra."</Text>
@@ -49,23 +50,38 @@ export default function Bienvenida({ onContinue }) {
           />
         ))}
       </View>
-      <TouchableOpacity style={styles.button} onPress={onContinue}>
-        <Text style={styles.buttonText}>Comenzar</Text>
-      </TouchableOpacity>
+      <View style={{ width:"100%",flexDirection:"row",justifyContent:"flex-end" }}>
+        <TouchableOpacity style={styles.button} onPress={onContinue}>
+          <Text style={styles.buttonText}>Comenzar  <Ionicons name="arrow-forward" size={20} color='gray' style={styles.icon} /></Text>
+        </TouchableOpacity>
+      </View>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  icon:{
+    color:"white",
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 10,
+    width:"100%"
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 0,
+    color: '#333',
+  },
+
+  subtitle: {
+    fontSize: 40,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
@@ -74,6 +90,7 @@ const styles = StyleSheet.create({
 
   welcomeText: {
     fontSize: 17,
+    fontStyle: "italic",
     textAlign: 'center',
     color: '#555',
     marginBottom: 20,
@@ -84,7 +101,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   carouselImage: {
-    height: 350,
+    height: 400,
     width: 50,
     resizeMode: 'cover',
     borderRadius: 10,
@@ -105,7 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#b84b50',
   },
   button: {
-    marginTop: 20,
+    justifyContent:"flex-end",
     paddingVertical: 10,
     paddingHorizontal: 40,
     backgroundColor: '#b84b50',
@@ -116,5 +133,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    justifyContent:"center",
+    alignItems:"center",
   },
 });

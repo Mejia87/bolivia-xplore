@@ -1,9 +1,19 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import { View, Text, Image, StyleSheet, FlatList, Alert, Modal, TouchableOpacity, Button } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+import { View,
+  Text,
+  Image,
+  StyleSheet,
+  FlatList,
+  Alert,
+  Modal,
+  TouchableOpacity,
+  ActivityIndicator, } from "react-native";
+import { useFocusEffect} from "@react-navigation/native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { NavigationContext } from "../js/NavigationContext";
 import {API_BASE_URL} from '@env'
+import { useNavigation } from '@react-navigation/native';
+
 
 const App = () => {
   const today = new Date().toISOString().split("T")[0];
@@ -13,67 +23,75 @@ const App = () => {
   const [selectedDate, setSelectedDate] = useState(today);
   const [tasks, setTasks] = useState([]);
   const [markedDates, setMarkedDates] = useState({});
-  const [selectedEvent, setSelectedEvent] = useState(null); // Estado para el evento seleccionado
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [events, setEvents] = useState(null)
+  const navigation = useNavigation(); // Inicializar useNavigation
 
   const fetchEventsForMonth = async (year, month) => {
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/event/days-in-month/${year}/${month}`);
       if (!response.ok) {
-        throw new Error("Error al obtener los eventos");
+        throw new Error(`Error del servidor: ${response.status}`);
       }
       const data = await response.json();
-      
-
-      setEvents(data)
-
-      
       const formattedDates = Object.keys(data).reduce((acc, day) => {
         const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        const isPastDate = new Date(dateKey) < new Date(today);
+
         acc[dateKey] = {
-          selected: true,
-          selectedColor: "#b84235",
-          events: data[day], // Adjuntar los eventos directamente
+          marked: !isPastDate && data[day].length > 0,
+          dotColor: "#b84235",
+          disabled: isPastDate,
+          disableTouchEvent: isPastDate,
+          events: data[day],
         };
         return acc;
       }, {});
-
+       
       setMarkedDates(formattedDates);
     } catch (error) {
-      Alert.alert("Error", "No se pudieron obtener los eventos.");
+      Alert.alert("Error", `No se pudieron obtener los eventos. ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
+    fetchEventsForMonth(currentYear, currentMonth);
+  }, [])
   useFocusEffect(useCallback(() => {
     setStateNavigation("Calendario")
-    fetchEventsForMonth(currentYear, currentMonth);
+
   }, []))
 
   useEffect(() => {
     const dayEvents = markedDates[selectedDate];
-    const day = selectedDate.split("-")[2];
-    
-    if(events !== null && events[day]) {
-      
-     
-      setTasks(events[day])
-    }else {
-      setTasks([]); 
-    }
+    setTasks(dayEvents?.events || []);
   }, [selectedDate, markedDates]);
 
-  
-  const handleEventPress = (event) => {
-    setSelectedEvent(event);
+  const handleDayPress = (day) => {
+    if (new Date(day.dateString) < new Date(today)) {
+      Alert.alert("Fecha inválida", "No puedes seleccionar días pasados.");
+      return;
+    }
+    setSelectedDate(day.dateString);
+  };
+
+  const handleMonthChange = (month) => {
+    const firstDayOfMonth = `${month.year}-${String(month.month).padStart(2, "0")}-01`;
+    const isCurrentMonth =
+      month.year === new Date().getFullYear() && month.month === new Date().getMonth() + 1;
+    setSelectedDate(isCurrentMonth ? today : firstDayOfMonth);
+    fetchEventsForMonth(month.year, month.month);
   };
 
   const closeModal = () => {
     setSelectedEvent(null);
   };
+
 
   LocaleConfig.locales["es"] = {
     monthNames: [
@@ -92,20 +110,23 @@ const App = () => {
     ],
     monthNamesShort: ["Ene.", "Feb.", "Mar", "Abr", "May", "Jun", "Jul.", "Ago", "Sep.", "Oct.", "Nov.", "Dic."],
     dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-    dayNamesShort: ["Dom.", "Lun.", "Mar.", "Mié.", "Jue.", "Vie.", "Sáb."],
+    dayNamesShort: ["Dom.", "Lun.", "Mar.", "Mié", "Jue", "Vie", "Sáb."],
     today: "Hoy",
   };
   LocaleConfig.defaultLocale = "es";
 
   return (
-    <View style={styles.container}>
-      {/* Calendario */}
+    <View style={ styles.container}>
       <Calendar
         markedDates={{
           ...markedDates,
-          [selectedDate]: { selected: true, selectedColor: "#b84235" },
+          [selectedDate]: {
+            selected: true,
+            selectedColor: "#b84235",
+          },
         }}
-        onDayPress={(day) => setSelectedDate(day.dateString)}
+        onDayPress={handleDayPress}
+        onMonthChange={handleMonthChange}
         style={styles.calendar}
         theme={{
           backgroundColor: "#ffffff",
@@ -122,50 +143,35 @@ const App = () => {
         }}
       />
 
-      
-      <View style={styles.taskContainer}>
-        <Text style={styles.dateText}>Eventos para el {selectedDate}</Text>
-        {tasks.length > 0 ? (
-          <FlatList
-            data={tasks}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.task} onPress={() => handleEventPress(item)}>
-                <View style={styles.textContainer}>
-                  <Text style={styles.title}>{item.nombreEvento}</Text>
-                  <Text style={styles.description}>{item.descripcionEvento}</Text>
-                </View>
-                <Image source={{ uri: item.imagenes[0].urlImagen || "https://via.placeholder.com/150" }} style={styles.image} />
-                
-              </TouchableOpacity>
-            )}
-          />
-        ) : (
-          <Text style={styles.noTasksText}>No hay eventos para este día.</Text>
-        )}
-      </View>
-
-      {/* Modal para detalles del evento */}
-      <Modal visible={!!selectedEvent} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            {selectedEvent && (
-              <>
-                <Text style={styles.modalTitle}>{selectedEvent.nombreEvento}</Text>
-                <Text style={styles.modalDescription}>{selectedEvent.descripcionEvento}</Text>
-                <Text style={styles.modalLocation}>
-                  Ubicación: {selectedEvent.ubicacion || "No especificada"}
-                </Text>
-                <Text style={styles.modalDates}>
-                  Desde: {new Date(selectedEvent.fechaInicioEvento).toLocaleDateString()} - Hasta:{" "}
-                  {new Date(selectedEvent.fechaFinEvento).toLocaleDateString()}
-                </Text>
-                <Button title="Cerrar" onPress={closeModal} />
-              </>
-            )}
-          </View>
+      {loading ? (
+        <ActivityIndicator size="large" color="#b84235" style={{ marginVertical: 20 }} />
+      ) : (
+        <View style={styles.taskContainer}>
+          <Text style={styles.dateText}>
+            Eventos para el día de <Text style={styles.boldText}>{selectedDate}</Text>
+          </Text>
+          {tasks.length > 0 ? (
+            <FlatList
+              data={tasks}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.task} onPress={() =>  navigation.navigate('evento', { evento: item })}>
+                  <Image
+                    source={{ uri: item.imagenes[0]?.urlImagen || "https://via.placeholder.com/150" }}
+                    style={styles.image}
+                  />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.title}>{item.nombreEvento}</Text>
+                    <Text style={styles.description}>{item.descripcionEvento}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          ) : (
+            <Text style={styles.noTasksText}>No hay eventos para este día.</Text>
+          )}
         </View>
-      </Modal>
+      )}
     </View>
   );
 };
@@ -189,8 +195,10 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 16,
-    fontWeight: "bold",
     marginBottom: 10,
+  },
+  boldText: {
+    fontWeight: "bold",
   },
   task: {
     flexDirection: "row",
@@ -200,7 +208,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    marginRight: 10,
+    marginLeft: 10,
   },
   title: {
     fontSize: 18,
@@ -214,44 +222,12 @@ const styles = StyleSheet.create({
   image: {
     width: 60,
     height: 60,
-    borderRadius: 30,
+    borderRadius: 10,
   },
   noTasksText: {
     textAlign: "center",
     color: "#888",
     fontSize: 16,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  modalDescription: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  modalLocation: {
-    fontSize: 14,
-    marginBottom: 10,
-    color: "#555",
-  },
-  modalDates: {
-    fontSize: 14,
-    marginBottom: 10,
-    color: "#555",
   },
 });
 

@@ -27,7 +27,7 @@ const CategoriaEventos = ({ navigation }) => {
     const { setStateNavigation } = useContext(NavigationContext);
     const categorias = [
         {
-            title: "Celebraciones Folcloricas",
+            title: "Celebraciones Folkloricas",
             image: require("../../assets/recomendaciones.png"),
             eventC: () => navigation.navigate("eventoss",{idEvent: 1, title:"Celebraciones Folcloricas"})
         },
@@ -117,8 +117,10 @@ const CategoriaEventos = ({ navigation }) => {
         );
     };
 
-    return (<>
-                <Search2 events={data} setEvents={ setData }/>
+    return (<><View style={{marginTop:20}}>
+        <Search2  events={data} setEvents={ setData }/>
+    </View>
+                
     {(data.length == 0) ? <RenderCategories />:<RenderResultSearch />}
         
     </>);

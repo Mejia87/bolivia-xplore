@@ -42,8 +42,9 @@ export default function DetalleEvento({ navigation }) {
                     <FavoriteButton style={styles.favoritos} />
                 </View>
                 <CarouselView images={evento.imagenes} />
+                <View style={styles.titleContainer}>
                 <Text style={styles.title}>{evento.nombreEvento}</Text>
-
+                </View>
                 <ListItem.Accordion
                     containerStyle={styles.accordionContainer}
                     content={
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
         //flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
-        padding: 5,
+        padding: 1,
         backgroundColor: "#f5f5f5",
     },
 
@@ -175,4 +176,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "white",
     },
+    titleContainer: {
+        backgroundColor: 'rgba(248, 209, 35, 0.67)',
+        borderRadius: 3,
+        marginBottom: 5,
+        paddingVertical: 8,
+        marginHorizontal: 10,
+        
+    }
+
 });
