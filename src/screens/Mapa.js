@@ -228,7 +228,7 @@ export default function Mapa({ navigation }) {
                                 <Callout onPress={() =>{ navigation.navigate(
                                                     "detalleEventoMap",
                                                     {evento: event}
-                                                ); console.log('event', event)}}>
+                                                )}}>
                                     <View
                                         pointerEvents="box-none"
                                         style={styles.containerCallout}

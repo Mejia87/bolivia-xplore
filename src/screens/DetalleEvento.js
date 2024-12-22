@@ -21,7 +21,7 @@ enableScreens();
 export default function DetalleEvento({ navigation }) {
     const route = useRoute();
     const { evento } = route.params;
-    console.log(evento)
+    
     const { setPoint } = useContext(PoticionContext)
     const current = new Date();
 
