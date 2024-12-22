@@ -15,8 +15,9 @@ import {
     TouchableOpacity,
     Button,
     TouchableWithoutFeedback,
+    Modal,
 } from "react-native";
-import MapView, { Marker, Callout } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { API_BASE_URL } from "@env";
@@ -45,6 +46,8 @@ export default function Mapa({ navigation }) {
     const [eventList, setEventList] = useState(null);
     const [loading, setLoading] = useState(true);
     const mapRef = useRef(null);
+    const [visible, setVisible] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     const processEventFactory = (events) => {
         const colors = [
@@ -197,6 +200,10 @@ export default function Mapa({ navigation }) {
                                     latitude: event.latitud,
                                     longitude: event.longitud,
                                 }}
+                                onPress={() => {
+                                    setSelectedEvent(event);
+                                    setVisible(true);
+                                }}
                             >
                                 <View style={styles.customMarker}>
                                     <View
@@ -225,35 +232,6 @@ export default function Mapa({ navigation }) {
                                         )}
                                     </View>
                                 </View>
-                                <Callout onPress={() =>{ navigation.navigate(
-                                                    "detalleEventoMap",
-                                                    {evento: event}
-                                                )}}>
-                                    <View
-                                        pointerEvents="box-none"
-                                        style={styles.containerCallout}
-                                    >
-                                        <Text style={styles.title}>
-                                            {event.nombreEvento}
-                                        </Text>
-                                        <Text style={styles.subtitle}>
-                                            {event.descripcionEvento}
-                                        </Text>
-                                        <TouchableOpacity
-                                            style={styles.buttonCallout}
-                                            onPress={() =>
-                                                navigation.navigate(
-                                                    "detalleEventoMap",
-                                                    { event }
-                                                )
-                                            }
-                                        >
-                                            <Text style={styles.buttonText}>
-                                                Ver detalle
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </Callout>
                             </Marker>
                         ))}
                 </MapView>
@@ -261,6 +239,54 @@ export default function Mapa({ navigation }) {
                 <View style={styles.loading}>
                     <ActivityIndicator size="large" color="#551E18" />
                 </View>
+            )}
+            {selectedEvent && (
+                <Modal
+                    visible={visible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setVisible(false)}
+                >
+                    <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+                        <View style={styles.modalContainer}>
+                            <TouchableWithoutFeedback onPress={() => {}}>
+                                <View style={styles.modalContent}>
+                                    <TouchableOpacity
+                                        style={styles.closeButtonTopRight}
+                                        onPress={() => setVisible(false)}
+                                    >
+                                        <Text style={styles.closeButtonText}>
+                                            ✕
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <Text style={styles.title}>
+                                        {selectedEvent.nombreEvento}
+                                    </Text>
+                                    <Text style={styles.subtitle}>
+                                        {selectedEvent.descripcionEvento}
+                                    </Text>
+                                    <TouchableOpacity
+                                        style={styles.buttonModal}
+                                        onPress={() => {
+                                            setVisible(false);
+                                            navigation.navigate(
+                                                "detalleEventoMap",
+                                                {
+                                                    evento: selectedEvent,
+                                                }
+                                            );
+                                        }}
+                                    >
+                                        <Text style={styles.buttonText}>
+                                            Ver detalles
+                                        </Text>
+                                    </TouchableOpacity>
+                                    
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
             )}
             {favorites.map((data) => (
                 <MapWithCursor
@@ -271,7 +297,6 @@ export default function Mapa({ navigation }) {
                 />
             ))}
 
-            {/* Botón para redirigir a la ubicación */}
             <TouchableOpacity style={styles.locateButton} onPress={centerMap}>
                 <Ionicons name="location" size={30} color="#fff" />
             </TouchableOpacity>
@@ -325,8 +350,8 @@ const styles = StyleSheet.create({
         height: 60,
         justifyContent: "center",
         alignItems: "center",
-        elevation: 5, // sombra para Android
-        shadowColor: "#000", // sombra para iOS
+        elevation: 5, 
+        shadowColor: "#000", 
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
@@ -337,12 +362,32 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
 
-    containerCallout: {
-        width: 300,
-
+    modalContainer: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
         justifyContent: "center",
         alignItems: "center",
     },
+    modalContent: {
+        backgroundColor: "white",
+        padding: 20,
+        borderRadius: 10,
+        width: "80%",
+        alignItems: "center",
+        position: "relative",
+    },
+    closeButtonTopRight: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+        backgroundColor: "rgba(0, 0, 0, 0.1)", 
+        borderRadius: 15,
+        width: 30,
+        height: 30,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
     title: {
         textAlign: "center",
         fontWeight: "bold",
@@ -350,7 +395,7 @@ const styles = StyleSheet.create({
     subtitle: {
         color: "#555",
     },
-    buttonCallout: {
+    buttonModal: {
         backgroundColor: "#f05454",
         paddingVertical: 10,
         paddingHorizontal: 50,
