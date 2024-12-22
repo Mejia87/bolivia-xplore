@@ -15,6 +15,7 @@ import Navegacion from './Navegacion';
 import { useState } from 'react';
 import Dnotificasiones from '../data/Dnotificasiones';
 import NotificacionesStack from '../navigation/NotificacionesStack'
+import { NotificationContext } from '../navigation/NotificationContext';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -63,12 +64,13 @@ import GestorEventosStack from './GestorEventosStack';
   }
 
 const DrawerNavegacion = ( ) => {
+  const { notificationCount } = useContext(NotificationContext);
   const navigation = useNavigation();
-  const [notificationCount, setNotificationCount] = useState(Dnotificasiones.length)
+
   const { stateNavigation } = useContext(NavigationContext);
  const NotificationPress = () => {
      
-      navigation.navigate('notificaciones', setNotificationCount,notificationCount);
+  navigation.navigate('notificaciones',{ notificationCount });
     };
     
   return (
@@ -99,12 +101,14 @@ const DrawerNavegacion = ( ) => {
                       <View style = {styles.headerRigth}>
                         <TouchableOpacity onPress={NotificationPress}>
                         <Icon name= 'bell' type='font-awesome-5' size={20} color='#fff'/>
+                        {notificationCount > 0 && (
                         <Badge
                          status="primary"
                          value={notificationCount}
                          containerStyle={{ position: 'absolute', top: 0, left: 10 }}
                          badgeStyle={{ backgroundColor: 'red' }}
                        />
+                        )}
                        </TouchableOpacity>
                       </View>
                     ),
@@ -186,7 +190,7 @@ const styles = StyleSheet.create({
     
   },
   headerRigth: {
-    marginRight:15
+    marginRight:30
   },
   drawerLabel: {
     fontSize: 18,

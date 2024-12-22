@@ -21,12 +21,15 @@ enableScreens();
 export default function DetalleEvento({ navigation }) {
     const route = useRoute();
     const { evento } = route.params;
+    
     const { setPoint } = useContext(PoticionContext)
     const current = new Date();
-    const dateEvent = new Date(evento.fechaInicioEvento);
+
+    const initEvent = new Date(evento.fechaInicioEvento);
+    const finEvent = new Date(evento.fechaFinEvento) ;
 
     const visibleLocation =
-        (evento.tipoEvento === "PERMANENTE") || (current <= dateEvent);
+        (evento.tipoEvento === "PERMANENTE") || ( initEvent <= current && current <= finEvent );
 
     const [expanded, setExpanded] = useState(true);
     const [expandedHistory, setExpandedHistory] = useState(true);

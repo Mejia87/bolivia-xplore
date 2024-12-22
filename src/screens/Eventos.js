@@ -18,6 +18,7 @@ import { useRoute } from '@react-navigation/native';
 
 import {API_BASE_URL} from '@env'
 import Search from '../components/Search';
+import BackButton from "../components/BackButton";
 
 
 
@@ -25,26 +26,30 @@ enableScreens()
 const { width, height } = Dimensions.get("window")
 
 const ImageCard = ({evento, navigation}) => {
-    const handlePressimage = () => {
-         navigation.navigate("evento",{evento});
-     }
-    return (
-        <TouchableOpacity style={styles.card} onPress={handlePressimage}>
-
-            <Image source={{uri:evento.imagenes[0].urlImagen}} style={styles.image} />
-            <View style={styles.textContainer}>
-                <Text style={[styles.title, { fontSize: RFPercentage(1.5) }]}>
-                    {evento.nombreEvento}
-                </Text>
-                <Text
-                    style={[styles.subtitle, { fontSize: RFPercentage(0.7) }]}
-                >
-                    {evento.ubicacion}
-                </Text>
-            </View>
-        </TouchableOpacity>
-    );
-};
+        const handlePressimage = () => {
+             navigation.navigate("evento",{evento});
+         }
+        return (
+            <TouchableOpacity style={styles.card} onPress={handlePressimage}>
+                <Image source={{uri:evento.imagenes[0].urlImagen}} style={styles.image} />
+                <View style={styles.textContainer}>
+                    <Text style={[styles.title2, { fontSize: RFPercentage(1.5) }]}>
+                        {evento.nombreEvento}
+                    </Text>
+                    <View style= {[ styles.containerView ]}>
+                        <View style={styles.icon}>
+                            <Ionicons name='location' size={width * 0.04} color={"white"}  /> 
+                        </View>
+                        <Text
+                            style={[styles.subtitle, { fontSize: RFPercentage(1.4) }]}
+                        >
+                            {evento.ubicacion}
+                        </Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    };
 
 const Eventos = ({ navigation }) => {
     const route = useRoute()
@@ -83,8 +88,12 @@ const Eventos = ({ navigation }) => {
 
     return (
         <View style={styles.containers}>
-            
-         <Text style= {{fontSize:20,paddingTop:10,paddingBottom:10,fontWeight:"bold"}}>{title}</Text>
+            <View style={styles.header}>
+            <View style={styles.Scontainer}>
+            <BackButton/>
+            </View>
+         <Text style= {{flex: 1, textAlign: 'center',fontSize:20,paddingTop:10,paddingBottom:10,fontWeight:"bold"}}>{title}</Text>
+         </View>
             <FlatList
                 data={category}
                 renderItem={({ item }) => (
@@ -116,22 +125,22 @@ const styles = StyleSheet.create({
         width: width / 2.5 , 
         height: (width / 2.5) * 1.5, 
         margin: 10,
-        borderRadius: 10,
+        borderRadius: 5,
         overflow: "hidden",
-        backgroundColor: "rgba(108, 106, 108, 1)",
+        objectFit: "cover",
+        overflow: "hidden",
     },
     image: {
-        width: "100%",
-        height: "80%",
+        width: "auto",
+        height: "100%",
     },
     conta: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
     },
-    icon: {
-        width: 24,
-        height: 24,
+    icon:{
+        height:"100%",
     },
     iconTopRight: {
         position: "absolute",
@@ -150,24 +159,37 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     textContainer: {
-        justifyContent: "center",
+        flexDirection:"column",
+        justifyContent:"space-between",
         alignItems: "center",
         flex: 10,
+        position: "absolute",
+        width:"100%",
+        height: "100%",     
     },
-    title: {
-        fontWeight: "bold",
-        color: "white",
-        textAlign:"center",
+    title:{
+        fontSize: 30,
+        fontWeight: "bold", 
     },
     subtitle: {
         color: "white",
+        width: "100%",
+        alignItems:"center",
+        justifyContent:"center",
     },
     containers: {
         flex: 10,
         justifyContent: "center",
         alignItems: "center",
     },
-    
+    title2: {
+        padding:10,
+        fontWeight: "bold",
+        color: "white",
+        textAlign:"center",
+        width: "100%",
+        backgroundColor: "rgba(90, 17, 17, 0.61)"
+    },
     input: {
         flex: 1,
         border: "white",
@@ -176,7 +198,29 @@ const styles = StyleSheet.create({
         height:'100%',
         alignItems:'center',
         justifyContent:'center',
+    }, containerView:{
+        backgroundColor: "rgba(90, 17, 17, 0.61)",
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 10,
     },
+    Scontainer: {
+        left: 10,
+        top: 5,
+        position: "absolute",
+        flex: 1,
+        justifyContent: "flex-start", 
+        alignItems: "center",
+        zIndex: 50,
+    },
+    header: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: 'white',
+      },
 });
 
 export default Eventos;

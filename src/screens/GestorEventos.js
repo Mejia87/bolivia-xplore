@@ -16,7 +16,7 @@ import { CheckBox, ListItem, Avatar } from "@rneui/themed";
 import data from "../data/data";
 import { ScrollView } from "react-native";
 import Modal from "../components/Modal";
-
+import { Ionicons } from '@expo/vector-icons';
 import { API_BASE_URL } from "@env";
 
 enableScreens();
@@ -88,6 +88,10 @@ const GestorEventos = ({ navigation }) => {
         setIsModalVisible(!isModalVisible);
     };
 
+    const handleDeleteButton= () => {
+        setLongPressActive(!longPressActive);
+    }
+
     const handleDelete = async () => {
         for (const eventId of selectedItems) {
             try {
@@ -142,16 +146,28 @@ const GestorEventos = ({ navigation }) => {
 
     return (
         <View style={styles.containers}>
-            <View style={styles.searchContainer}>
-                <Search events = {events} setEvents= {setEvents}/>
+            <View style={styles.headerContainer}>
+                <View style={styles.buttonContainer}>
+                    <Button
+                        buttonStyle={styles.buttonAdd}
+                        onPress={() => navigation.navigate("eventForm")}
+                    >
+                        <Ionicons name='add' size={25} color='gray' style={styles.icon} />Agregar
+                    </Button> 
+                </View>
+                <View style={styles.buttonContainer}>
+                    <Button
+                        buttonStyle={styles.buttonDelete}
+                        onPress={ handleDeleteButton }
+                    >
+                        <Ionicons name={ (!longPressActive) ? 'trash':'backspace' } size={20} color='gray' style={styles.icon} />
+                    </Button> 
+                </View>
+                <View style={styles.searchContainer}>
+                    <Search events = {events} setEvents= {setEvents}/>
+                </View>
             </View>
-            <View style={styles.buttonContainer}>
-                <Button
-                    title="Agregar Evento"
-                    buttonStyle={styles.buttonAdd}
-                    onPress={() => navigation.navigate("eventForm")}
-                />
-            </View>
+            
             <ScrollView>
                 <View style={styles.row}>
                     <Row
@@ -270,6 +286,15 @@ const Row = ({
 };
 
 const styles = StyleSheet.create({
+    icon: {
+        fontWeight:"bold",
+        color:"white",
+    },
+    headerContainer:{
+        flexDirection:"row",
+        justifyContent: "space-between",
+        padding:10,
+    },
     containers: {
         flex: 1,
         textAlign: "center",
@@ -281,8 +306,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#fdf5ef'
     },
     searchContainer: {
-        margin: 10,
-        padding: 5,
+
     },
     text: {
         color: "black",
@@ -319,18 +343,23 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     buttonAdd: {
-        width: 150,
+        width: 100,
         height: 40,
         alignItems: "center",
-        backgroundColor:'#b84b50',
+        backgroundColor:'rgba(14, 113, 226, 1)',
         borderRadius: 5,
     },
     buttonContainer: {
         with:'100%',
         height:50,
         alignItems:'center',
-        padding: 5,
-        margin:10,
+    },
+    buttonDelete: {
+        width: 40,
+        height: 40,
+        alignItems: "center",
+        backgroundColor:'#b84b50',
+        borderRadius: 5,
     },
 });
 

@@ -7,9 +7,8 @@ import {API_BASE_URL} from '@env'
 
 const { width, height } = Dimensions.get('window');
 
-const Search = ({ navigation, events , nts}) => {
-  const [searchText, setSearchText] = useState('asd');
-  const [filteredData, setFilteredData] = useState([]);
+const Search = ({ setEvents }) => {
+  const [searchText, setSearchText] = useState('');
   
   useEffect(() => {
           const fecthMap = async () => {
@@ -39,10 +38,7 @@ const Search = ({ navigation, events , nts}) => {
                   }
       
                   const events = await response.json()
-                  setFilteredData(events)
-                  setEvents(events)
-                  console.log('eventos',events)
-      
+                  setEvents(events)     
               } catch (error) {
                   console.log('Error: ', error)
               } finally {
@@ -52,20 +48,9 @@ const Search = ({ navigation, events , nts}) => {
       
           fecthMap()
       }, [searchText])
-
-  useEffect(() => {
-    if (searchText === '') {
-      setFilteredData([]);
-    } else {
-      const filtered = Bsearch.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
-      setFilteredData(filtered);
-    }
-  }, [searchText]);
-
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <Ionicons name='search' size={width * 0.05} color='gray' style={styles.icon} />
         <TextInput
           style={[styles.input, { fontSize: width * 0.04 }]}
           placeholder='Buscar evento'
@@ -73,19 +58,8 @@ const Search = ({ navigation, events , nts}) => {
           value={searchText}
           onChangeText={setSearchText}
         />
+        <Ionicons name='search' size={width * 0.05} color='gray' style={styles.icon} />
       </View>
-      {/*filteredData.length > 0 && (
-        <FlatList
-          data={filteredData}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}>
-              <Text style={styles.suggestion}>{item.nombreEvento}</Text>
-            </TouchableOpacity>
-          )}
-          style={styles.suggestionsContainer}
-        />
-      )*/}
     </View>
   );
 };
@@ -95,22 +69,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchContainer: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
-    marginTop: 10,
-    height: width * 0.09,
-    width: width * 0.6,
-    borderColor: '#000',
-    borderWidth: 2,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems:"center",
+    backgroundColor:"white",
+    width: width * 0.48,
+    paddingLeft: 10,
+    borderWidth: 1,
   },
   icon: {
     marginRight: 10,
