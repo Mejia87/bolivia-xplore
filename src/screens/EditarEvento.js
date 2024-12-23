@@ -57,27 +57,11 @@ const EditEventForm = () => {
         fetchEventById(idEvent);
     }, [idEvent]);
 
-    const fetchEventById = async (idEvent) => {
+    const fetchEventById = (eventData) => {
         try {
-            const response = await fetch(
-                `${API_BASE_URL}/api/event/${idEvent}`,
-                {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Error al obtener el evento");
-            }
-
-            const eventData = await response.json();
-            console.log("Evento obtenido:", eventData);
-
             setName(eventData.nombreEvento);
             setCategory(eventData.idTipoEvento.toString());
             setImageUris([...eventData.imagenes.map((img) => img.urlImagen)]);
-            console.log("imagenes recu:", imageUris);
             setStartDate(eventData.fechaInicioEvento ? new Date(eventData.fechaInicioEvento) : null);
             setEndDate(eventData.fechaFinEvento ? new Date(eventData.fechaFinEvento) : null);
             setLocation({
@@ -88,23 +72,9 @@ const EditEventForm = () => {
             setDescription(eventData.descripcionEvento);
             setHistory(eventData.historiaEvento);
             setPermanent(eventData.permanente);
-            setAdress(eventData.ubicacion);
-            
-            useEffect(() => {
-            if (category === "6") {  
-                setShowHistory(false);
-                setHistory("");
-            } else {
-                setShowHistory(true);
-            }
-             }, [category]);
 
         } catch (error) {
             console.log("Error:", error);
-            Alert.alert(
-                "Error",
-                "No se pudo cargar la información del evento."
-            );
         }
     }; 
 
@@ -191,9 +161,9 @@ const EditEventForm = () => {
                 return;
             }
         }
-
+        console.log("permanente", permanent);
         const payload = {
-            codEvento: idEvent,
+            codEvento: idEvent.codEvento,
             nombreEvento: name,
             descripcionEvento: description,
             ubicacion: adress,
@@ -206,7 +176,6 @@ const EditEventForm = () => {
             idTipoEvento: { idTipoEvento: parseInt(category) },
         };
 
-        console.log("payload", payload);
 
         let eventError = null; 
         let imageError = null; 
@@ -245,7 +214,7 @@ const EditEventForm = () => {
             
             try {
                 const imageResponse = await fetch(
-                    `${API_BASE_URL}/api/event/update-image/${idEvent}`,
+                    `${API_BASE_URL}/api/event/update-image/${idEvent.codEvento}`,
                     {
                         method: "PUT",
                         body: formData,
@@ -256,11 +225,6 @@ const EditEventForm = () => {
                     throw new Error("Error al actualizar las imágenes");
                 }
 
-                if (successMessage) {
-                    successMessage += "\n";
-                }
-                successMessage += "Las imágenes se actualizaron correctamente.";
-
             } catch (error) {
                 imageError = "No se pudo actualizar las imágenes.";
             }
@@ -268,7 +232,9 @@ const EditEventForm = () => {
 
         if (eventError || imageError) {
             const errorMessage = `${eventError ? eventError : ""}\n${imageError ? imageError : ""}`;
+            
             Alert.alert("Error", errorMessage.trim());
+            setVisibleLoading(false);
         } else {
             setVisibleLoading(false);
             Alert.alert("Éxito", successMessage);
@@ -438,12 +404,11 @@ const EditEventForm = () => {
             </View>
 
             <Text style={styles.label}>Ubicación del Evento</Text>
-            <TouchableOpacity style={styles.locationButton}>
+            <TouchableOpacity style={styles.locationButton} onPress={() => {setVisible(true)}}>
                 <MaterialIcons
                     name="location-on"
                     size={24}
                     color="#551E18"
-                    onPress={() => {setVisible(true)}}
                 />
                 <MapLocation
                     visible={visible}
@@ -513,11 +478,11 @@ const EditEventForm = () => {
 };
 
 function MapLocation({
-    visible = false,
-    setVisible = () => {},
-    location = null,
-    setLocation = () => {},
-    setAdress = () => {},
+    visible,
+    setVisible,
+    location,
+    setLocation,
+    setAdress,
 }) {
     const [newRegion, setNewRegion] = useState(null);
 
@@ -534,15 +499,11 @@ function MapLocation({
                     setVisible(false);
                     return;
                 }
-
-                let currentLocation = await Location.getCurrentPositionAsync(
-                    {}
-                );
-                setLocation({
-                    latitude: currentLocation.coords.latitude,
-                    longitude: currentLocation.coords.longitude,
-                });
             })();
+            setLocation({
+                latitude: location.latitud,
+                longitude: location.longitud,
+            })
         }
     }, [visible]);
 
@@ -737,6 +698,8 @@ const styles = StyleSheet.create({
 
     row: {
         flexDirection: "row",
+        justifyContent:"space-around",
+        alignItems:"center",
     },
     eventPermanentText: {
         fontSize: 18,
@@ -752,8 +715,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#333333",
         backgroundColor: "#FFFFFF",
-        marginLeft: 188,
-        marginBottom: 10,
     },
     circleButtonSelected: {
         backgroundColor: "#551E18", 

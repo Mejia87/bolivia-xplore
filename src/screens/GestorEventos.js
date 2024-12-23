@@ -261,10 +261,8 @@ const Row = ({
                         size={20}
                         color={"#86352e"}
                         onPress={() =>
-                            {   console.log('id gestor:',item.codEvento)
-                                const idEvent = item.codEvento
-                                return navigation.navigate("editar", {idEvent}) 
-                                
+                            {   
+                                return navigation.navigate("editar", { "idEvent": item })   
                             }
                             
                         }

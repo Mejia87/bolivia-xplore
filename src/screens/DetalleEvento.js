@@ -39,6 +39,7 @@ export default function DetalleEvento({ navigation }) {
     const [favorito, setFavorito] = useState(false);
 
     useEffect(() => {
+        console.log("evento", evento)
         if( typeof evento.favorito === 'boolean'){
             setFavorito(evento.favorito);
         } else {

@@ -203,7 +203,7 @@ const EventForm = () => {
                 throw new Error(`Error en la solicitud: ${res.statusText}`);
             }
             setVisibleLoading(false);
-            Alert.alert("Guardado", "El evento ha sido registrado con éxito, y las imágenes se han cargado correctamente.");
+            Alert.alert("Guardado", "El evento ha sido registrado con éxito.");
             navigation.goBack();
 
         } catch (error) {
@@ -375,19 +375,18 @@ const EventForm = () => {
             </View>
 
             <Text style={styles.label}>Ubicación del Evento</Text>
-            <TouchableOpacity style={styles.locationButton}>
+            <TouchableOpacity style={styles.locationButton} onPress={() => { setVisible(true) }}>
                 <MaterialIcons
                     name="location-on"
                     size={24}
                     color="#551E18"
-                    onPress={() => { setVisible(true) }}
                 />
                 <MapLocation
-                    visible={visible}
-                    setVisible={setVisible}
-                    location={location}
-                    setLocation={setLocation}
-                    setAdress={setAdress}
+                    visible={ visible }
+                    setVisible={ setVisible }
+                    location={ location }
+                    setLocation={ setLocation }
+                    setAdress={ setAdress }
                 />
                 <Text style={styles.locationText}>{adress}</Text>
             </TouchableOpacity>
@@ -682,6 +681,7 @@ const styles = StyleSheet.create({
 
     row: {
         flexDirection: "row",
+        justifyContent:"space-around",
     },
     eventPermanentText: {
         fontSize: 18,
@@ -697,8 +697,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#333333",
         backgroundColor: "#FFFFFF",
-        marginLeft: 188,
-        marginBottom: 10,
     },
     circleButtonSelected: {
         backgroundColor: "#551E18",
