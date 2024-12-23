@@ -58,7 +58,7 @@ export default function DetalleEvento({ navigation }) {
                     <FavoriteButton favorite={ favorito } setFavorite={ setFavorito } eventId={ evento.codEvento } userId={ user.codUsuario } style={styles.favoritos} />
                 </View>
                 <CarouselView images={evento.imagenes} />
-                <View style={styles.tipoContainer}>
+                <View style={styles.tipoCategor}>
                 <Text style={styles.stitle}>
                 {(() => {
                       switch (evento.idTipoEvento) {
@@ -80,9 +80,25 @@ export default function DetalleEvento({ navigation }) {
                      })()}
                     </Text>
                 </View>
+                <View style={styles.tipoContainer}>
+                {evento.tipoEvento === "PERMANENTE" ? (
+                <Text style={styles.stitle}>Evento Permanente</Text>  
+                 ) : (
+                     <>
+                   <Text style={styles.stitle}>fecha de inicio del evento:{evento.fechaInicioEvento.split('T')[0]}</Text>
+                 <Text style={styles.stitle}>fecha de fin del evento:{evento.fechaFinEvento.split('T')[0]}</Text>
+                   </>
+                 )}
+
+                </View>
                 <View style={styles.titleContainer}>
                 <Text style={styles.title}>{evento.nombreEvento}</Text>
                 </View>
+                {evento.ubicacion ? (
+                  <View style={styles.stitleContainer}>
+                   <Text style={styles.stitle}>{evento.ubicacion}</Text>
+                  </View>
+                     ) : null}
                 <ListItem.Accordion
                     containerStyle={styles.accordionContainer}
                     content={
@@ -235,6 +251,23 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 0,
         textAlign: "center",
+    },
+    tipoCategor: {
+        backgroundColor: 'rgba(190, 144, 154, 0.66)',
+        borderRadius: 3,
+        marginBottom: 5,
+        paddingVertical: 8,
+        marginHorizontal: 10,
+        
+    },
+    
+    stitleContainer: {
+        backgroundColor: 'rgba(241, 210, 71, 0.38)',
+        borderRadius: 3,
+        marginBottom: 5,
+        paddingVertical: 8,
+        marginHorizontal: 10,
+        
     },
 
 });

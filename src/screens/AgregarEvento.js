@@ -368,9 +368,9 @@ const EventForm = () => {
                 <TouchableOpacity
                     style={[
                         styles.circleButton,
-                        permanent && styles.circleButtonSelected, // Cambia estilo si está seleccionado
+                        permanent && styles.circleButtonSelected, 
                     ]}
-                    onPress={() => setPermanent(!permanent)} // Alterna el estado
+                    onPress={() => setPermanent(!permanent)} 
                 />
             </View>
 
@@ -518,16 +518,13 @@ function MapLocation({
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01,
                         }}
-                        onRegionChange={(region) => setNewRegion(region)}
+                        onPress={(e) => {
+                            const { latitude, longitude } = e.nativeEvent.coordinate;
+                            setLocation({ latitude, longitude });
+                        }}
                     >
                         <Marker
                             coordinate={location}
-                            draggable
-                            onDragEnd={(e) => {
-                                const { latitude, longitude } =
-                                    e.nativeEvent.coordinate;
-                                setLocation({ latitude, longitude });
-                            }}
                         />
                     </MapView>
                     <View style={styles.buttonMap}>
