@@ -9,11 +9,8 @@ import {
     Image,
     TouchableOpacity,
     ActivityIndicator,
-<<<<<<< HEAD
     Dimensions,
     Modal
-=======
->>>>>>> a2e1a9485178574db257ebb334add88b3199aaa9
 } from "react-native";
 import { API_BASE_URL } from "@env";
 import { UserContext } from "../js/UserContext";
@@ -73,7 +70,6 @@ const Login = ({ navigation }) => {
     {
         if (loading) {
             return (
-<<<<<<< HEAD
                 <Modal visible={loading} animationType="slide" transparent={true}>
                     <View style={styles.modalBackground}>
                         <View style={styles.modalContainer}>
@@ -84,12 +80,6 @@ const Login = ({ navigation }) => {
                         </View>
                     </View>
                 </Modal>
-=======
-                <View style={styles.loading}>
-                    <Text>iniciando sesión...</Text>
-                    <ActivityIndicator size="large" color="#551E18" />
-                </View>
->>>>>>> a2e1a9485178574db257ebb334add88b3199aaa9
             );
         }
     }
@@ -213,7 +203,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         justifyContent: "center",
         alignItems: "center",
-<<<<<<< HEAD
     },
     
     modalBackground: {
@@ -239,8 +228,6 @@ const styles = StyleSheet.create({
     },
     loadingModal: {
         marginTop: 10,
-=======
->>>>>>> a2e1a9485178574db257ebb334add88b3199aaa9
     },
 });
 
