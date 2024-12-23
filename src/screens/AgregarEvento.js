@@ -138,9 +138,9 @@ const EventForm = () => {
                 return;
             }
         }
-
+        console.log("pasa por 1")
         const formData = new FormData();
-
+        console.log("pasa por 2"+ location);
         const eventData = {
             nombreEvento: name,
             descripcionEvento: description,
@@ -155,7 +155,7 @@ const EventForm = () => {
                 idTipoEvento: category,
             },
         };
-
+        console.log("pasa por 3")
         console.log("evento registrado", eventData);
 
         imageUris.forEach((imageUri) => {
@@ -385,7 +385,7 @@ const EventForm = () => {
                     visible={ visible }
                     setVisible={ setVisible }
                     location={ location }
-                    setLocation={ setLocation }
+                    setLocation ={ setLocation }
                     setAdress={ setAdress }
                 />
                 <Text style={styles.locationText}>{adress}</Text>
@@ -452,11 +452,11 @@ const EventForm = () => {
 };
 
 function MapLocation({
-    visible = false,
-    setVisible = () => { },
-    location = null,
-    setLocation = () => { },
-    setAdress = () => { },
+    visible,
+    setVisible,
+    location,
+    setLocation,
+    setAdress,
 }) {
     const [newRegion, setNewRegion] = useState(null);
 
@@ -477,10 +477,11 @@ function MapLocation({
                 let currentLocation = await Location.getCurrentPositionAsync(
                     {}
                 );
-                setLocation({
+                setNewRegion({
                     latitude: currentLocation.coords.latitude,
                     longitude: currentLocation.coords.longitude,
                 });
+
             })();
         }
     }, [visible]);
@@ -508,23 +509,23 @@ function MapLocation({
     return (
         
         <ModalMap isVisible={visible} setIsVisible={setVisible}>
-            {location ? (
+            {newRegion ? (
                 <View style={{ height: "90%" }}>
                     <MapView
                         style={{ height: "100%" }}
                         initialRegion={{
-                            latitude: location.latitude,
-                            longitude: location.longitude,
+                            latitude: newRegion.latitude,
+                            longitude: newRegion.longitude,
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01,
                         }}
                         onPress={(e) => {
                             const { latitude, longitude } = e.nativeEvent.coordinate;
-                            setLocation({ latitude, longitude });
+                            setNewRegion({ latitude, longitude });
                         }}
                     >
                         <Marker
-                            coordinate={location}
+                            coordinate={newRegion}
                         />
                     </MapView>
                     <View style={styles.buttonMap}>

@@ -9,13 +9,16 @@ import {
     TouchableOpacity,
     Image,
     ScrollView,
+    ActivityIndicator,
+    Dimensions,
+    Modal,
 } from "react-native";
 import { UserContext } from "../js/UserContext";
 import * as ImagePicker from "expo-image-picker";
 import { API_BASE_URL } from "@env";
 import { Icon } from "@rneui/base";
-
-const RegisterForm = (navigation) => {
+const { width, height } = Dimensions.get("window");
+const RegisterForm = ({navigation}) => {
     const {user, setUser} = useContext(UserContext)
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -23,35 +26,35 @@ const RegisterForm = (navigation) => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [urlFoto, setUrlFoto] = useState(null);
 
+    const [error, setError] = useState(false)
+    const [messageError, setMessageError] = useState('')
+    const [loading, setLoading] = useState(false)
+
     const handleRegister = async () => {
         const nameRegex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
         if (!nameRegex.test(name)) {
-            Alert.alert(
-                "Error",
-                "El nombre solo puede contener letras y espacios."
-            );
+            setMessageError("El nombre solo puede contener letras y espacios.")
             return;
         }
 
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
-            Alert.alert("Error", "Formato de correo inválido.");
+            setMessageError("Formato de correo inválido.")
             return;
         }
 
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
         if (!passwordRegex.test(password)) {
-            Alert.alert(
-                "Error",
-                "La contraseña debe tener al menos 8 caracteres, incluir un número, una mayúscula y una minúscula."
-            );
+            setMessageError("La contraseña debe tener al menos 8 caracteres, incluir un número, una mayúscula y una minúscula.")
             return;
         }
 
         if (password !== confirmPassword) {
-            Alert.alert("Error", "Las contraseñas no coinciden.");
+            setMessageError("Las contraseñas no coinciden.")
             return;
         }
+
+        setLoading(true)
 
         const payload = {
             name,
@@ -73,9 +76,10 @@ const RegisterForm = (navigation) => {
                 return;
             }
 
-            const data = await response.json();
+           
 
             if (response.ok) {
+                const data = await response.json();
                 Alert.alert(
                     "Éxito",
                     `Usuario registrado: ${data.nombreUsuario}`
@@ -93,8 +97,25 @@ const RegisterForm = (navigation) => {
                 "Error",
                 "Ocurrió un problema al conectar con el servidor."
             );
+        } finally {
+            setLoading(false)
         }
     };
+
+    {if (loading) {
+                return (
+                    <Modal visible={loading} animationType="slide" transparent={true}>
+                        <View style={styles.modalBackground}>
+                            <View style={styles.modalContainer}>
+                                <Text style={styles.textLoading}>Registrando Usuario</Text>
+                                <View style={styles.loadingModal}>
+                                    <ActivityIndicator size="large" color="#b84b50" />
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                );
+            }}
 
     const handlePickImage = async () => {
         const permissionResult =
@@ -182,6 +203,8 @@ const RegisterForm = (navigation) => {
                     >
                         <Text style={styles.buttonText}>Registrarse</Text>
                     </TouchableOpacity>
+
+                    <Text style={{color:'red'}}>{messageError}</Text>
                 </View>
             </View>
         </ScrollView>
@@ -189,6 +212,12 @@ const RegisterForm = (navigation) => {
 };
 
 const styles = StyleSheet.create({
+    loading:{
+        flexDirection:"row",
+        justifyContent:"center",
+        alignContent:"center",
+        
+    },
     scrollContainer: {
         padding: 1,
         
@@ -260,6 +289,30 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 10,
         backgroundColor: "#f0f0f0",
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)"
+    },
+    modalContainer: {
+        width: 300,
+        height: 150,
+        backgroundColor: "white",
+        borderRadius: 15,
+        padding: 20,
+        alignItems: "center",
+        justifyContent: "space-around",
+    },
+    textLoading: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+        color: "#504c4c",
+    },
+    loadingModal: {
+        marginTop: 10,
     },
 });
 

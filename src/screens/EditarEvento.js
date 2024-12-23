@@ -499,11 +499,13 @@ function MapLocation({
                     setVisible(false);
                     return;
                 }
+
+                setNewRegion({
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                });
+
             })();
-            setLocation({
-                latitude: location.latitud,
-                longitude: location.longitud,
-            })
         }
     }, [visible]);
 
@@ -511,9 +513,14 @@ function MapLocation({
         setLocation(newRegion);
         const [addressCurrent] = await Location.reverseGeocodeAsync(location);
         if (addressCurrent) {
-            const city = '-' + addressCurrent.city || ""
+
             const region = addressCurrent.region + ',' || ""
             const subRegion = addressCurrent.subregion || ""
+            let city = ""
+            if (addressCurrent.city) {
+                city = '-' + addressCurrent.city
+
+            }
             const regionText = `${region} ${subRegion} ${city} `;
             console.log('region obtenida', addressCurrent)
             setAdress(regionText);
@@ -523,27 +530,25 @@ function MapLocation({
     };
 
     return (
+        
         <ModalMap isVisible={visible} setIsVisible={setVisible}>
-            {location ? (
+            {newRegion ? (
                 <View style={{ height: "90%" }}>
                     <MapView
                         style={{ height: "100%" }}
                         initialRegion={{
-                            latitude: location.latitude,
-                            longitude: location.longitude,
+                            latitude: newRegion.latitude,
+                            longitude: newRegion.longitude,
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01,
                         }}
-                        onRegionChange={(region) => setNewRegion(region)}
+                        onPress={(e) => {
+                            const { latitude, longitude } = e.nativeEvent.coordinate;
+                            setNewRegion({ latitude, longitude });
+                        }}
                     >
                         <Marker
-                            coordinate={location}
-                            draggable
-                            onDragEnd={(e) => {
-                                const { latitude, longitude } =
-                                    e.nativeEvent.coordinate;
-                                setLocation({ latitude, longitude });
-                            }}
+                            coordinate={newRegion}
                         />
                     </MapView>
                     <View style={styles.buttonMap}>
@@ -557,7 +562,7 @@ function MapLocation({
                             title="cancelar ubicacion"
                             containerStyle={styles.viewMapBtnContainerCancel}
                             buttonStyle={styles.viewMapBtnCancel}
-                            onPress={() => {setVisible(false); setAdress('seleccione una ubicación')}}
+                            onPress={() => { setVisible(false); setAdress('seleccione una ubicación') }}
                         />
                     </View>
                 </View>
@@ -569,7 +574,6 @@ function MapLocation({
         </ModalMap>
     );
 }
-
 
 const styles = StyleSheet.create({
     container: {

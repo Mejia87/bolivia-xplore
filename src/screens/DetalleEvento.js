@@ -212,6 +212,8 @@ const styles = StyleSheet.create({
         alignSelf: "certer",
         marginBottom: 10,
         zIndex: 1,
+        flexDirection: "row",
+        justifyContent:"center",
     },
     buttonLocation: {
         flexDirection: "row",
@@ -223,6 +225,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#b84b50",
         backgroundColor: "#b84b50",
+        width:180,
     },
 
     textLocation: {

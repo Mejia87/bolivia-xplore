@@ -96,6 +96,8 @@ const GestorEventos = ({ navigation }) => {
     }
 
     const handleDelete = async () => {
+        setIsModalVisible(false);
+        setRefresh(true);
         for (const eventId of selectedItems) {
             try {
                 const response = await fetch(
@@ -114,7 +116,7 @@ const GestorEventos = ({ navigation }) => {
             "Eliminado",
             `Eliminación finalizada`
         );
-
+        setRefresh(false)
         updateEvent();
         setSelectedItems([]);
         setLongPressActive(false);
@@ -202,6 +204,17 @@ const GestorEventos = ({ navigation }) => {
                         onPress={toggleModal}
                     />
                 </View>
+            </Modal>
+            <Modal animationType="slide"
+                transparent={true}  isVisible={refresh}>
+                <View style={styles.modalBackground}>
+                                    <View style={styles.modalContainer}>
+                                        <Text style={styles.textLoading}>Eliminando Evento</Text>
+                                        <View style={styles.loadingModal}>
+                                            <ActivityIndicator size="large" color="#b84b50" />
+                                        </View>
+                                    </View>
+                                </View>
             </Modal>
         </View>
     );
@@ -348,6 +361,31 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor:'#b84b50',
         borderRadius: 5,
+    },
+    
+    modalBackground: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)"
+    },
+    modalContainer: {
+        width: 300,
+        height: 150,
+        backgroundColor: "white",
+        borderRadius: 15,
+        padding: 20,
+        alignItems: "center",
+        justifyContent: "space-around",
+    },
+    textLoading: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+        color: "#504c4c",
+    },
+    loadingModal: {
+        marginTop: 10,
     },
 });
 
