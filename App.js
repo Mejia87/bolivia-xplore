@@ -13,6 +13,7 @@ import { NotificationProvider } from "./src/navigation/NotificationContext";
 import Notificaciones from "./src/screens/Notificaciones";
 import { UserContext } from "./src/js/UserContext";
 import LoginStack from "./src/navigation/LoginStack";
+import { MapContext } from "./src/js/MapContext";
 
 export default function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticación
@@ -39,8 +40,10 @@ export default function App() {
             nearNotification: true,
         },
     });
+    const [eventList, setEventList] = useState(null);
     return (
         <SafeAreaView style={styles.safeArea}>
+            <MapContext.Provider value={{ eventList, setEventList }}>
             <UserContext.Provider value={{ user, setUser }}>
                 <NotificationProvider>
                     <PoticionContext.Provider value={{ point, setPoint }}>
@@ -59,6 +62,7 @@ export default function App() {
                     </PoticionContext.Provider>
                 </NotificationProvider>
             </UserContext.Provider>
+            </MapContext.Provider>
         </SafeAreaView>
     );
 }

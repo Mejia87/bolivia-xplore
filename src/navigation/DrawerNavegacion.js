@@ -194,7 +194,7 @@ const DrawerNavegacion = () => {
                 }}
             />
             <Drawer.Screen
-                name="notificaciones"
+                name = 'Notificaciones'
                 component={NotificacionesStack}
                 options={{
                     title: "Notificaciones",

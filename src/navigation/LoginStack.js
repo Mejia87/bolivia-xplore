@@ -7,6 +7,7 @@ import DetalleEvento from '../screens/DetalleEvento';
 import Login from '../screens/Login';
 import RegisterForm from '../screens/RegisterForm';
 import Presentacion from '../screens/Presentacion'
+import NotificacionesStack from './NotificacionesStack';
 const Stack = createStackNavigator();
 
 export default function LoginStack() {
@@ -33,7 +34,17 @@ export default function LoginStack() {
         component={DrawerNavegacion}
         options={{ title: "DramerNavegacion" }}
       />
-
+       <Stack.Screen
+        name="Notificaciones"
+        component={Notificaciones}
+        options={{ title: "Notificaciones" }}
+      />
+      <Stack.Screen
+              name="evento"
+              component={DetalleEvento}
+              options={{ title: "Evento" }}
+            />
+     
       
     </Stack.Navigator>
   );

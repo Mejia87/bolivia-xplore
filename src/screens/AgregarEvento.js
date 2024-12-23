@@ -9,6 +9,7 @@ import {
     Image,
     ScrollView,
     ActivityIndicator,
+    Modal,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -17,9 +18,9 @@ import MapView, { Circle, Marker, Polyline, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import ModalMap from "../components/Modal";
 
 
-import Modal from "../components/Modal";
 import Mapa from "./Mapa";
 import { Button } from "react-native-elements";
 
@@ -45,7 +46,7 @@ const EventForm = () => {
     const [location, setLocation] = useState(null);
     const [adress, setAdress] = useState("seleccione ubicación");
 
-    const [loading, setLoading] = useState(true);
+    const [visibleLoading, setVisibleLoading] = useState(false);
 
     const url = `${API_BASE_URL}/api/event/register`;
     let apiUrl = `${API_BASE_URL}/api/event/registerimage/`;
@@ -53,7 +54,7 @@ const EventForm = () => {
     const handleCategoryChange = (value) => {
         setCategory(value);
 
-        if (value === "6") { 
+        if (value === "6") {
             setShowHistory(false);
             setHistory("");
         } else {
@@ -64,16 +65,16 @@ const EventForm = () => {
     const getEventTypeText = () => {
         if (permanent) {
             if (!startDate && !endDate) {
-                return "Usted esta registrando un evento permanente.";
+                return "Este es un evento permanente.";
             }
             if (startDate && endDate) {
-                return "Usted esta registrando un evento semipermanente.";
+                return "Este es un evento semipermanente.";
             }
         }
         if (!permanent && startDate && endDate) {
-            return "Usted esta registrando un evento temporal.";
+            return "Este es un evento temporal.";
         }
-        return "Usted esta registrando un tipo de evento: ";
+        return "Indique las fechas y tipo de evento: ";
     };
 
     const handleImagePick = async () => {
@@ -167,7 +168,7 @@ const EventForm = () => {
                 name: fileName || "image.jpg", // Asegúrate de que los archivos tengan nombre
             });
         });
-
+        setVisibleLoading(true);
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -201,10 +202,10 @@ const EventForm = () => {
             if (!res.ok) {
                 throw new Error(`Error en la solicitud: ${res.statusText}`);
             }
-
+            setVisibleLoading(false);
             Alert.alert("Guardado", "El evento ha sido registrado con éxito, y las imágenes se han cargado correctamente.");
             navigation.goBack();
-                  
+
         } catch (error) {
             console.error("Error al enviar el evento:", error);
             Alert.alert("Error", "No se pudo registrar el evento");
@@ -314,7 +315,7 @@ const EventForm = () => {
             </TouchableOpacity>
             {showStartDatePicker && (
                 <DateTimePicker
-                    value={new Date()}
+                    value={new Date(0)}
                     mode="date"
                     display="default"
                     minimumDate={
@@ -322,7 +323,11 @@ const EventForm = () => {
                     }
                     onChange={(event, date) => {
                         setShowStartDatePicker(false);
-                        if (date) setStartDate(date);
+                        if (event.type === "set" && date) {
+                            setStartDate(date);
+                        } else {
+                            setStartDate(null);
+                        }
                     }}
                 />
             )}
@@ -349,7 +354,11 @@ const EventForm = () => {
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 2))}
                     onChange={(event, date) => {
                         setShowEndDatePicker(false);
-                        if (date) setEndDate(date);
+                        if (event.type === "set" && date) {
+                            setEndDate(date);
+                        } else {
+                            setEndDate(null);
+                        }
                     }}
                 />
             )}
@@ -371,7 +380,7 @@ const EventForm = () => {
                     name="location-on"
                     size={24}
                     color="#551E18"
-                    onPress={() => {setVisible(true)}}
+                    onPress={() => { setVisible(true) }}
                 />
                 <MapLocation
                     visible={visible}
@@ -414,26 +423,41 @@ const EventForm = () => {
                     onPress={() => navigation.goBack()}
                 >
                     <Text style={styles.cancelText}>Cancelar</Text>
+
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity
                     style={styles.saveButton}
                     onPress={handleSave}
                 >
-                    <Text style={styles.saveText}>Guardar</Text>
+                    <Text style={styles.saveText}>Registrar</Text>
                 </TouchableOpacity>
             </View>
 
+            <Modal
+                visible={visibleLoading}
+                animationType="slide"
+                transparent={true}
+            >
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.textLoading}>Registrando Evento</Text>
+                        <View style={styles.loadingModal}>
+                            <ActivityIndicator size="large" color="#b84b50" />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };
 
 function MapLocation({
     visible = false,
-    setVisible = () => {},
+    setVisible = () => { },
     location = null,
-    setLocation = () => {},
-    setAdress = () => {},
+    setLocation = () => { },
+    setAdress = () => { },
 }) {
     const [newRegion, setNewRegion] = useState(null);
 
@@ -466,9 +490,14 @@ function MapLocation({
         setLocation(newRegion);
         const [addressCurrent] = await Location.reverseGeocodeAsync(location);
         if (addressCurrent) {
-            const city = '-' + addressCurrent.city || ""
+
             const region = addressCurrent.region + ',' || ""
             const subRegion = addressCurrent.subregion || ""
+            let city = ""
+            if (addressCurrent.city) {
+                city = '-' + addressCurrent.city
+
+            }
             const regionText = `${region} ${subRegion} ${city} `;
             console.log('region obtenida', addressCurrent)
             setAdress(regionText);
@@ -478,7 +507,8 @@ function MapLocation({
     };
 
     return (
-        <Modal isVisible={visible} setIsVisible={setVisible}>
+        
+        <ModalMap isVisible={visible} setIsVisible={setVisible}>
             {location ? (
                 <View style={{ height: "90%" }}>
                     <MapView
@@ -509,7 +539,7 @@ function MapLocation({
                             title="cancelar ubicacion"
                             containerStyle={styles.viewMapBtnContainerCancel}
                             buttonStyle={styles.viewMapBtnCancel}
-                            onPress={() => {setVisible(false); setAdress('seleccione una ubicación')}}
+                            onPress={() => { setVisible(false); setAdress('seleccione una ubicación') }}
                         />
                     </View>
                 </View>
@@ -518,7 +548,7 @@ function MapLocation({
                     <ActivityIndicator size="large" color="#0000ff" />
                 </View>
             )}
-        </Modal>
+        </ModalMap>
     );
 }
 
@@ -542,6 +572,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         backgroundColor: "#f0f0f0",
     },
+
     imageButton: {
         flexDirection: "row",
         alignItems: "center",
@@ -676,6 +707,32 @@ const styles = StyleSheet.create({
         color: "#555",
         marginVertical: 10,
     },
+
+    modalBackground: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)"
+    },
+    modalContainer: {
+        width: 300,
+        height: 150,
+        backgroundColor: "white",
+        borderRadius: 15,
+        padding: 20,
+        alignItems: "center",
+        justifyContent: "space-around",
+    },
+    textLoading: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+        color: "#504c4c",
+    },
+    loadingModal: {
+        marginTop: 10,
+    },
+
 });
 
 export default EventForm;

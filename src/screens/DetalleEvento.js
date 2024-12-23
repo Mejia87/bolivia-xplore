@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ListItem } from "@rneui/themed";
 import {
     StyleSheet,
@@ -15,6 +15,7 @@ import BackButton from "../components/BackButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { PoticionContext } from "../js/positionContext";
+import { UserContext } from "../js/UserContext";
 
 enableScreens();
 
@@ -22,7 +23,8 @@ export default function DetalleEvento({ navigation }) {
     const route = useRoute();
     const { evento } = route.params;
     
-    const { setPoint } = useContext(PoticionContext)
+    const { setPoint } = useContext(PoticionContext);
+    const { user } = useContext(UserContext);
     const current = new Date();
 
     const initEvent = new Date(evento.fechaInicioEvento);
@@ -34,14 +36,49 @@ export default function DetalleEvento({ navigation }) {
     const [expanded, setExpanded] = useState(true);
     const [expandedHistory, setExpandedHistory] = useState(true);
 
+    const [favorito, setFavorito] = useState(false);
+
+    useEffect(() => {
+        if( typeof evento.favorito === 'boolean'){
+            setFavorito(evento.favorito);
+        } else {
+            let isFavorite = evento.favorito.some(
+                (fav) => fav.codUsuario == user.codUsuario
+            );
+            setFavorito(isFavorite)
+        }
+    },[])
+
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View>
                 <View style={styles.buttonContainer}>
                     <BackButton />
-                    <FavoriteButton style={styles.favoritos} />
+                    <FavoriteButton favorite={ favorito } setFavorite={ setFavorito } eventId={ evento.codEvento } userId={ user.codUsuario } style={styles.favoritos} />
                 </View>
                 <CarouselView images={evento.imagenes} />
+                <View style={styles.tipoContainer}>
+                <Text style={styles.stitle}>
+                {(() => {
+                      switch (evento.idTipoEvento) {
+                        case 1:
+                           return 'Celebraciones Folcloricas';
+                        case 2:
+                           return 'Museos';
+                        case 3:
+                          return 'Lugares Turisticos';
+                        case 4:
+                           return 'Festivales Tradicionales';
+                        case 5:
+                           return 'Expocicion de Arte';
+                        case 6:
+                            return 'Ferias Artesanales';
+                        default:
+                        return evento.idTipoEvento; 
+                         }
+                     })()}
+                    </Text>
+                </View>
                 <View style={styles.titleContainer}>
                 <Text style={styles.title}>{evento.nombreEvento}</Text>
                 </View>
@@ -184,5 +221,19 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         
     }
+    ,
+    tipoContainer: {
+        backgroundColor: "#ba9490",
+        borderRadius: 3,
+        marginBottom: 5,
+        paddingVertical: 8,
+        marginHorizontal: 10,
+        
+    },
+    stitle: {
+        fontWeight: "bold",
+        marginBottom: 0,
+        textAlign: "center",
+    },
 
 });

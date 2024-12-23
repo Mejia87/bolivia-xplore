@@ -19,6 +19,7 @@ import Card from "../components/Card";
 import Search2 from "../components/Search2";
 import Eventos from "./ImpresorEventos";
 import { Pressable, State } from "react-native-gesture-handler";
+import Search3 from "../components/Search3";
 enableScreens();
 const { width, height } = Dimensions.get("window");
 
@@ -118,7 +119,7 @@ const CategoriaEventos = ({ navigation }) => {
     };
 
     return (<><View style={{marginTop:20}}>
-        <Search2  events={data} setEvents={ setData }/>
+        <Search3  events={data} setEvents={ setData }/>
     </View>
                 
     {(data.length == 0) ? <RenderCategories />:<RenderResultSearch />}

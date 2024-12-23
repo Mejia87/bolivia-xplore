@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet} from 'react-native'
 import { Overlay } from '@rneui/themed';
 
-const Modal = ({isVisible = false, setIsVisible = () => {},children = null}) => {
+const ModalMap = ({isVisible = false, setIsVisible = () => {},children = null}) => {
   return (
     <Overlay
         isVisible={isVisible}
@@ -15,11 +15,11 @@ const Modal = ({isVisible = false, setIsVisible = () => {},children = null}) => 
   )
 }
 
-export default Modal
+export default ModalMap
 
 const styles = StyleSheet.create({
     overlay: {
         width:'90%',
-        maxHeight:'80%'
+        maxHeight:'80%',
     }
 })

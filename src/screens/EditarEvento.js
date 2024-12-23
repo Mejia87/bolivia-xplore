@@ -9,6 +9,7 @@ import {
     Image,
     ScrollView,
     ActivityIndicator,
+    Modal,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -18,8 +19,8 @@ import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
 import { createComponentForStaticNavigation, useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
+import ModalMap from "../components/Modal";
 
-import Modal from "../components/Modal";
 import Mapa from "./Mapa";
 import { Button } from "react-native-elements";
 
@@ -47,11 +48,10 @@ const EditEventForm = () => {
 
     const [visible, setVisible] = useState(false);
 
-    
     const [location, setLocation] = useState(null);
     const [adress, setAdress] = useState("seleccione ubicación");
 
-    const [loading, setLoading] = useState(true);
+    const [visibleLoading, setVisibleLoading] = useState(false);
 
     useEffect(() => {
         fetchEventById(idEvent);
@@ -78,11 +78,27 @@ const EditEventForm = () => {
             setCategory(eventData.idTipoEvento.toString());
             setImageUris([...eventData.imagenes.map((img) => img.urlImagen)]);
             console.log("imagenes recu:", imageUris);
-            setStartDate(new Date(eventData.fechaInicioEvento));
-            setEndDate(new Date(eventData.fechaFinEvento));
-            setLocation(eventData.ubicacion);
+            setStartDate(eventData.fechaInicioEvento ? new Date(eventData.fechaInicioEvento) : null);
+            setEndDate(eventData.fechaFinEvento ? new Date(eventData.fechaFinEvento) : null);
+            setLocation({
+                latitude: eventData.latitud,
+                longitude: eventData.longitud,
+            });
+            setAdress(eventData.ubicacion);
             setDescription(eventData.descripcionEvento);
             setHistory(eventData.historiaEvento);
+            setPermanent(eventData.permanente);
+            setAdress(eventData.ubicacion);
+            
+            useEffect(() => {
+            if (category === "6") {  
+                setShowHistory(false);
+                setHistory("");
+            } else {
+                setShowHistory(true);
+            }
+             }, [category]);
+
         } catch (error) {
             console.log("Error:", error);
             Alert.alert(
@@ -90,7 +106,16 @@ const EditEventForm = () => {
                 "No se pudo cargar la información del evento."
             );
         }
-    };
+    }; 
+
+    useEffect(() => {
+        if (category === "6") { 
+          setShowHistory(false);
+          setHistory("");
+        } else {
+          setShowHistory(true);
+        }
+      }, [category]);
 
     const handleCategoryChange = (value) => {
         setCategory(value);
@@ -106,16 +131,16 @@ const EditEventForm = () => {
     const getEventTypeText = () => {
         if (permanent) {
             if (!startDate && !endDate) {
-                return "Usted esta registrando un evento permanente.";
+                return "Este es un evento permanente.";
             }
             if (startDate && endDate) {
-                return "Usted esta registrando un evento semipermanente.";
+                return "Este es un evento semipermanente.";
             }
         }
         if (!permanent && startDate && endDate) {
-            return "Usted esta registrando un evento temporal.";
+            return "Este es un evento temporal.";
         }
-        return "Usted esta registrando un tipo de evento: ";
+        return "Indique las fechas y tipo de evento: ";
     };
 
     const handleImagePick = async () => {
@@ -171,18 +196,22 @@ const EditEventForm = () => {
             codEvento: idEvent,
             nombreEvento: name,
             descripcionEvento: description,
-            ubicacion: location,
+            ubicacion: adress,
             historiaEvento: history,
-            fechaInicioEvento: startDate.toISOString(),
-            fechaFinEvento: endDate.toISOString(),
-            latitud: -17.38256,
-            longitud: -66.25364,
-            permanent: false,
+            fechaInicioEvento: startDate,
+            fechaFinEvento: endDate,
+            latitud: location.latitude,
+            longitud: location.longitude,
+            permanente: permanent,
             idTipoEvento: { idTipoEvento: parseInt(category) },
         };
 
         console.log("payload", payload);
 
+        let eventError = null; 
+        let imageError = null; 
+        let successMessage = "";
+        setVisibleLoading(true);
         try {
             const response = await fetch(`${API_BASE_URL}/api/event/update`, {
                 method: "PUT",
@@ -194,43 +223,59 @@ const EditEventForm = () => {
                 throw new Error("Error al actualizar el evento");
             }
 
-            Alert.alert("Éxito", "El evento se actualizó correctamente.");
-            navigation.goBack();
+            successMessage = "El evento se actualizó correctamente.";
+
         } catch (error) {
-            console.log("Error:", error);
-            Alert.alert("Error", "No se pudo actualizar el evento.");
+            eventError = "No se pudo actualizar el evento."; 
         }
-        formData = new FormData();
 
-        imageUris.forEach((imageUri) => {
-            const fileName = imageUri.split("/").pop(); // Obtener el nombre del archivo
-            const fileType = fileName.split(".").pop();
+        if (imageUris.length > 0) {
+            const formData = new FormData();
 
-            formData.append("images", {
-                uri: imageUri,
-                type: `image/${fileType}` || "image/jpeg",
-                name: fileName || "image.jpg", // Asegúrate de que los archivos tengan nombre
+            imageUris.forEach((imageUri) => {
+                const fileName = imageUri.split("/").pop();
+                const fileType = fileName.split(".").pop();
+
+                formData.append("images", {
+                    uri: imageUri,
+                    type: `image/${fileType}` || "image/jpeg",
+                    name: fileName || "image.jpg",
+                });
             });
-        });
-        try {
-            const response = await fetch(
-                `${API_BASE_URL}/api/event/update-image/${idEvent}`,
-                {
-                    method: "PUT",
-                    body: formData,
+            
+            try {
+                const imageResponse = await fetch(
+                    `${API_BASE_URL}/api/event/update-image/${idEvent}`,
+                    {
+                        method: "PUT",
+                        body: formData,
+                    }
+                );
+
+                if (!imageResponse.ok) {
+                    throw new Error("Error al actualizar las imágenes");
                 }
-            );
 
-            console.log('imagenes act:', formData)
-            if (!response.ok) {
-                throw new Error("Error al actualizar imagen");
+                if (successMessage) {
+                    successMessage += "\n";
+                }
+                successMessage += "Las imágenes se actualizaron correctamente.";
+
+            } catch (error) {
+                imageError = "No se pudo actualizar las imágenes.";
             }
-
-            Alert.alert("Éxito", "la imagen se actualizó correctamente.");
-        } catch (error) {
-            console.log("Error:", error);
-            Alert.alert("Error", "No se pudo actualizar la imagen.");
         }
+
+        if (eventError || imageError) {
+            const errorMessage = `${eventError ? eventError : ""}\n${imageError ? imageError : ""}`;
+            Alert.alert("Error", errorMessage.trim());
+        } else {
+            setVisibleLoading(false);
+            Alert.alert("Éxito", successMessage);
+            navigation.goBack();
+        }
+        
+
     };
 
     return (
@@ -341,8 +386,12 @@ const EditEventForm = () => {
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 1))}
                     onChange={(event, date) => {
                         setShowStartDatePicker(false);
-                        if (date) setStartDate(date);
-                    }}
+                        if (event.type === "set" && date) {
+                            setStartDate(date);
+                          } else {
+                            setStartDate(null); 
+                          }
+                        }}
                 />
             )}
 
@@ -362,14 +411,18 @@ const EditEventForm = () => {
             </TouchableOpacity>
             {showEndDatePicker && (
                 <DateTimePicker
-                    value={endDate || new Date()}
+                    value={new Date(0)}
                     mode="date"
                     display="default"
                     minimumDate={new Date(new Date().setDate(new Date().getDate() + 2))}
                     onChange={(event, date) => {
                         setShowEndDatePicker(false);
-                        if (date) setEndDate(date);
-                    }}
+                        if (event.type === "set" && date) {
+                            setEndDate(date);
+                          } else {
+                            setEndDate(null); 
+                          }
+                        }}
                 />
             )}
 
@@ -437,9 +490,24 @@ const EditEventForm = () => {
                     style={styles.saveButton}
                     onPress={handleSave}
                 >
-                    <Text style={styles.saveText}>Guardar</Text>
+                    <Text style={styles.saveText}>Guardar Cambios</Text>
                 </TouchableOpacity>
             </View>
+
+            <Modal
+                visible={visibleLoading}
+                animationType="slide"
+                transparent={true}
+            >
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.textLoading}>Actualizando Evento</Text>
+                        <View style={styles.loadingModal}>
+                            <ActivityIndicator size="large" color="#b84b50" />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };
@@ -494,7 +562,7 @@ function MapLocation({
     };
 
     return (
-        <Modal isVisible={visible} setIsVisible={setVisible}>
+        <ModalMap isVisible={visible} setIsVisible={setVisible}>
             {location ? (
                 <View style={{ height: "90%" }}>
                     <MapView
@@ -537,7 +605,7 @@ function MapLocation({
                     <ActivityIndicator size="large" color="#0000ff" />
                 </View>
             )}
-        </Modal>
+        </ModalMap>
     );
 }
 
@@ -689,6 +757,31 @@ const styles = StyleSheet.create({
     },
     circleButtonSelected: {
         backgroundColor: "#551E18", 
+    },
+
+    modalBackground: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)"
+    },
+    modalContainer: {
+        width: 300,
+        height: 150,
+        backgroundColor: "white",
+        borderRadius: 10,
+        padding: 20,
+        alignItems: "center",
+        justifyContent: "space-around",
+    },
+    textLoading: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+        color: "#504c4c",
+    },
+    loadingModal: {
+        marginTop: 10,
     },
 });
 

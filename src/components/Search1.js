@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 
   container: {
     alignItems: 'center',
-    width: width * 0.8,
+    width: width * 0.6,
   },
   searchContainer: {
     display: "flex",
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 1,
     paddingLeft: 10,
-    width: width * 0.8,
+    width: width * 0.6,
     marginTop:10,
     backgroundColor: "rgba(255,255,255,1)",
     borderStyle: "solid",
@@ -133,20 +133,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     zIndex: 100,
-    width: width*0.8,
+    width: width*0.7,
   },
   suggestion: {
     flexDirection:"row",
     textAlign: "right",
     fontWeight: "bold",
     fontSize: 11,
-    width: width * 0.6,
+    width: width * 0.5,
     
   },
   suggestionName: {
     flexDirection:"row",
     fontSize: 12,
-    width: width * 0.6,
+    width: width * 0.5,
   },
   containerRow:{
     flexDirection:"row",
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding:5,
     paddingLeft: 1,
-    width: width * 0.8,
+    width: width * 0.6,
   }
   ,
 });

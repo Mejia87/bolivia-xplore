@@ -1,24 +1,35 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons
+import { API_BASE_URL } from "@env";
+const FavoriteButton = ({ favorite, setFavorite, eventId, userId }) => {
 
-const FavoriteButton = () => {
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
+  const updateFavorite = async () => {
+    const methodPayload = favorite ? 'DELETE':'POST';
+    setFavorite(!favorite);
+    const payload = {
+      codEvento: eventId,
+      codUsuario: userId
+    }
+    await fetch(`${API_BASE_URL}/api/event/mark-favorite`, {
+        method: methodPayload, 
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify(payload)
+    })
+  }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={toggleFavorite}>
+      <TouchableOpacity style={styles.button} onPress={ updateFavorite }>
         <MaterialIcons
-          name={isFavorite ? 'star' : 'star-border'}
+          name={favorite ? 'star' : 'star-border'}
           size={24}
-          color={isFavorite ? 'yellow' : 'gray'}
+          color={favorite ? 'yellow' : 'gray'}
         />
         <Text style={styles.text}>
-          {isFavorite ? 'Quitar de Favoritos' : 'Agregar a Favoritos'}
+          {favorite ? 'Quitar de Favoritos' : 'Agregar a Favoritos'}
         </Text>
       </TouchableOpacity>
     </View>
