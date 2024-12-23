@@ -70,7 +70,7 @@ const DrawerNavegacion = ( ) => {
   const { stateNavigation } = useContext(NavigationContext);
  const NotificationPress = () => {
      
-  navigation.navigate('notificaciones',{ notificationCount });
+  navigation.navigate('Notificaciones',{ notificationCount });
     };
     
   return (
@@ -127,7 +127,7 @@ const DrawerNavegacion = ( ) => {
                 }}
             />
             <Drawer.Screen
-                name = 'notificaciones'
+                name = 'Notificaciones'
                 component={NotificacionesStack}
                 options={{
                     title: 'Notificaciones',
