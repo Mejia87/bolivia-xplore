@@ -8,6 +8,7 @@ import {
     StyleSheet,
     Image,
     TouchableOpacity,
+    ActivityIndicator,
 } from "react-native";
 import { API_BASE_URL } from "@env";
 import { UserContext } from "../js/UserContext";
@@ -16,18 +17,21 @@ const Login = ({ navigation }) => {
     const { user, setUser } = useContext(UserContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('')
 
     const handleLogin = async () => {
         if (!email || !password) {
-            Alert.alert("Error", "Por favor, ingrese su correo y contraseña.");
+            setError("Por favor, ingrese su correo y contraseña.")
             return;
         }
 
         const payload = {
             email,
             password,
-        }; 
+        };
 
+        setLoading(true);
         try {
             const response = await fetch(`${API_BASE_URL}/api/user/login`, {
                 method: "POST",
@@ -38,7 +42,7 @@ const Login = ({ navigation }) => {
             });
 
             if (response.status === 401) {
-                Alert.alert("Error", "Datos incorrectos, intente nuevamente.");
+                setError("Datos incorrectos, intente nuevamente.");
                 return;
             }
 
@@ -46,10 +50,9 @@ const Login = ({ navigation }) => {
                 const jwt = response.headers.get("Authorization");
                 Alert.alert("Éxito", "Inicio de sesión exitoso.");
                 const usuario = await response.json();
-                setUser(usuario)
-                console.log('usuario', usuario)
-                navigation.navigate('welcome')
-
+                setUser(usuario);
+                console.log("usuario", usuario);
+                navigation.navigate("welcome");
             } else {
                 Alert.alert("Error", "No se pudo iniciar sesión.");
             }
@@ -58,8 +61,21 @@ const Login = ({ navigation }) => {
                 "Error",
                 "Ocurrió un problema al conectar con el servidor."
             );
+        } finally {
+            setLoading(false);
         }
     };
+
+    {
+        if (loading) {
+            return (
+                <View style={styles.loading}>
+                    <Text>iniciando sesión...</Text>
+                    <ActivityIndicator size="large" color="#551E18" />
+                </View>
+            );
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -83,6 +99,7 @@ const Login = ({ navigation }) => {
                 onChangeText={setPassword}
                 secureTextEntry
             />
+            <Text style={{color:'red'}}>{error}</Text>
             <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
@@ -110,7 +127,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         padding: 20,
         backgroundColor: "#f5f5f5",
-        alignItems:'center',
+        alignItems: "center",
     },
     title: {
         fontSize: 24,
@@ -126,7 +143,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         paddingHorizontal: 10,
         backgroundColor: "#fff",
-        width:'90%'
+        width: "90%",
     },
     googleButton: {
         flexDirection: "row",
@@ -160,20 +177,20 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline",
     },
     buttonLogin: {
-      justifyContent:"flex-end",
-      paddingVertical: 10,
-      paddingHorizontal: 40,
-      backgroundColor: '#b84b50',
-      borderRadius: 5,
-      width:'60%'
+        justifyContent: "flex-end",
+        paddingVertical: 10,
+        paddingHorizontal: 40,
+        backgroundColor: "#b84b50",
+        borderRadius: 5,
+        width: "60%",
     },
     buttonText: {
-      color: '#fff',
-      fontSize: 16,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      justifyContent:"center",
-      alignItems:"center",
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+        textAlign: "center",
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
 

@@ -102,7 +102,7 @@ const DrawerNavegacion = () => {
 
     const { stateNavigation } = useContext(NavigationContext);
     const NotificationPress = () => {
-        navigation.navigate("notificaciones", { notificationCount });
+        navigation.navigate("Notificaciones", { notificationCount });
     };
 
     return (

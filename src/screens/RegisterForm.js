@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Image,
     ScrollView,
+    ActivityIndicator,
 } from "react-native";
 import { UserContext } from "../js/UserContext";
 import * as ImagePicker from "expo-image-picker";
@@ -23,35 +24,35 @@ const RegisterForm = (navigation) => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [urlFoto, setUrlFoto] = useState(null);
 
+    const [error, setError] = useState(false)
+    const [messageError, setMessageError] = useState('')
+    const [loading, setLoading] = useState(false)
+
     const handleRegister = async () => {
         const nameRegex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
         if (!nameRegex.test(name)) {
-            Alert.alert(
-                "Error",
-                "El nombre solo puede contener letras y espacios."
-            );
+            setMessageError("El nombre solo puede contener letras y espacios.")
             return;
         }
 
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
-            Alert.alert("Error", "Formato de correo inválido.");
+            setMessageError("Formato de correo inválido.")
             return;
         }
 
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
         if (!passwordRegex.test(password)) {
-            Alert.alert(
-                "Error",
-                "La contraseña debe tener al menos 8 caracteres, incluir un número, una mayúscula y una minúscula."
-            );
+            setMessageError("La contraseña debe tener al menos 8 caracteres, incluir un número, una mayúscula y una minúscula.")
             return;
         }
 
         if (password !== confirmPassword) {
-            Alert.alert("Error", "Las contraseñas no coinciden.");
+            setMessageError("Las contraseñas no coinciden.")
             return;
         }
+
+        setLoading(true)
 
         const payload = {
             name,
@@ -93,8 +94,19 @@ const RegisterForm = (navigation) => {
                 "Error",
                 "Ocurrió un problema al conectar con el servidor."
             );
+        } finally {
+            setLoading(false)
         }
     };
+
+    {if (loading) {
+        return (
+            <View style={styles.loading}>
+                <Text>registrando usuario</Text>
+                <ActivityIndicator size="large" color="#551E18" />
+            </View>
+        );
+    }}
 
     const handlePickImage = async () => {
         const permissionResult =
@@ -182,6 +194,8 @@ const RegisterForm = (navigation) => {
                     >
                         <Text style={styles.buttonText}>Registrarse</Text>
                     </TouchableOpacity>
+
+                    <Text style={{color:'red'}}>{messageError}</Text>
                 </View>
             </View>
         </ScrollView>
