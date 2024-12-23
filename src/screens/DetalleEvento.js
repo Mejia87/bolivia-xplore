@@ -57,6 +57,28 @@ export default function DetalleEvento({ navigation }) {
                     <FavoriteButton favorite={ favorito } setFavorite={ setFavorito } eventId={ evento.codEvento } userId={ user.codUsuario } style={styles.favoritos} />
                 </View>
                 <CarouselView images={evento.imagenes} />
+                <View style={styles.tipoContainer}>
+                <Text style={styles.stitle}>
+                {(() => {
+                      switch (evento.idTipoEvento) {
+                        case 1:
+                           return 'Celebraciones Folcloricas';
+                        case 2:
+                           return 'Museos';
+                        case 3:
+                          return 'Lugares Turisticos';
+                        case 4:
+                           return 'Festivales Tradicionales';
+                        case 5:
+                           return 'Expocicion de Arte';
+                        case 6:
+                            return 'Ferias Artesanales';
+                        default:
+                        return evento.idTipoEvento; 
+                         }
+                     })()}
+                    </Text>
+                </View>
                 <View style={styles.titleContainer}>
                 <Text style={styles.title}>{evento.nombreEvento}</Text>
                 </View>
@@ -199,5 +221,19 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         
     }
+    ,
+    tipoContainer: {
+        backgroundColor: "#ba9490",
+        borderRadius: 3,
+        marginBottom: 5,
+        paddingVertical: 8,
+        marginHorizontal: 10,
+        
+    },
+    stitle: {
+        fontWeight: "bold",
+        marginBottom: 0,
+        textAlign: "center",
+    },
 
 });
