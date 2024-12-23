@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
     View,
     Text,
@@ -7,34 +7,51 @@ import {
     Alert,
     StyleSheet,
     TouchableOpacity,
+    Image,
+    ScrollView,
 } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
+import { UserContext } from "../js/UserContext";
+import * as ImagePicker from "expo-image-picker";
 import { API_BASE_URL } from "@env";
+import { Icon } from "@rneui/base";
 
-const RegisterForm = () => {
+const RegisterForm = (navigation) => {
+    const {user, setUser} = useContext(UserContext)
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [authProvider, setAuthProvider] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [urlFoto, setUrlFoto] = useState(null);
 
     const handleRegister = async () => {
-        // if (!email.includes("@")) {
-        //     Alert.alert("Error", "Formato de email inválido.");
-        //     return;
-        // }
+        const nameRegex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
+        if (!nameRegex.test(name)) {
+            Alert.alert(
+                "Error",
+                "El nombre solo puede contener letras y espacios."
+            );
+            return;
+        }
 
-        // if (
-        //     [name, email, urlFoto, googleID, authProvider].some(
-        //         (field) => field.length > 100
-        //     )
-        // ) {
-        //     Alert.alert(
-        //         "Error",
-        //         "Todos los campos deben tener menos de 100 caracteres."
-        //     );
-        //     return;
-        // }
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) {
+            Alert.alert("Error", "Formato de correo inválido.");
+            return;
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            Alert.alert(
+                "Error",
+                "La contraseña debe tener al menos 8 caracteres, incluir un número, una mayúscula y una minúscula."
+            );
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            Alert.alert("Error", "Las contraseñas no coinciden.");
+            return;
+        }
 
         const payload = {
             name,
@@ -62,7 +79,12 @@ const RegisterForm = () => {
                 Alert.alert(
                     "Éxito",
                     `Usuario registrado: ${data.nombreUsuario}`
+
                 );
+
+                setUser(data)
+                navigation.navigate('welcome')
+
             } else {
                 Alert.alert("Error", "No se pudo completar el registro.");
             }
@@ -92,63 +114,85 @@ const RegisterForm = () => {
             aspect: [1, 1],
             quality: 1,
         });
+
         if (!result.canceled) {
             setUrlFoto(result.assets[0].uri);
-            Alert.alert("Éxito", "Foto seleccionada correctamente.");
         }
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Registro de Usuario</Text>
-            <View style={styles.content}>
-                <TouchableOpacity
-                    style={styles.imagePickerButton}
-                    onPress={handlePickImage}
-                >
-                    <Text style={styles.imagePickerText}>Seleccionar Foto</Text>
-                </TouchableOpacity>
-                {urlFoto ? (
-                    <Image
-                        source={{ uri: urlFoto }}
-                        style={styles.previewImage}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.container}>
+                <Text style={styles.title}>Registro de Usuario</Text>
+                <View style={styles.content}>
+                    {urlFoto ? (
+                        <Image
+                            source={{ uri: urlFoto }}
+                            style={styles.imagePreview}
+                        />
+                    ) : (
+                        <Image
+                            source={require("../../assets/avatar.jpg")}
+                            style={styles.imagePreview}
+                        />
+                    )}
+                    <TouchableOpacity
+                        style={styles.imagePickerButton}
+                        onPress={handlePickImage}
+                    >
+                        <Icon name='photo' />
+                        <Text>Seleccionar Foto</Text>
+                    </TouchableOpacity>
+
+                    <Text style={styles.label}>Nombre</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="ingrese su nombre completo"
+                        value={name}
+                        onChangeText={setName}
                     />
-                ) : null}
+                    <Text style={styles.label}>correo</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="ingrese su Correo electrónico"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                    />
+                    <Text style={styles.label}>contraseña</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="ingrese su contraseña"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                    />
+                    <Text style={styles.label}>confirmar contraseña</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="ingrese su contraseña"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        secureTextEntry
+                    />
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nombre completo"
-                    value={name}
-                    onChangeText={setName}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Correo electrónico"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="contraseña"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
-                
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleRegister}
-                >
-                    <Text style={styles.buttonText}>Registrarse</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleRegister}
+                    >
+                        <Text style={styles.buttonText}>Registrarse</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        padding: 1,
+        
+    },
     container: {
         flex: 1,
         backgroundColor: "#f5f5f5",
@@ -163,7 +207,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 20,
         textAlign: "center",
-        marginTop: 50,
+        marginTop: 10,
     },
     input: {
         height: 50,
@@ -181,7 +225,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 40,
         backgroundColor: "#b84b50",
         borderRadius: 5,
-        width: "60%",
+        width: "50%",
+        marginTop:30,
     },
     buttonText: {
         color: "#fff",
@@ -190,6 +235,31 @@ const styles = StyleSheet.create({
         textAlign: "center",
         justifyContent: "center",
         alignItems: "center",
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: "500",
+        marginVertical: 5,
+        color: "#333333",
+        alignSelf: "flex-start",
+        marginLeft: 20,
+    },
+    imagePreview: {
+        width: 250,
+        height: 250,
+        borderRadius: 5,
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    imagePickerButton: {
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#ba9490",
+        padding: 12,
+        borderRadius: 5,
+        marginBottom: 10,
+        backgroundColor: "#f0f0f0",
     },
 });
 
