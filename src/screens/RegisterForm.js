@@ -10,8 +10,11 @@ import {
     Image,
     ScrollView,
     ActivityIndicator,
+<<<<<<< HEAD
     Dimensions,
     Modal,
+=======
+>>>>>>> a2e1a9485178574db257ebb334add88b3199aaa9
 } from "react-native";
 import { UserContext } from "../js/UserContext";
 import * as ImagePicker from "expo-image-picker";
@@ -103,6 +106,7 @@ const RegisterForm = ({navigation}) => {
     };
 
     {if (loading) {
+<<<<<<< HEAD
                 return (
                     <Modal visible={loading} animationType="slide" transparent={true}>
                         <View style={styles.modalBackground}>
@@ -116,6 +120,15 @@ const RegisterForm = ({navigation}) => {
                     </Modal>
                 );
             }}
+=======
+        return (
+            <View style={styles.loading}>
+                <Text>registrando usuario</Text>
+                <ActivityIndicator size="large" color="#551E18" />
+            </View>
+        );
+    }}
+>>>>>>> a2e1a9485178574db257ebb334add88b3199aaa9
 
     const handlePickImage = async () => {
         const permissionResult =
