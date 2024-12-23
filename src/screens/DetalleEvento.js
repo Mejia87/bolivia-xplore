@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ListItem } from "@rneui/themed";
 import {
     StyleSheet,
@@ -15,6 +15,7 @@ import BackButton from "../components/BackButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { PoticionContext } from "../js/positionContext";
+import { UserContext } from "../js/UserContext";
 
 enableScreens();
 
@@ -22,7 +23,8 @@ export default function DetalleEvento({ navigation }) {
     const route = useRoute();
     const { evento } = route.params;
     
-    const { setPoint } = useContext(PoticionContext)
+    const { setPoint } = useContext(PoticionContext);
+    const { user } = useContext(UserContext);
     const current = new Date();
 
     const initEvent = new Date(evento.fechaInicioEvento);
@@ -34,16 +36,30 @@ export default function DetalleEvento({ navigation }) {
     const [expanded, setExpanded] = useState(true);
     const [expandedHistory, setExpandedHistory] = useState(true);
 
+    const [favorito, setFavorito] = useState(false);
+
+    useEffect(() => {
+        if( typeof evento.favorito === 'boolean'){
+            setFavorito(evento.favorito);
+        } else {
+            let isFavorite = evento.favorito.some(
+                (fav) => fav.codUsuario == user.codUsuario
+            );
+            setFavorito(isFavorite)
+        }
+    },[])
+
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View>
                 <View style={styles.buttonContainer}>
                     <BackButton />
-                    <FavoriteButton style={styles.favoritos} />
+                    <FavoriteButton favorite={ favorito } setFavorite={ setFavorito } eventId={ evento.codEvento } userId={ user.codUsuario } style={styles.favoritos} />
                 </View>
                 <CarouselView images={evento.imagenes} />
+                <View style={styles.titleContainer}>
                 <Text style={styles.title}>{evento.nombreEvento}</Text>
-
+                </View>
                 <ListItem.Accordion
                     containerStyle={styles.accordionContainer}
                     content={
@@ -112,7 +128,7 @@ const styles = StyleSheet.create({
         //flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
-        padding: 5,
+        padding: 1,
         backgroundColor: "#f5f5f5",
     },
 
@@ -175,4 +191,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "white",
     },
+    titleContainer: {
+        backgroundColor: 'rgba(248, 209, 35, 0.67)',
+        borderRadius: 3,
+        marginBottom: 5,
+        paddingVertical: 8,
+        marginHorizontal: 10,
+        
+    }
+
 });
