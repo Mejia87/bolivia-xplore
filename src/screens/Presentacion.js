@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-export default function Bienvenida({ onContinue }) {
+
+export default function Bienvenida({ navigation }) {
   const { width } = Dimensions.get('window');
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -51,7 +52,7 @@ export default function Bienvenida({ onContinue }) {
         ))}
       </View>
       <View style={{ width:"100%",flexDirection:"row",justifyContent:"flex-end" }}>
-        <TouchableOpacity style={styles.button} onPress={onContinue}>
+        <TouchableOpacity style={styles.button} onPress={()=> {navigation.navigate('home')}}>
           <Text style={styles.buttonText}>Comenzar  <Ionicons name="arrow-forward" size={20} color='gray' style={styles.icon} /></Text>
         </TouchableOpacity>
       </View>
